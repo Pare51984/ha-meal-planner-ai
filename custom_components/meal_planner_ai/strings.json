@@ -27,20 +27,20 @@
       },
       "ai": {
         "title": "KI",
-        "description": "Der Essensplaner nutzt die KI aus deinem Home Assistant. Die KI schlägt Gerichte vor, bewertet „cholesterinarm“ und macht Artikelnamen einkaufstauglich. Jeder Link wird von der Integration geprüft; findet die KI keinen funktionierenden Link, sucht die Integration das Gericht selbst auf den Rezeptseiten.\n\n**So richtest du eine KI ein** (einmalig, in Einstellungen → Geräte & Dienste → Integration hinzufügen):\n**Claude (Anthropic)** – am zuverlässigsten bei der Rezeptsuche, auch für Cookidoo. Auf console.anthropic.com anmelden, unter „Billing“ Guthaben aufladen (5 $ reichen lange), unter „API Keys“ einen Schlüssel erstellen. Dann die Integration „Anthropic“ hinzufügen und den Schlüssel einfügen. Kosten: Websuche ca. 1 Cent pro Suche, ein Wochenlauf grob 10–50 Cent (Schätzung).\n**Gemini (Google)** – kostenlos nutzbar. Auf aistudio.google.com einen API-Schlüssel erstellen, dann die Integration „Google Generative AI“ hinzufügen. Die Google-Suche ist im kostenlosen Tarif begrenzt, und Gemini liefert öfter Links, die nicht funktionieren; die Integration sucht dann selbst nach.\n**ChatGPT (OpenAI)** – auf platform.openai.com Guthaben aufladen und einen API-Schlüssel erstellen, dann die Integration „OpenAI Conversation“ hinzufügen.\nDanach diesen Bereich neu öffnen und unten „Such-Agent anlegen bei“ den gewünschten Anbieter wählen. Tipp: Gemini als Haupt-KI (kostenlos) und Claude nur für die Rezeptsuche ist eine gute Mischung. API-Schlüssel nie weitergeben.\n\n**Externe KI über dein Abo (ohne API-Schlüssel):** Statt einer KI in Home Assistant kann eine KI außerhalb die Rezepte heraussuchen, zum Beispiel dein Claude- oder ChatGPT-Abo. Das läuft so: Du legst in deiner KI einmal eine geplante Aufgabe an. Zur eingestellten Zeit startet sie, fragt beim Essensplaner nach, ob gerade geplant werden soll, holt sich den Auftrag mit deinen aktuellen Regeln, Wünschen und Terminen, sucht die Rezepte im Web und gibt sie zurück. Der Essensplaner prüft jedes Gericht genauso wie bei der eingebauten KI und meldet zurück, was noch fehlt; die KI liefert dann nach.\nDafür brauchst du: 1. ein KI-Abo mit geplanten Aufgaben und Websuche, 2. eine Verbindung dieser KI zu deinem Home Assistant über MCP (z. B. die Integration „Model Context Protocol Server“ mit der Werkzeug-Sammlung „Meal Planner AI“), 3. Fernzugriff auf Home Assistant von außen (z. B. Home Assistant Cloud oder Cloudflare).\nWählst du unten „Externe KI“, zeigt der Reiter Einstellungen in der Karte den fertigen Text und Zeitplan für die Aufgabe zum Kopieren. Kommt 5 Stunden nach dem Planungszeitpunkt nichts, springt die KI in Home Assistant ein, falls eine gewählt ist.",
+        "description": "Hier legst du fest, welche KI die Wochenvorschläge macht. Danach prüft der Essensplaner jedes Gericht selbst: Link, Zeit, kcal und eure Regeln.\n\n**Einfachster Weg, kostenlos: Google Gemini**\n1. Auf aistudio.google.com einen API-Schlüssel erstellen.\n2. In Home Assistant die Integration „Google Gemini“ hinzufügen und den Schlüssel einfügen.\n3. Hier: **Wer macht die Vorschläge?** = KI in Home Assistant, **Haupt-KI** = „Google AI Task“, **Neuen Such-Agenten anlegen bei** = Gemini. Fertig, auch Cookidoo-Rezepte werden gefunden.\n\n**Andere Anbieter:** Claude (Integration „Anthropic“) und ChatGPT („OpenAI Conversation“) gehen genauso, brauchen aber Guthaben beim Anbieter (Websuche etwa 1 Cent pro Suche). API-Schlüssel nie weitergeben.\n\n**Externe KI, für Fortgeschrittene:** Statt einer KI in Home Assistant liefert eine geplante Aufgabe in deinem Claude- oder ChatGPT-Abo die Vorschläge. Dafür brauchst du eine MCP-Verbindung zu Home Assistant und Fernzugriff von außen. Die Anleitung erscheint nach der Auswahl in der Karte unter Einstellungen.",
         "data": {
-          "proposals_from": "Vorschläge kommen von",
-          "ai_task": "KI (AI-Task-Entität)",
-          "ai_shopping_names": "KI macht Artikelnamen katalogtauglich (z. B. für Bring!)",
-          "ai_search": "Rezeptsuche: KI mit Websuche (Gesprächsagent)",
-          "create_search_agent": "Such-Agent mit Websuche anlegen bei"
+          "proposals_from": "Wer macht die Vorschläge?",
+          "ai_task": "Haupt-KI",
+          "ai_shopping_names": "Artikelnamen für die Einkaufsliste vereinfachen",
+          "ai_search": "Rezeptsuche im Web",
+          "create_search_agent": "Neuen Such-Agenten anlegen bei"
         },
         "data_description": {
-          "proposals_from": "„KI in Home Assistant“: die unten gewählte KI erstellt die Vorschläge nach Zeitplan. „Externe KI“: eine KI außerhalb (z. B. geplante Aufgabe in Claude, Gemini oder ChatGPT) liefert sie über die Aktionen; die KI unten dient dann nur als Ersatz.",
-          "ai_search": "Optional, für bessere Treffer: ein Agent mit Websuche. Nur damit sind z. B. Cookidoo-Rezepte auffindbar. „Keine“ = die KI liefert Ideen, die Integration sucht selbst. Tipp: Mit Google Gemini klappt die Rezeptsuche ohne Abo und ohne externe KI: kostenlosen API-Schlüssel in Google AI Studio holen und die Integration „Google Gemini“ einrichten. Unten bei „Such-Agent mit Websuche anlegen bei“ Gemini wählen, der Essensplaner richtet ihn mit Google-Suche ein (gemini-2.5-flash; neuere Modelle lehnen die Suche im Gratis-Tarif teils ab).",
-          "create_search_agent": "Legt beim gewählten Anbieter einen eigenen Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben als Rezeptsuche aus. Bestehende Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
-          "ai_task": "Die Haupt-KI. Bei Gemini, Claude und ChatGPT heißt sie meist „… AI Task“.",
-          "ai_shopping_names": "An: Die KI macht aus „1 rote Paprikaschote, gewürfelt“ den Eintrag „Paprika“. Gut für Bring!, das feste Artikel kennt."
+          "proposals_from": "Normalfall: KI in Home Assistant. Externe KI nur, wenn eine geplante Aufgabe in einem KI-Abo liefert; kommt bis 5 Stunden nach der Planungszeit nichts, springt die Haupt-KI ein.",
+          "ai_search": "Ein Agent mit Websuche findet echte Rezeptlinks, auch auf Cookidoo. Agenten mit eingeschalteter Websuche sind mit „Websuche an“ markiert. „Keine“: Die Haupt-KI nennt nur Gerichte und der Essensplaner sucht selbst auf den Rezeptseiten (Cookidoo dann nicht).",
+          "create_search_agent": "Legt beim gewählten Anbieter den Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben aus. Bei Gemini mit Google-Suche und dem Modell gemini-2.5-flash, das im Test auch im Gratis-Tarif suchen durfte. Deine anderen Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
+          "ai_task": "Schlägt die Gerichte vor und bewertet „cholesterinarm“. Heißt meist „… AI Task“, z. B. „Google AI Task“.",
+          "ai_shopping_names": "Aus „1 rote Paprikaschote, gewürfelt“ wird „Paprika“. Gut für Bring!, das feste Artikel kennt."
         }
       },
       "display": {
@@ -233,20 +233,20 @@
       },
       "ai": {
         "title": "KI",
-        "description": "Der Essensplaner nutzt die KI aus deinem Home Assistant. Die KI schlägt Gerichte vor, bewertet „cholesterinarm“ und macht Artikelnamen einkaufstauglich. Jeder Link wird von der Integration geprüft; findet die KI keinen funktionierenden Link, sucht die Integration das Gericht selbst auf den Rezeptseiten.\n\n**So richtest du eine KI ein** (einmalig, in Einstellungen → Geräte & Dienste → Integration hinzufügen):\n**Claude (Anthropic)** – am zuverlässigsten bei der Rezeptsuche, auch für Cookidoo. Auf console.anthropic.com anmelden, unter „Billing“ Guthaben aufladen (5 $ reichen lange), unter „API Keys“ einen Schlüssel erstellen. Dann die Integration „Anthropic“ hinzufügen und den Schlüssel einfügen. Kosten: Websuche ca. 1 Cent pro Suche, ein Wochenlauf grob 10–50 Cent (Schätzung).\n**Gemini (Google)** – kostenlos nutzbar. Auf aistudio.google.com einen API-Schlüssel erstellen, dann die Integration „Google Generative AI“ hinzufügen. Die Google-Suche ist im kostenlosen Tarif begrenzt, und Gemini liefert öfter Links, die nicht funktionieren; die Integration sucht dann selbst nach.\n**ChatGPT (OpenAI)** – auf platform.openai.com Guthaben aufladen und einen API-Schlüssel erstellen, dann die Integration „OpenAI Conversation“ hinzufügen.\nDanach diesen Bereich neu öffnen und unten „Such-Agent anlegen bei“ den gewünschten Anbieter wählen. Tipp: Gemini als Haupt-KI (kostenlos) und Claude nur für die Rezeptsuche ist eine gute Mischung. API-Schlüssel nie weitergeben.\n\n**Externe KI über dein Abo (ohne API-Schlüssel):** Statt einer KI in Home Assistant kann eine KI außerhalb die Rezepte heraussuchen, zum Beispiel dein Claude- oder ChatGPT-Abo. Das läuft so: Du legst in deiner KI einmal eine geplante Aufgabe an. Zur eingestellten Zeit startet sie, fragt beim Essensplaner nach, ob gerade geplant werden soll, holt sich den Auftrag mit deinen aktuellen Regeln, Wünschen und Terminen, sucht die Rezepte im Web und gibt sie zurück. Der Essensplaner prüft jedes Gericht genauso wie bei der eingebauten KI und meldet zurück, was noch fehlt; die KI liefert dann nach.\nDafür brauchst du: 1. ein KI-Abo mit geplanten Aufgaben und Websuche, 2. eine Verbindung dieser KI zu deinem Home Assistant über MCP (z. B. die Integration „Model Context Protocol Server“ mit der Werkzeug-Sammlung „Meal Planner AI“), 3. Fernzugriff auf Home Assistant von außen (z. B. Home Assistant Cloud oder Cloudflare).\nWählst du unten „Externe KI“, zeigt der Reiter Einstellungen in der Karte den fertigen Text und Zeitplan für die Aufgabe zum Kopieren. Kommt 5 Stunden nach dem Planungszeitpunkt nichts, springt die KI in Home Assistant ein, falls eine gewählt ist.",
+        "description": "Hier legst du fest, welche KI die Wochenvorschläge macht. Danach prüft der Essensplaner jedes Gericht selbst: Link, Zeit, kcal und eure Regeln.\n\n**Einfachster Weg, kostenlos: Google Gemini**\n1. Auf aistudio.google.com einen API-Schlüssel erstellen.\n2. In Home Assistant die Integration „Google Gemini“ hinzufügen und den Schlüssel einfügen.\n3. Hier: **Wer macht die Vorschläge?** = KI in Home Assistant, **Haupt-KI** = „Google AI Task“, **Neuen Such-Agenten anlegen bei** = Gemini. Fertig, auch Cookidoo-Rezepte werden gefunden.\n\n**Andere Anbieter:** Claude (Integration „Anthropic“) und ChatGPT („OpenAI Conversation“) gehen genauso, brauchen aber Guthaben beim Anbieter (Websuche etwa 1 Cent pro Suche). API-Schlüssel nie weitergeben.\n\n**Externe KI, für Fortgeschrittene:** Statt einer KI in Home Assistant liefert eine geplante Aufgabe in deinem Claude- oder ChatGPT-Abo die Vorschläge. Dafür brauchst du eine MCP-Verbindung zu Home Assistant und Fernzugriff von außen. Die Anleitung erscheint nach der Auswahl in der Karte unter Einstellungen.",
         "data": {
-          "proposals_from": "Vorschläge kommen von",
-          "ai_task": "KI (AI-Task-Entität)",
-          "ai_shopping_names": "KI macht Artikelnamen katalogtauglich (z. B. für Bring!)",
-          "ai_search": "Rezeptsuche: KI mit Websuche (Gesprächsagent)",
-          "create_search_agent": "Such-Agent mit Websuche anlegen bei"
+          "proposals_from": "Wer macht die Vorschläge?",
+          "ai_task": "Haupt-KI",
+          "ai_shopping_names": "Artikelnamen für die Einkaufsliste vereinfachen",
+          "ai_search": "Rezeptsuche im Web",
+          "create_search_agent": "Neuen Such-Agenten anlegen bei"
         },
         "data_description": {
-          "proposals_from": "„KI in Home Assistant“: die unten gewählte KI erstellt die Vorschläge nach Zeitplan. „Externe KI“: eine KI außerhalb (z. B. geplante Aufgabe in Claude, Gemini oder ChatGPT) liefert sie über die Aktionen; die KI unten dient dann nur als Ersatz.",
-          "ai_search": "Optional, für bessere Treffer: ein Agent mit Websuche. Nur damit sind z. B. Cookidoo-Rezepte auffindbar. „Keine“ = die KI liefert Ideen, die Integration sucht selbst. Tipp: Mit Google Gemini klappt die Rezeptsuche ohne Abo und ohne externe KI: kostenlosen API-Schlüssel in Google AI Studio holen und die Integration „Google Gemini“ einrichten. Unten bei „Such-Agent mit Websuche anlegen bei“ Gemini wählen, der Essensplaner richtet ihn mit Google-Suche ein (gemini-2.5-flash; neuere Modelle lehnen die Suche im Gratis-Tarif teils ab).",
-          "create_search_agent": "Legt beim gewählten Anbieter einen eigenen Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben als Rezeptsuche aus. Bestehende Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
-          "ai_task": "Die Haupt-KI. Bei Gemini, Claude und ChatGPT heißt sie meist „… AI Task“.",
-          "ai_shopping_names": "An: Die KI macht aus „1 rote Paprikaschote, gewürfelt“ den Eintrag „Paprika“. Gut für Bring!, das feste Artikel kennt."
+          "proposals_from": "Normalfall: KI in Home Assistant. Externe KI nur, wenn eine geplante Aufgabe in einem KI-Abo liefert; kommt bis 5 Stunden nach der Planungszeit nichts, springt die Haupt-KI ein.",
+          "ai_search": "Ein Agent mit Websuche findet echte Rezeptlinks, auch auf Cookidoo. Agenten mit eingeschalteter Websuche sind mit „Websuche an“ markiert. „Keine“: Die Haupt-KI nennt nur Gerichte und der Essensplaner sucht selbst auf den Rezeptseiten (Cookidoo dann nicht).",
+          "create_search_agent": "Legt beim gewählten Anbieter den Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben aus. Bei Gemini mit Google-Suche und dem Modell gemini-2.5-flash, das im Test auch im Gratis-Tarif suchen durfte. Deine anderen Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
+          "ai_task": "Schlägt die Gerichte vor und bewertet „cholesterinarm“. Heißt meist „… AI Task“, z. B. „Google AI Task“.",
+          "ai_shopping_names": "Aus „1 rote Paprikaschote, gewürfelt“ wird „Paprika“. Gut für Bring!, das feste Artikel kennt."
         }
       },
       "schedule": {
@@ -557,8 +557,8 @@
     },
     "proposals_from": {
       "options": {
-        "ha": "KI in Home Assistant",
-        "external": "Externe KI über Aktionen (z. B. dein Claude-, Gemini- oder ChatGPT-Abo)"
+        "ha": "KI in Home Assistant (empfohlen)",
+        "external": "Externe KI über eine geplante Aufgabe (für Fortgeschrittene)"
       }
     }
   },

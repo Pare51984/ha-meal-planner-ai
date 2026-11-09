@@ -27,20 +27,20 @@
       },
       "ai": {
         "title": "AI",
-        "description": "The meal planner uses the AI in your Home Assistant. It proposes dishes, rates “low cholesterol” and makes item names shop-ready. Every link is checked; if the AI has no working link, the integration searches the recipe sites itself.\n\n**How to set up an AI** (once, in Settings → Devices & services → Add integration):\n**Claude (Anthropic)** – most reliable for recipe search, incl. Cookidoo. Sign in at console.anthropic.com, add credit under “Billing” ($5 lasts long), create a key under “API Keys”, then add the “Anthropic” integration with that key. Cost: web search about 1 cent per search, a weekly run roughly 10–50 cents (estimate).\n**Gemini (Google)** – usable for free. Create an API key at aistudio.google.com, then add “Google Generative AI”. Google search is limited on the free plan and Gemini more often returns broken links; the integration then searches itself.\n**ChatGPT (OpenAI)** – add credit and create an API key at platform.openai.com, then add “OpenAI Conversation”.\nThen reopen this section and choose a provider under “Create search agent at”. Tip: Gemini as main AI (free) and Claude only for recipe search is a good mix. Never share API keys.\n\n**External AI on your subscription (no API key):** Instead of an AI in Home Assistant, an AI outside can find the recipes, for example your Claude or ChatGPT subscription. It works like this: you create a scheduled task in your AI once. At the set time it starts, asks the meal planner whether planning is due, fetches the brief with your current rules, wishes and appointments, searches the web for recipes and hands them back. The meal planner checks every dish exactly as with the built-in AI and reports what is still missing; the AI then delivers more.\nYou need: 1. an AI subscription with scheduled tasks and web search, 2. a connection from that AI to your Home Assistant via MCP (e.g. the “Model Context Protocol Server” integration with the “Meal Planner AI” tool set), 3. remote access to Home Assistant from outside (e.g. Home Assistant Cloud or Cloudflare).\nIf you choose “External AI” below, the Settings tab of the card shows the ready-made text and schedule for the task to copy. If nothing arrives 5 hours after the planning time, the AI in Home Assistant steps in, if one is selected.",
+        "description": "Choose which AI creates the weekly suggestions. The meal planner then checks every dish itself: link, time, kcal and your rules.\n\n**Easiest way, free: Google Gemini**\n1. Create an API key at aistudio.google.com.\n2. Add the “Google Gemini” integration in Home Assistant and paste the key.\n3. Here: **Who makes the suggestions?** = AI in Home Assistant, **Main AI** = “Google AI Task”, **Create a new search agent at** = Gemini. Done, Cookidoo recipes are found too.\n\n**Other providers:** Claude (“Anthropic” integration) and ChatGPT (“OpenAI Conversation”) work the same way but need credit with the provider (web search about 1 cent per search). Never share API keys.\n\n**External AI, for advanced users:** Instead of an AI in Home Assistant, a scheduled task in your Claude or ChatGPT subscription delivers the suggestions. You need an MCP connection to Home Assistant and remote access. Instructions appear in the card under Settings once selected.",
         "data": {
-          "proposals_from": "Proposals come from",
-          "ai_task": "AI (AI Task entity)",
-          "ai_shopping_names": "AI normalises shopping item names",
-          "ai_search": "Recipe search: AI with web search (conversation agent)",
-          "create_search_agent": "Create search agent with web search at"
+          "proposals_from": "Who makes the suggestions?",
+          "ai_task": "Main AI",
+          "ai_shopping_names": "Simplify item names for the shopping list",
+          "ai_search": "Recipe web search",
+          "create_search_agent": "Create a new search agent at"
         },
         "data_description": {
-          "proposals_from": "“AI in Home Assistant”: the AI selected below creates the proposals on schedule. “External AI”: an AI outside (e.g. a scheduled task in Claude, Gemini or ChatGPT) delivers them via the actions; the AI below is then only a fallback.",
-          "ai_search": "Optional, for better results: an agent with web search. Needed e.g. for Cookidoo. “None” = the AI suggests ideas, the integration searches. Tip: with Google Gemini the recipe search works without a subscription or external AI: get a free API key in Google AI Studio and set up the “Google Gemini” integration. Pick Gemini below under “Create search agent with web search at” and the meal planner sets it up with Google Search (gemini-2.5-flash; newer models sometimes refuse search on the free tier).",
-          "create_search_agent": "Adds an agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. Existing agents and voice control stay unchanged. “No” = create nothing.",
-          "ai_task": "The main AI, usually called “… AI Task”.",
-          "ai_shopping_names": "On: the AI turns “1 red pepper, diced” into “Pepper”. Good for Bring!."
+          "proposals_from": "Usually: AI in Home Assistant. External AI only if a scheduled task in an AI subscription delivers; if nothing arrives within 5 hours after the planning time, the main AI steps in.",
+          "ai_search": "An agent with web search finds real recipe links, also on Cookidoo. Agents with web search switched on are marked “web search on”. “None”: the main AI only names dishes and the meal planner searches the recipe sites itself (not Cookidoo).",
+          "create_search_agent": "Creates the agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. For Gemini with Google Search and the model gemini-2.5-flash, which was allowed to search on the free tier in our test. Your other agents and voice control stay unchanged. “No” = create nothing.",
+          "ai_task": "Suggests the dishes and judges “low cholesterol”. Usually called “… AI Task”, e.g. “Google AI Task”.",
+          "ai_shopping_names": "“1 red pepper, diced” becomes “Pepper”. Good for Bring!, which knows fixed items."
         }
       },
       "display": {
@@ -233,20 +233,20 @@
       },
       "ai": {
         "title": "AI",
-        "description": "The meal planner uses the AI in your Home Assistant. It proposes dishes, rates “low cholesterol” and makes item names shop-ready. Every link is checked; if the AI has no working link, the integration searches the recipe sites itself.\n\n**How to set up an AI** (once, in Settings → Devices & services → Add integration):\n**Claude (Anthropic)** – most reliable for recipe search, incl. Cookidoo. Sign in at console.anthropic.com, add credit under “Billing” ($5 lasts long), create a key under “API Keys”, then add the “Anthropic” integration with that key. Cost: web search about 1 cent per search, a weekly run roughly 10–50 cents (estimate).\n**Gemini (Google)** – usable for free. Create an API key at aistudio.google.com, then add “Google Generative AI”. Google search is limited on the free plan and Gemini more often returns broken links; the integration then searches itself.\n**ChatGPT (OpenAI)** – add credit and create an API key at platform.openai.com, then add “OpenAI Conversation”.\nThen reopen this section and choose a provider under “Create search agent at”. Tip: Gemini as main AI (free) and Claude only for recipe search is a good mix. Never share API keys.\n\n**External AI on your subscription (no API key):** Instead of an AI in Home Assistant, an AI outside can find the recipes, for example your Claude or ChatGPT subscription. It works like this: you create a scheduled task in your AI once. At the set time it starts, asks the meal planner whether planning is due, fetches the brief with your current rules, wishes and appointments, searches the web for recipes and hands them back. The meal planner checks every dish exactly as with the built-in AI and reports what is still missing; the AI then delivers more.\nYou need: 1. an AI subscription with scheduled tasks and web search, 2. a connection from that AI to your Home Assistant via MCP (e.g. the “Model Context Protocol Server” integration with the “Meal Planner AI” tool set), 3. remote access to Home Assistant from outside (e.g. Home Assistant Cloud or Cloudflare).\nIf you choose “External AI” below, the Settings tab of the card shows the ready-made text and schedule for the task to copy. If nothing arrives 5 hours after the planning time, the AI in Home Assistant steps in, if one is selected.",
+        "description": "Choose which AI creates the weekly suggestions. The meal planner then checks every dish itself: link, time, kcal and your rules.\n\n**Easiest way, free: Google Gemini**\n1. Create an API key at aistudio.google.com.\n2. Add the “Google Gemini” integration in Home Assistant and paste the key.\n3. Here: **Who makes the suggestions?** = AI in Home Assistant, **Main AI** = “Google AI Task”, **Create a new search agent at** = Gemini. Done, Cookidoo recipes are found too.\n\n**Other providers:** Claude (“Anthropic” integration) and ChatGPT (“OpenAI Conversation”) work the same way but need credit with the provider (web search about 1 cent per search). Never share API keys.\n\n**External AI, for advanced users:** Instead of an AI in Home Assistant, a scheduled task in your Claude or ChatGPT subscription delivers the suggestions. You need an MCP connection to Home Assistant and remote access. Instructions appear in the card under Settings once selected.",
         "data": {
-          "proposals_from": "Proposals come from",
-          "ai_task": "AI (AI Task entity)",
-          "ai_shopping_names": "AI normalises shopping item names",
-          "ai_search": "Recipe search: AI with web search (conversation agent)",
-          "create_search_agent": "Create search agent with web search at"
+          "proposals_from": "Who makes the suggestions?",
+          "ai_task": "Main AI",
+          "ai_shopping_names": "Simplify item names for the shopping list",
+          "ai_search": "Recipe web search",
+          "create_search_agent": "Create a new search agent at"
         },
         "data_description": {
-          "proposals_from": "“AI in Home Assistant”: the AI selected below creates the proposals on schedule. “External AI”: an AI outside (e.g. a scheduled task in Claude, Gemini or ChatGPT) delivers them via the actions; the AI below is then only a fallback.",
-          "ai_search": "Optional, for better results: an agent with web search. Needed e.g. for Cookidoo. “None” = the AI suggests ideas, the integration searches. Tip: with Google Gemini the recipe search works without a subscription or external AI: get a free API key in Google AI Studio and set up the “Google Gemini” integration. Pick Gemini below under “Create search agent with web search at” and the meal planner sets it up with Google Search (gemini-2.5-flash; newer models sometimes refuse search on the free tier).",
-          "create_search_agent": "Adds an agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. Existing agents and voice control stay unchanged. “No” = create nothing.",
-          "ai_task": "The main AI, usually called “… AI Task”.",
-          "ai_shopping_names": "On: the AI turns “1 red pepper, diced” into “Pepper”. Good for Bring!."
+          "proposals_from": "Usually: AI in Home Assistant. External AI only if a scheduled task in an AI subscription delivers; if nothing arrives within 5 hours after the planning time, the main AI steps in.",
+          "ai_search": "An agent with web search finds real recipe links, also on Cookidoo. Agents with web search switched on are marked “web search on”. “None”: the main AI only names dishes and the meal planner searches the recipe sites itself (not Cookidoo).",
+          "create_search_agent": "Creates the agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. For Gemini with Google Search and the model gemini-2.5-flash, which was allowed to search on the free tier in our test. Your other agents and voice control stay unchanged. “No” = create nothing.",
+          "ai_task": "Suggests the dishes and judges “low cholesterol”. Usually called “… AI Task”, e.g. “Google AI Task”.",
+          "ai_shopping_names": "“1 red pepper, diced” becomes “Pepper”. Good for Bring!, which knows fixed items."
         }
       },
       "schedule": {
@@ -557,8 +557,8 @@
     },
     "proposals_from": {
       "options": {
-        "ha": "AI in Home Assistant",
-        "external": "External AI via actions (e.g. your Claude, Gemini or ChatGPT subscription)"
+        "ha": "AI in Home Assistant (recommended)",
+        "external": "External AI via a scheduled task (advanced)"
       }
     }
   },

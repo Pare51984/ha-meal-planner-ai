@@ -27,20 +27,20 @@
       },
       "ai": {
         "title": "IA",
-        "description": "Le planificateur utilise l'IA de ton Home Assistant. Elle propose des plats, évalue « pauvre en cholestérol » et adapte les noms d'articles pour les courses. Chaque lien est vérifié ; si l'IA n'a pas de lien valide, l'intégration cherche elle-même sur les sites de recettes.\n\n**Comment configurer une IA** (une fois, dans Paramètres → Appareils et services → Ajouter une intégration) :\n**Claude (Anthropic)** – le plus fiable pour chercher des recettes, Cookidoo compris. Connecte-toi sur console.anthropic.com, ajoute du crédit sous « Billing » (5 $ durent longtemps), crée une clé sous « API Keys », puis ajoute l'intégration « Anthropic » avec cette clé. Coût : recherche web env. 1 centime par recherche, une exécution hebdomadaire environ 10–50 centimes (estimation).\n**Gemini (Google)** – utilisable gratuitement. Crée une clé API sur aistudio.google.com, puis ajoute « Google Generative AI ». La recherche Google est limitée dans l'offre gratuite et Gemini renvoie plus souvent des liens cassés ; l'intégration cherche alors elle-même.\n**ChatGPT (OpenAI)** – ajoute du crédit et crée une clé API sur platform.openai.com, puis ajoute « OpenAI Conversation ».\nRouvre ensuite cette section et choisis un fournisseur sous « Créer l'agent de recherche chez ». Astuce : Gemini comme IA principale (gratuit) et Claude seulement pour la recherche de recettes, c'est un bon mélange. Ne partage jamais tes clés API.\n\n**IA externe avec ton abonnement (sans clé API) :** Au lieu d'une IA dans Home Assistant, une IA externe peut trouver les recettes, par exemple ton abonnement Claude ou ChatGPT. Cela fonctionne ainsi : tu crées une fois une tâche planifiée dans ton IA. À l'heure prévue, elle démarre, demande au planificateur s'il faut planifier, récupère la demande avec tes règles, envies et rendez-vous actuels, cherche des recettes sur le web et les renvoie. Le planificateur vérifie chaque plat exactement comme avec l'IA intégrée et indique ce qui manque ; l'IA en livre alors d'autres.\nIl te faut : 1. un abonnement IA avec tâches planifiées et recherche web, 2. une connexion de cette IA à ton Home Assistant via MCP (p. ex. l'intégration « Model Context Protocol Server » avec l'ensemble d'outils « Meal Planner AI »), 3. un accès à distance à Home Assistant (p. ex. Home Assistant Cloud ou Cloudflare).\nSi tu choisis « IA externe » ci-dessous, l'onglet Réglages de la carte affiche le texte et l'horaire de la tâche, prêts à copier. Si rien n'arrive 5 heures après l'heure de planification, l'IA de Home Assistant prend le relais, si une est choisie.",
+        "description": "Choisissez l'IA qui crée les propositions de la semaine. Le planificateur vérifie ensuite chaque plat : lien, temps, kcal et vos règles.\n\n**Le plus simple, gratuit : Google Gemini**\n1. Créez une clé API sur aistudio.google.com.\n2. Ajoutez l'intégration « Google Gemini » dans Home Assistant et collez la clé.\n3. Ici : **Qui fait les propositions ?** = IA dans Home Assistant, **IA principale** = « Google AI Task », **Créer un nouvel agent de recherche chez** = Gemini. C'est tout, les recettes Cookidoo sont aussi trouvées.\n\n**Autres fournisseurs :** Claude (intégration « Anthropic ») et ChatGPT (« OpenAI Conversation ») fonctionnent pareil mais demandent du crédit chez le fournisseur (recherche web environ 1 centime par recherche). Ne partagez jamais vos clés API.\n\n**IA externe, pour avancés :** Au lieu d'une IA dans Home Assistant, une tâche planifiée de votre abonnement Claude ou ChatGPT fournit les propositions. Il faut une connexion MCP à Home Assistant et un accès à distance. Les instructions apparaissent dans la carte, sous Paramètres, une fois choisie.",
         "data": {
-          "proposals_from": "Les propositions viennent de",
-          "ai_task": "IA (entité AI Task)",
-          "ai_shopping_names": "L'IA adapte les noms d'articles",
-          "ai_search": "Recherche de recettes : IA avec recherche web (agent de conversation)",
-          "create_search_agent": "Créer l'agent de recherche avec recherche web chez"
+          "proposals_from": "Qui fait les propositions ?",
+          "ai_task": "IA principale",
+          "ai_shopping_names": "Simplifier les noms pour la liste de courses",
+          "ai_search": "Recherche de recettes sur le web",
+          "create_search_agent": "Créer un nouvel agent de recherche chez"
         },
         "data_description": {
-          "proposals_from": "« IA dans Home Assistant » : l'IA choisie ci-dessous crée les propositions selon l'horaire. « IA externe » : une IA extérieure (p. ex. une tâche planifiée dans Claude, Gemini ou ChatGPT) les livre via les actions ; l'IA ci-dessous ne sert alors que de secours.",
-          "ai_search": "Facultatif, pour de meilleurs résultats : un agent avec recherche web. Nécessaire p. ex. pour Cookidoo. « Aucun » = l'IA donne des idées, l'intégration cherche. Astuce : avec Google Gemini, la recherche de recettes fonctionne sans abonnement ni IA externe : obtenez une clé API gratuite dans Google AI Studio et configurez l'intégration « Google Gemini ». Choisissez Gemini ci-dessous sous « Créer l'agent de recherche avec recherche web chez » et le planificateur le configure avec Google Search (gemini-2.5-flash ; les modèles plus récents refusent parfois la recherche en offre gratuite).",
-          "create_search_agent": "Ajoute un agent « Essensplaner Rezeptsuche » avec recherche web chez le fournisseur choisi et le sélectionne ci-dessus. Les agents existants et la commande vocale ne changent pas. « Non » = ne rien créer.",
-          "ai_task": "L'IA principale, généralement appelée « … AI Task ».",
-          "ai_shopping_names": "Activé : l'IA transforme « 1 poivron rouge, en dés » en « Poivron ». Pratique pour Bring!."
+          "proposals_from": "En général : IA dans Home Assistant. IA externe seulement si une tâche planifiée d'un abonnement fournit ; si rien n'arrive dans les 5 heures après l'heure de planification, l'IA principale prend le relais.",
+          "ai_search": "Un agent avec recherche web trouve de vrais liens de recettes, aussi sur Cookidoo. Les agents avec recherche web activée sont marqués « recherche web activée ». « Aucun » : l'IA principale nomme seulement des plats et le planificateur cherche lui-même sur les sites de recettes (pas sur Cookidoo).",
+          "create_search_agent": "Crée chez le fournisseur choisi l'agent « Essensplaner Rezeptsuche » avec recherche web et le sélectionne ci-dessus. Avec Gemini : Google Search et le modèle gemini-2.5-flash, qui a pu chercher en offre gratuite lors du test. Vos autres agents et la commande vocale ne changent pas. « Non » = ne rien créer.",
+          "ai_task": "Propose les plats et juge « pauvre en cholestérol ». S'appelle souvent « … AI Task », p. ex. « Google AI Task ».",
+          "ai_shopping_names": "« 1 poivron rouge, en dés » devient « Poivron ». Pratique pour Bring!, qui connaît des articles fixes."
         }
       },
       "display": {
@@ -233,20 +233,20 @@
       },
       "ai": {
         "title": "IA",
-        "description": "Le planificateur utilise l'IA de ton Home Assistant. Elle propose des plats, évalue « pauvre en cholestérol » et adapte les noms d'articles pour les courses. Chaque lien est vérifié ; si l'IA n'a pas de lien valide, l'intégration cherche elle-même sur les sites de recettes.\n\n**Comment configurer une IA** (une fois, dans Paramètres → Appareils et services → Ajouter une intégration) :\n**Claude (Anthropic)** – le plus fiable pour chercher des recettes, Cookidoo compris. Connecte-toi sur console.anthropic.com, ajoute du crédit sous « Billing » (5 $ durent longtemps), crée une clé sous « API Keys », puis ajoute l'intégration « Anthropic » avec cette clé. Coût : recherche web env. 1 centime par recherche, une exécution hebdomadaire environ 10–50 centimes (estimation).\n**Gemini (Google)** – utilisable gratuitement. Crée une clé API sur aistudio.google.com, puis ajoute « Google Generative AI ». La recherche Google est limitée dans l'offre gratuite et Gemini renvoie plus souvent des liens cassés ; l'intégration cherche alors elle-même.\n**ChatGPT (OpenAI)** – ajoute du crédit et crée une clé API sur platform.openai.com, puis ajoute « OpenAI Conversation ».\nRouvre ensuite cette section et choisis un fournisseur sous « Créer l'agent de recherche chez ». Astuce : Gemini comme IA principale (gratuit) et Claude seulement pour la recherche de recettes, c'est un bon mélange. Ne partage jamais tes clés API.\n\n**IA externe avec ton abonnement (sans clé API) :** Au lieu d'une IA dans Home Assistant, une IA externe peut trouver les recettes, par exemple ton abonnement Claude ou ChatGPT. Cela fonctionne ainsi : tu crées une fois une tâche planifiée dans ton IA. À l'heure prévue, elle démarre, demande au planificateur s'il faut planifier, récupère la demande avec tes règles, envies et rendez-vous actuels, cherche des recettes sur le web et les renvoie. Le planificateur vérifie chaque plat exactement comme avec l'IA intégrée et indique ce qui manque ; l'IA en livre alors d'autres.\nIl te faut : 1. un abonnement IA avec tâches planifiées et recherche web, 2. une connexion de cette IA à ton Home Assistant via MCP (p. ex. l'intégration « Model Context Protocol Server » avec l'ensemble d'outils « Meal Planner AI »), 3. un accès à distance à Home Assistant (p. ex. Home Assistant Cloud ou Cloudflare).\nSi tu choisis « IA externe » ci-dessous, l'onglet Réglages de la carte affiche le texte et l'horaire de la tâche, prêts à copier. Si rien n'arrive 5 heures après l'heure de planification, l'IA de Home Assistant prend le relais, si une est choisie.",
+        "description": "Choisissez l'IA qui crée les propositions de la semaine. Le planificateur vérifie ensuite chaque plat : lien, temps, kcal et vos règles.\n\n**Le plus simple, gratuit : Google Gemini**\n1. Créez une clé API sur aistudio.google.com.\n2. Ajoutez l'intégration « Google Gemini » dans Home Assistant et collez la clé.\n3. Ici : **Qui fait les propositions ?** = IA dans Home Assistant, **IA principale** = « Google AI Task », **Créer un nouvel agent de recherche chez** = Gemini. C'est tout, les recettes Cookidoo sont aussi trouvées.\n\n**Autres fournisseurs :** Claude (intégration « Anthropic ») et ChatGPT (« OpenAI Conversation ») fonctionnent pareil mais demandent du crédit chez le fournisseur (recherche web environ 1 centime par recherche). Ne partagez jamais vos clés API.\n\n**IA externe, pour avancés :** Au lieu d'une IA dans Home Assistant, une tâche planifiée de votre abonnement Claude ou ChatGPT fournit les propositions. Il faut une connexion MCP à Home Assistant et un accès à distance. Les instructions apparaissent dans la carte, sous Paramètres, une fois choisie.",
         "data": {
-          "proposals_from": "Les propositions viennent de",
-          "ai_task": "IA (entité AI Task)",
-          "ai_shopping_names": "L'IA adapte les noms d'articles",
-          "ai_search": "Recherche de recettes : IA avec recherche web (agent de conversation)",
-          "create_search_agent": "Créer l'agent de recherche avec recherche web chez"
+          "proposals_from": "Qui fait les propositions ?",
+          "ai_task": "IA principale",
+          "ai_shopping_names": "Simplifier les noms pour la liste de courses",
+          "ai_search": "Recherche de recettes sur le web",
+          "create_search_agent": "Créer un nouvel agent de recherche chez"
         },
         "data_description": {
-          "proposals_from": "« IA dans Home Assistant » : l'IA choisie ci-dessous crée les propositions selon l'horaire. « IA externe » : une IA extérieure (p. ex. une tâche planifiée dans Claude, Gemini ou ChatGPT) les livre via les actions ; l'IA ci-dessous ne sert alors que de secours.",
-          "ai_search": "Facultatif, pour de meilleurs résultats : un agent avec recherche web. Nécessaire p. ex. pour Cookidoo. « Aucun » = l'IA donne des idées, l'intégration cherche. Astuce : avec Google Gemini, la recherche de recettes fonctionne sans abonnement ni IA externe : obtenez une clé API gratuite dans Google AI Studio et configurez l'intégration « Google Gemini ». Choisissez Gemini ci-dessous sous « Créer l'agent de recherche avec recherche web chez » et le planificateur le configure avec Google Search (gemini-2.5-flash ; les modèles plus récents refusent parfois la recherche en offre gratuite).",
-          "create_search_agent": "Ajoute un agent « Essensplaner Rezeptsuche » avec recherche web chez le fournisseur choisi et le sélectionne ci-dessus. Les agents existants et la commande vocale ne changent pas. « Non » = ne rien créer.",
-          "ai_task": "L'IA principale, généralement appelée « … AI Task ».",
-          "ai_shopping_names": "Activé : l'IA transforme « 1 poivron rouge, en dés » en « Poivron ». Pratique pour Bring!."
+          "proposals_from": "En général : IA dans Home Assistant. IA externe seulement si une tâche planifiée d'un abonnement fournit ; si rien n'arrive dans les 5 heures après l'heure de planification, l'IA principale prend le relais.",
+          "ai_search": "Un agent avec recherche web trouve de vrais liens de recettes, aussi sur Cookidoo. Les agents avec recherche web activée sont marqués « recherche web activée ». « Aucun » : l'IA principale nomme seulement des plats et le planificateur cherche lui-même sur les sites de recettes (pas sur Cookidoo).",
+          "create_search_agent": "Crée chez le fournisseur choisi l'agent « Essensplaner Rezeptsuche » avec recherche web et le sélectionne ci-dessus. Avec Gemini : Google Search et le modèle gemini-2.5-flash, qui a pu chercher en offre gratuite lors du test. Vos autres agents et la commande vocale ne changent pas. « Non » = ne rien créer.",
+          "ai_task": "Propose les plats et juge « pauvre en cholestérol ». S'appelle souvent « … AI Task », p. ex. « Google AI Task ».",
+          "ai_shopping_names": "« 1 poivron rouge, en dés » devient « Poivron ». Pratique pour Bring!, qui connaît des articles fixes."
         }
       },
       "schedule": {
@@ -557,8 +557,8 @@
     },
     "proposals_from": {
       "options": {
-        "ha": "IA dans Home Assistant",
-        "external": "IA externe via des actions (p. ex. ton abonnement Claude, Gemini ou ChatGPT)"
+        "ha": "IA dans Home Assistant (recommandé)",
+        "external": "IA externe via une tâche planifiée (avancé)"
       }
     }
   },
