@@ -34,7 +34,9 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install mypy -r requirements_test.txt
-      - run: mypy custom_components/meal_planner_ai | tee mypy.txt; echo "### mypy: $(tail -1 mypy.txt)" >> "$GITHUB_STEP_SUMMARY"
+      - run: |
+          mypy custom_components/meal_planner_ai | tee mypy.txt
+          echo "### mypy – $(tail -1 mypy.txt)" >> "$GITHUB_STEP_SUMMARY"
 
   codeql:
     runs-on: ubuntu-latest
