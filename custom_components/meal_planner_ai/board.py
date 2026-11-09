@@ -892,7 +892,8 @@ class WeekPlanner:
         dish["foreign_language"] = foreign
         return url
 
-    def _slot_conflict(self, dish: dict[str, Any], dishes: list[dict[str, Any]], total: int) -> str | None:
+    def _slot_conflict(self, dish: dict[str, Any], dishes: list[dict[str, Any]], total: int,
+                       quota: bool = True) -> str | None:
         """Würde dieses Gericht eine Wochenvorgabe unerfüllbar machen? Dann gleich ablehnen, damit die KI
         passenden Ersatz liefert (statt es anzunehmen und hinterher zu melden, dass etwas fehlt).
         Wünsche sind ausgenommen."""
@@ -906,6 +907,8 @@ class WeekPlanner:
                 if hits >= limit["max"]:
                     return (f"'{title}': schon {hits} {limit['label']} im Plan (höchstens {limit['max']}), "
                             "bitte eine andere Hauptzutat")
+        if not quota:  # Zusatzvorschläge sind Alternativen, keine Wochenplätze
+            return None
         free = total - len(dishes)  # freie Plätze einschließlich dieses Gerichts
         quick = settings[CONF_TIME_QUICK]
 
@@ -1016,7 +1019,7 @@ class WeekPlanner:
         return feedback
 
     async def _accept(self, proposals: list[Any], dishes: list[dict[str, Any]], excluded: set[str],
-                      rejected: list[str], total: int) -> list[dict[str, Any]]:
+                      rejected: list[str], total: int, quota: bool = True) -> list[dict[str, Any]]:
         """Vorschläge prüfen (Link, Suche, Regeln) und passende an dishes anhängen."""
         today = dt_util.now().date()
         added: list[dict[str, Any]] = []
@@ -1032,7 +1035,7 @@ class WeekPlanner:
                 _LOGGER.warning("Vorschlag nicht prüfbar: %s", err, exc_info=True)
                 dish, reason = None, f"'{_short(str(prop.get('title') or '?'))}': ungültige Daten"
             if not reason:
-                reason = self._slot_conflict(dish, dishes, total)
+                reason = self._slot_conflict(dish, dishes, total, quota)
             if reason:
                 _LOGGER.info("Vorschlag verworfen: %s", reason)
                 rejected.append(reason)
@@ -1147,14 +1150,21 @@ class WeekPlanner:
                                    source="ha", excluded=excluded, notify=True)
 
     async def _fill(self, meta: dict[str, Any], ctx: dict[str, Any], dishes: list[dict[str, Any]],
-                    excluded: set[str], total: int, notes: str | None) -> tuple[list[str], int]:
-        """KI so lange fragen, bis `dishes` voll ist und die Wochenvorgaben passen (höchstens MAX_PLAN_ROUNDS)."""
+                    excluded: set[str], total: int, notes: str | None,
+                    quota: bool = True) -> tuple[list[str], int]:
+        """KI so lange fragen, bis `dishes` voll ist und die Wochenvorgaben passen (höchstens MAX_PLAN_ROUNDS).
+
+        quota=False (Zusatzvorschläge): nur auffüllen, Wochenvorgaben wie Schnell-Anteil oder fleischlose
+        Gerichte gelten dann nicht, weil die neuen Gerichte Alternativen sind und keine Wochenplätze."""
+        def unmet() -> bool:
+            return quota and bool(self._week_deficits(dishes))
+
         rejected: list[str] = []
         feedback: list[str] = []
         rounds = 0
         for rounds in range(1, MAX_PLAN_ROUNDS + 1):
             if len(dishes) >= total:
-                if not self._week_deficits(dishes):
+                if not unmet():
                     break
                 feedback.extend(self._drop_unfit(dishes, excluded))
                 if len(dishes) >= total or rounds == MAX_PLAN_ROUNDS:
@@ -1174,8 +1184,8 @@ class WeekPlanner:
                 raise HomeAssistantError(str(err)) from err
             proposals = answer.get("dishes", []) if isinstance(answer, dict) else []
             feedback = []
-            await self._accept(proposals, dishes, excluded, rejected, total)
-            if len(dishes) >= total and not self._week_deficits(dishes):
+            await self._accept(proposals, dishes, excluded, rejected, total, quota)
+            if len(dishes) >= total and not unmet():
                 break
         return rejected, rounds
 
@@ -1214,7 +1224,7 @@ class WeekPlanner:
         if key == "next":
             excluded |= {_norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])}
         dishes = list(before)
-        rejected, _ = await self._fill(meta, ctx, dishes, excluded, len(before) + count, notes)
+        rejected, _ = await self._fill(meta, ctx, dishes, excluded, len(before) + count, notes, quota=False)
         new = [d for d in dishes if d not in before][:count]
         nr = max((d["nr"] for d in before), default=0)
         for dish in new:

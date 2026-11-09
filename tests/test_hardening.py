@@ -430,6 +430,27 @@ async def test_more_in_running_week_waits_for_pick(hass: HomeAssistant, freezer)
     assert cand["on_list"] is True
 
 
+async def test_more_ignores_week_quotas(hass: HomeAssistant, freezer):
+    """Zusatzvorschläge sind Alternativen: Schnell-Anteil und Co. dürfen sie nicht aussortieren."""
+    from .test_integration import URL1
+
+    freezer.move_to("2026-11-09 12:00:00+01:00")
+    entry = await _external(hass)
+    _ai_setup(hass, entry)
+    hass.config_entries.async_update_entry(entry, options={**entry.options, "quick_share": 2, "time_quick": 1})
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "import_week", {"dishes": [{"title": "Linsencurry", "url": URL2, "choice": "trip1"}]})
+
+        async def ai(prompt):
+            return {"dishes": [{"title": "Nudeln mit Spinat", "url": URL1}]}
+
+        with patch.object(planner, "_ask_proposals", side_effect=ai):
+            res = await call(hass, "more_proposals", {"count": 1})
+    assert res["added"] == [planner.boards["current"]["dishes"][1]["title"]], res
+
+
 async def test_swap_in_running_week_updates_list(hass: HomeAssistant, freezer):
     from .test_integration import URL1
 
