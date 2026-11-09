@@ -414,8 +414,12 @@ async def test_more_in_running_week_waits_for_pick(hass: HomeAssistant, freezer)
     planner = entry.runtime_data.planner
     with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
         await call(hass, "import_week", {"dishes": [{"title": "Linsencurry", "url": URL2, "choice": "trip1"}]})
+        # wie live: ein Einkauf ist schon freigegeben und fehlt in release_at
+        planner.boards["current"]["release_at"].pop("trip1", None)
+        planner.boards["current"]["released"]["trip1"] = True
 
         async def ai(prompt):
+            assert "trip1" in prompt
             return {"dishes": [{"title": "Nudeln mit Spinat", "url": URL1}]}
 
         with patch.object(planner, "_ask_proposals", side_effect=ai):

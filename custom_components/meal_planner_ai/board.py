@@ -500,8 +500,11 @@ class WeekPlanner:
     def _trip_texts(self, meta: dict[str, Any]) -> list[str]:
         out = []
         for trip in self.settings[CONF_TRIPS]:
-            if trip["release"] == RELEASE_TIMED:
-                at = dt_util.parse_datetime(meta["release_at"][trip["key"]])
+            at_text = (meta.get("release_at") or {}).get(trip["key"])
+            if (meta.get("released") or {}).get(trip["key"]) or (trip["release"] == RELEASE_TIMED and not at_text):
+                when = "ist schon eingekauft bzw. freigegeben, kommt bei Wahl sofort auf die Liste"
+            elif trip["release"] == RELEASE_TIMED:
+                at = dt_util.parse_datetime(at_text)
                 when = f"kommt {DAY_SHORT[at.weekday()]} {at.strftime('%d.%m. %H:%M')} auf die Liste"
             else:
                 when = "kommt direkt nach der Auswahl auf die Liste"
