@@ -952,6 +952,34 @@
           "description": "current = semaine en cours, next = propositions de la semaine prochaine."
         }
       }
+    },
+    "more_proposals": {
+      "name": "Plus de propositions",
+      "description": "Ajoute d'autres plats au choix, les existants restent. Si une semaine est en cours sans nouvelles propositions, ils s'ajoutent à la semaine en cours et ne vont sur la liste qu'une fois choisis. Sinon, la semaine prochaine est planifiée tout de suite.",
+      "fields": {
+        "count": {
+          "name": "Nombre",
+          "description": "Combien de plats ajouter (1 à 10)."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Facultatif, p. ex. « plutôt du poisson »."
+        }
+      }
+    },
+    "swap_dish": {
+      "name": "Échanger un plat",
+      "description": "Remplace un plat (proposition ou semaine en cours) par un autre ; la liste est ajustée.",
+      "fields": {
+        "dish_id": {
+          "name": "Plat",
+          "description": "ID du plat."
+        },
+        "notes": {
+          "name": "Notes",
+          "description": "Facultatif, p. ex. « plutôt du poisson »."
+        }
+      }
     }
   }
 }

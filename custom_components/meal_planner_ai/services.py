@@ -653,6 +653,19 @@ async def _import_week(call: ServiceCall) -> ServiceResponse:
     return await _planner(call).async_import_week(_dish_list(call.data["dishes"]), call.data["board"])
 
 
+MORE_SCHEMA = vol.Schema({vol.Optional("count", default=5): vol.All(vol.Coerce(int), vol.Range(min=1, max=10)),
+                          vol.Optional("notes"): cv.string})
+SWAP_SCHEMA = vol.Schema({vol.Required("dish_id"): cv.string, vol.Optional("notes"): cv.string})
+
+
+async def _more_proposals(call: ServiceCall) -> ServiceResponse:
+    return await _planner(call).async_more(call.data["count"], call.data.get("notes"))
+
+
+async def _swap_dish(call: ServiceCall) -> ServiceResponse:
+    return await _planner(call).async_swap(call.data["dish_id"], call.data.get("notes"))
+
+
 async def _finalize_week(call: ServiceCall) -> ServiceResponse:
     return await _planner(call).async_finalize()
 
@@ -693,6 +706,8 @@ SERVICES: list[tuple[str, Any, vol.Schema, SupportsResponse]] = [
     ("set_items_at_home", _set_items_at_home, ITEMS_SCHEMA, SupportsResponse.OPTIONAL),
     ("finalize_week", _finalize_week, vol.Schema({}), SupportsResponse.OPTIONAL),
     ("import_week", _import_week, IMPORT_WEEK_SCHEMA, SupportsResponse.OPTIONAL),
+    ("more_proposals", _more_proposals, MORE_SCHEMA, SupportsResponse.OPTIONAL),
+    ("swap_dish", _swap_dish, SWAP_SCHEMA, SupportsResponse.OPTIONAL),
     ("release_shopping", _release_shopping, RELEASE_SCHEMA, SupportsResponse.OPTIONAL),
     ("sync_shopping_list", _sync_shopping_list, vol.Schema({}), SupportsResponse.OPTIONAL),
 ]

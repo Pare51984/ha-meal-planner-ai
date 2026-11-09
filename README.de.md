@@ -36,6 +36,7 @@ im Reiter **Einstellungen** (nur für Administratoren sichtbar; mit `settings: f
 | `meal_planner_ai.get_settings` | Vorgaben für einen (KI-)Planer |
 | `meal_planner_ai.delete_recipe` | Rezept löschen |
 | `meal_planner_ai.generate_proposals` | KI erstellt die Wochenvorschläge (sonst automatisch nach Zeitplan) |
+| `meal_planner_ai.more_proposals` / `swap_dish` | Weitere Gerichte zur Auswahl dazuholen / ein Gericht tauschen |
 | `meal_planner_ai.planning_brief` | Planungsauftrag für eine externe KI: Regeln, Wünsche, Termine, Antwortformat |
 | `meal_planner_ai.submit_proposals` | Gerichte einer externen KI prüfen und in die Vorschläge übernehmen; Antwort nennt, was fehlt |
 | `meal_planner_ai.external_setup` | Zeitplan und Aufgabentext für die geplante Aufgabe der externen KI |
@@ -68,6 +69,11 @@ Wer beides als eigene Karte woanders haben will, nimmt `custom:meal-planner-memo
 Einkäufe mit festem Termin (z. B. Samstag 12 Uhr) haben in der Karte einen Knopf **„jetzt einkaufen“**: Wer früher
 einkauft, tippt ihn zweimal, und die gewählten Gerichte kommen sofort auf die Liste. Die Zeitleiste in „So geht's“ zeigt aus
 den Einstellungen, wann was passiert.
+
+**„Mehr Vorschläge“** holt jederzeit 5 weitere Gerichte zur Auswahl dazu, Vorhandenes bleibt. Typischer Ablauf: ein Gericht
+auf „doch nicht“ stellen, „Mehr Vorschläge“ tippen, eines der neuen wählen. Läuft die Woche schon, erscheinen die neuen
+Gerichte unter „Zur Auswahl für diese Woche“ und kommen erst auf die Einkaufsliste, wenn ihr einen Einkauf wählt. So geht auch
+„wir brauchen diese Woche ein Gericht mehr“. **„Tauschen“** ersetzt ein einzelnes, noch nicht gekochtes Gericht.
 
 Alles ist einstellbar: Wann die Vorschläge kommen, wann Auswahlschluss ist und wie oft eingekauft wird
 (1 bis 7 Einkäufe pro Woche, je mit Namen, Kochtagen und Freigabe „sofort“ oder „Wochentag + Uhrzeit“,
@@ -150,7 +156,7 @@ Planungszeitpunkt, muss nur die Uhrzeit der Aufgabe angepasst werden; der Einric
 ## Was getestet ist
 Live getestet: Home Assistant 2026.11 auf Raspberry Pi 4, Deutsch, Bring!, Gemini als KI und Such-Agent, Claude als
 externe KI über eine geplante Aufgabe mit MCP-App, alle Anzeigearten, Übernahme vom Vorgänger „Essensplaner“.
-Die automatischen Tests (79) laufen gegen Home Assistant 2026.2.
+Die automatischen Tests (82) laufen gegen Home Assistant 2026.2.
 
 **Noch nicht getestet, Tester willkommen:** die offizielle Integration *Model Context Protocol Server* als MCP-Weg,
 Claude und ChatGPT als KI in Home Assistant, ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,

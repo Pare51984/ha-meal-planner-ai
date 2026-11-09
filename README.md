@@ -22,6 +22,8 @@ No extra app and no cloud service of its own: recipes are read straight from the
 * Dashboard card with tiles per dish: choose a shopping trip, mark "ingredients at home", tick off cooked
   dishes, rate them with stars, add wishes. A timeline built from your settings shows when what happens.
 * Shopping trips with a fixed time (e.g. Saturday 12:00) get a **Shop now** button for when you go earlier.
+* **More suggestions** adds 5 more dishes to pick from at any time (also during the week, when you need one dish more),
+  **Swap** replaces a single dish with another one.
 * Rules the integration checks itself: time limit, quick dishes per week, kcal per serving, vegetarian, vegan,
   lactose free, gluten free and low cholesterol counts, max dishes with the same main ingredient, habits in your own
   words, kitchen devices, calendar rules (e.g. "guest eats with us").
@@ -59,6 +61,7 @@ All actions return response data. Most useful ones:
 |---|---|
 | `meal_planner_ai.import_recipe` | Load a recipe by link and store it |
 | `meal_planner_ai.generate_proposals` | Create this week's suggestions now |
+| `meal_planner_ai.more_proposals` / `swap_dish` | Add more dishes to choose from / replace one dish |
 | `meal_planner_ai.planning_brief` / `submit_proposals` | Brief for an external AI and its answer |
 | `meal_planner_ai.external_setup` | Schedule and task text for the external AI |
 | `meal_planner_ai.choose_dish` / `set_ingredients_ready` / `mark_cooked` | What the card does |
@@ -79,7 +82,7 @@ on their own.
 ## What is tested
 Tested live: Home Assistant 2026.11 on a Raspberry Pi 4, German, Bring! via the Bring! integration, Gemini as AI task and
 search agent, Claude as external AI through a scheduled task with an MCP add-on, all display modes, migration from the
-predecessor "Essensplaner". The automated tests (79) run against Home Assistant 2026.2.
+predecessor "Essensplaner". The automated tests (82) run against Home Assistant 2026.2.
 
 **Not tested yet, testers welcome:**
 * the official *Model Context Protocol Server* integration as the MCP path

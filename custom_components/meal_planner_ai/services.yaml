@@ -284,6 +284,29 @@ set_items_at_home:
 
 finalize_week:
 
+more_proposals:
+  fields:
+    count:
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 10
+          mode: box
+    notes:
+      selector:
+        text:
+
+swap_dish:
+  fields:
+    dish_id:
+      required: true
+      selector:
+        text:
+    notes:
+      selector:
+        text:
+
 import_week:
   fields:
     dishes:

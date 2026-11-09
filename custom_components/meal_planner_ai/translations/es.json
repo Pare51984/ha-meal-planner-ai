@@ -952,6 +952,34 @@
           "description": "current = semana en curso, next = propuestas de la próxima semana."
         }
       }
+    },
+    "more_proposals": {
+      "name": "Más propuestas",
+      "description": "Añade más platos para elegir, los existentes se quedan. Si la semana está en curso sin propuestas nuevas, se añaden a la semana actual y solo van a la lista al elegirlos. Sin ninguna de las dos, se planifica ya la próxima semana.",
+      "fields": {
+        "count": {
+          "name": "Cantidad",
+          "description": "Cuántos platos añadir (1 a 10)."
+        },
+        "notes": {
+          "name": "Notas",
+          "description": "Opcional, p. ej. «mejor algo con pescado»."
+        }
+      }
+    },
+    "swap_dish": {
+      "name": "Cambiar plato",
+      "description": "Sustituye un plato (propuesta o semana en curso) por otro; la lista se ajusta.",
+      "fields": {
+        "dish_id": {
+          "name": "Plato",
+          "description": "ID del plato."
+        },
+        "notes": {
+          "name": "Notas",
+          "description": "Opcional, p. ej. «mejor algo con pescado»."
+        }
+      }
     }
   }
 }

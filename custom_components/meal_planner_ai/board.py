@@ -1003,7 +1003,9 @@ class WeekPlanner:
             for dish in reversed(list(dishes)):
                 if missing <= 0:
                     break
-                if not dish["wish"] and not dish.get("carried") and not fn(dish):
+                # Gewähltes (Auswahl, laufende Woche) bleibt immer stehen
+                if (not dish["wish"] and not dish.get("carried") and dish["choice"] not in self.trip_keys
+                        and not fn(dish)):
                     dishes.remove(dish)
                     excluded.add(_norm_title(dish["title"]))
                     missing -= 1
@@ -1129,13 +1131,22 @@ class WeekPlanner:
                 # während des Laufs fällig gewordene Schritte (z. B. Auswahlschluss) gleich nachholen
                 self.hass.async_create_task(self.async_tick(dt_util.now()), eager_start=False)
 
-    async def _generate(self, meta: dict[str, Any], notes: str | None) -> dict[str, Any]:
+    async def _generate(self, meta: dict[str, Any], notes: str | None, keep: list[dict[str, Any]] | None = None,
+                        excluded: set[str] | None = None) -> dict[str, Any]:
         total = self.settings[CONF_RECIPES_PER_WEEK]
-        dishes = self._carried()
+        dishes = list(keep) if keep is not None else self._carried()
         ctx = await self._context(meta)
-        rejected: list[str] = []
         self._replaced = []
-        excluded: set[str] = {_norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])}
+        excluded = set(excluded or ()) | {
+            _norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])}
+        rejected, rounds = await self._fill(meta, ctx, dishes, excluded, total, notes)
+        return await self._publish(meta, dishes, ctx["wishes"], rejected + self._replaced, rounds=rounds,
+                                   source="ha", excluded=excluded, notify=True)
+
+    async def _fill(self, meta: dict[str, Any], ctx: dict[str, Any], dishes: list[dict[str, Any]],
+                    excluded: set[str], total: int, notes: str | None) -> tuple[list[str], int]:
+        """KI so lange fragen, bis `dishes` voll ist und die Wochenvorgaben passen (höchstens MAX_PLAN_ROUNDS)."""
+        rejected: list[str] = []
         feedback: list[str] = []
         rounds = 0
         for rounds in range(1, MAX_PLAN_ROUNDS + 1):
@@ -1163,8 +1174,90 @@ class WeekPlanner:
             await self._accept(proposals, dishes, excluded, rejected, total)
             if len(dishes) >= total and not self._week_deficits(dishes):
                 break
-        return await self._publish(meta, dishes, ctx["wishes"], rejected + self._replaced, rounds=rounds,
-                                   source="ha", excluded=excluded, notify=True)
+        return rejected, rounds
+
+    # ------------------------------------------------ neu planen und tauschen ---
+    def _check_ai(self) -> None:
+        if self.busy:
+            raise HomeAssistantError("Die Vorschläge werden gerade schon erstellt.")
+        if not (self._search_ai() or self.settings[CONF_AI_TASK]):
+            raise ServiceValidationError("Keine KI ausgewählt (Essensplaner → Konfigurieren → KI).")
+
+    async def async_more(self, count: int = 5, notes: str | None = None) -> dict[str, Any]:
+        """Weitere Gerichte zur Auswahl dazuholen, Vorhandenes bleibt.
+
+        Mit Vorschlägen für die kommende Woche kommen sie dort dazu, sonst in die laufende Woche
+        (ohne Einkauf, bis man eines wählt). Ohne beides wird jetzt (vorzeitig) geplant.
+        """
+        self._check_ai()
+        for key in ("next", "current"):
+            board = self.boards.get(key)
+            if board:
+                return await self._run(self._more(key, board, max(1, min(int(count), 10)), notes))
+        return await self._run(self._generate(self._plan_meta(), notes))
+
+    async def _more(self, key: str, board: dict[str, Any], count: int, notes: str | None) -> dict[str, Any]:
+        meta = {k: board[k] for k in ("id", "kw", "year", "start", "end", "deadline", "release_at", "released")
+                if k in board}
+        ctx = await self._context(meta)
+        self._replaced = []
+        stale: list[dict[str, Any]] = []
+        if key == "current":
+            # nicht genommene Kandidaten vom letzten Mal machen Platz für die neuen
+            stale = [d for d in board["dishes"] if d["choice"] == CHOICE_NONE and not d["cooked_on"]]
+            board["dishes"] = [d for d in board["dishes"] if d not in stale]
+        before = list(board["dishes"])
+        excluded = set(board.get("excluded") or []) | {_norm_title(d["title"]) for d in before + stale}
+        if key == "next":
+            excluded |= {_norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])}
+        dishes = list(before)
+        rejected, _ = await self._fill(meta, ctx, dishes, excluded, len(before) + count, notes)
+        new = [d for d in dishes if d not in before][:count]
+        nr = max((d["nr"] for d in before), default=0)
+        for dish in new:
+            nr += 1
+            dish["nr"] = nr
+            if key == "current":
+                dish["choice"] = CHOICE_NONE
+        board["dishes"] = before + new  # Vorhandenes bleibt in jedem Fall stehen
+        board["excluded"] = sorted(excluded)[-80:]
+        if key == "next":
+            board["deficits"] = [label for label, *_ in self._week_deficits(board["dishes"])]
+        self._changed()
+        if not new:
+            raise HomeAssistantError("Keine passenden weiteren Gerichte gefunden. " + "; ".join(rejected[-3:]))
+        return {"board": key, "added": [d["title"] for d in new], "problems": rejected[-10:]}
+
+    async def async_swap(self, dish_id: str, notes: str | None = None) -> dict[str, Any]:
+        """Ein Gericht durch ein anderes ersetzen – in den Vorschläge oder in der laufenden Woche."""
+        self._check_ai()
+        key, board, dish = self.find(dish_id)
+        if dish["cooked_on"]:
+            raise ServiceValidationError("Gekochte Gerichte lassen sich nicht tauschen.")
+        return await self._run(self._swap(key, board, dish, notes))
+
+    async def _swap(self, key: str, board: dict[str, Any], dish: dict[str, Any], notes: str | None) -> dict[str, Any]:
+        meta = {k: board[k] for k in ("id", "kw", "year", "start", "end", "deadline", "release_at", "released")
+                if k in board}
+        ctx = await self._context(meta)
+        self._replaced = []
+        others = [d for d in board["dishes"] if d is not dish]
+        excluded = set(board.get("excluded") or []) | {_norm_title(dish["title"])}
+        dishes = list(others)
+        rejected, _ = await self._fill(meta, ctx, dishes, excluded, len(others) + 1, notes)
+        new = next((d for d in dishes if d not in others), None)
+        if new is None:
+            raise HomeAssistantError("Kein passendes anderes Gericht gefunden. " + "; ".join(rejected[-3:]))
+        if dish["on_list"]:
+            await async_remove_tag(self.hass, self._list_entity(), dish["title"])
+        new.update(nr=dish["nr"], choice=dish["choice"], tip=dish["choice"] if dish["choice"] in self.trip_keys
+                   else new.get("tip"))
+        board["dishes"][board["dishes"].index(dish)] = new
+        board["excluded"] = sorted(excluded)[-80:]
+        if key == "next":
+            board["deficits"] = [label for label, *_ in self._week_deficits(board["dishes"])]
+        report = await self.async_sync()
+        return {"replaced": dish["title"], "dish": new, "problems": rejected[-10:], **report}
 
     # --------------------------------------------------- externe KI (Aktionen) ---
     def _next_for(self, meta: dict[str, Any]) -> dict[str, Any] | None:

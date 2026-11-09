@@ -370,3 +370,84 @@ async def test_shop_now_releases_early(hass: HomeAssistant, freezer):
         assert dish["on_list"] is False
         await call(hass, "release_shopping", {"trip": "trip1"})
     assert dish["on_list"] is True
+
+
+# ------------------------------------------------- neu planen und tauschen ---
+def _ai_setup(hass, entry):
+    hass.states.async_set("ai_task.claude", "unknown")
+    hass.config_entries.async_update_entry(entry, options={**entry.options, "ai_task": "ai_task.claude",
+                                                           "recipes_per_week": 2})
+
+
+async def test_more_adds_and_keeps_everything(hass: HomeAssistant, freezer):
+    from .test_integration import URL1
+    from .test_workflow import URL3
+
+    freezer.move_to("2026-11-13 18:30:00+01:00")
+    entry = await _external(hass)
+    _ai_setup(hass, entry)
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "submit_proposals", {"dishes": [{"title": "Linsencurry", "url": URL2},
+                                                         {"title": "Gemüsepfanne", "url": URL3}], "final": True})
+        dish = next(d for d in planner.boards["next"]["dishes"] if d["title"] == "Gemüsepfanne")
+        await call(hass, "choose_dish", {"dish_id": dish["id"], "choice": "declined"})
+
+        async def ai(prompt):
+            return {"dishes": [{"title": "Linsencurry", "url": URL2}, {"title": "Nudeln mit Spinat", "url": URL1}]}
+
+        with patch.object(planner, "_ask_proposals", side_effect=ai):
+            res = await call(hass, "more_proposals", {"count": 1})
+    dishes = planner.boards["next"]["dishes"]
+    assert [d["nr"] for d in dishes] == [1, 2, 3], res
+    assert dishes[2]["title"].startswith("Nudeln") and dishes[1]["choice"] == "declined"
+
+
+async def test_more_in_running_week_waits_for_pick(hass: HomeAssistant, freezer):
+    from .test_integration import URL1
+
+    freezer.move_to("2026-11-09 12:00:00+01:00")
+    entry = await _external(hass)
+    _ai_setup(hass, entry)
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "import_week", {"dishes": [{"title": "Linsencurry", "url": URL2, "choice": "trip1"}]})
+
+        async def ai(prompt):
+            return {"dishes": [{"title": "Nudeln mit Spinat", "url": URL1}]}
+
+        with patch.object(planner, "_ask_proposals", side_effect=ai):
+            res = await call(hass, "more_proposals", {"count": 1})
+        cand = planner.boards["current"]["dishes"][1]
+        assert res["board"] == "current" and cand["choice"] == "none" and not cand["on_list"]
+        await call(hass, "choose_dish", {"dish_id": cand["id"], "choice": "trip1"})
+    assert cand["on_list"] is True
+
+
+async def test_swap_in_running_week_updates_list(hass: HomeAssistant, freezer):
+    from .test_integration import URL1
+
+    freezer.move_to("2026-11-09 12:00:00+01:00")
+    entry = await _external(hass)
+    _ai_setup(hass, entry)
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "import_week", {"dishes": [{"title": "Linsencurry", "url": URL2, "choice": "trip1"}]})
+        old = planner.boards["current"]["dishes"][0]
+        assert old["on_list"] is True
+
+        async def ai(prompt):
+            return {"dishes": [{"title": "Nudeln mit Spinat", "url": URL1}]}
+
+        with patch.object(planner, "_ask_proposals", side_effect=ai):
+            res = await call(hass, "swap_dish", {"dish_id": old["id"]})
+    new = planner.boards["current"]["dishes"][0]
+    assert res["replaced"] == "Linsencurry" and new["title"].startswith("Nudeln") and new["choice"] == "trip1"
+    assert new["on_list"] is True
+    items = await hass.services.async_call("todo", "get_items", {"entity_id": "todo.meal_planner_shopping_list"},
+                                           blocking=True, return_response=True)
+    descs = " ".join(i.get("description") or "" for i in items["todo.meal_planner_shopping_list"]["items"])
+    assert "Linsencurry" not in descs and "Nudeln" in descs

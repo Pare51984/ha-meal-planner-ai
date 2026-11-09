@@ -952,6 +952,34 @@
           "description": "current = laufende Woche, next = Vorschläge der kommenden Woche."
         }
       }
+    },
+    "more_proposals": {
+      "name": "Mehr Vorschläge",
+      "description": "Holt weitere Gerichte zur Auswahl dazu, Vorhandenes bleibt. Läuft schon eine Woche ohne neue Vorschläge, kommen sie in die laufende Woche und gehen erst auf die Einkaufsliste, wenn man eines wählt. Ohne beides wird die kommende Woche jetzt geplant.",
+      "fields": {
+        "count": {
+          "name": "Anzahl",
+          "description": "Wie viele Gerichte dazukommen (1 bis 10)."
+        },
+        "notes": {
+          "name": "Hinweise",
+          "description": "Optional, z. B. „lieber etwas mit Fisch“."
+        }
+      }
+    },
+    "swap_dish": {
+      "name": "Gericht tauschen",
+      "description": "Ersetzt ein Gericht (Vorschlag oder laufende Woche) durch ein anderes; Zutaten auf der Liste werden angepasst.",
+      "fields": {
+        "dish_id": {
+          "name": "Gericht",
+          "description": "ID des Gerichts."
+        },
+        "notes": {
+          "name": "Hinweise",
+          "description": "Optional, z. B. „lieber etwas mit Fisch“."
+        }
+      }
     }
   }
 }

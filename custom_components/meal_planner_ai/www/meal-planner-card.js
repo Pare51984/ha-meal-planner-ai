@@ -1,7 +1,7 @@
 // meal-planner-card: Kacheln für die Integration "Essensplaner".
 // Liest sensor.meal_planner_proposals, sensor.meal_planner_week und todo.meal_planner_wishes,
 // schaltet über die Aktionen der Integration. Knöpfe richten sich nach den eingestellten Einkäufen.
-const VERSION = "2.3.0";
+const VERSION = "2.4.0";
 const DOMAIN = "meal_planner_ai";
 console.info("%c MEAL-PLANNER-CARD %c " + VERSION + " ", "background:#6E7F4E;color:#fff", "");
 
@@ -10,6 +10,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 // Oberflächentexte; Sprache = Home-Assistant-Profil (Rückfall: Englisch, dann Deutsch)
 const I18N = {
   de: {
+    swap: "Tauschen", swap_sure: "Nochmal tippen: anderes Gericht", more: "Mehr Vorschläge", more_hint: "Holt 5 weitere Gerichte dazu, Gewähltes bleibt. Einfach auswählen, was passt.", cand: "Zur Auswahl für diese Woche", cand_hint: "kommt erst auf die Einkaufsliste, wenn ihr es wählt", plan_now: "Jetzt Vorschläge planen", plan_now_sure: "Nochmal tippen: jetzt planen", plan_now_hint: "Plant die kommende Woche sofort statt zum eingestellten Termin.", busy: "KI sucht Rezepte, 1 bis 3 Minuten …",
     shop_now: "{trip} jetzt einkaufen", shop_sure: "Nochmal tippen: {trip} kommt jetzt auf die Liste", shop_hint: "Ihr kauft früher ein? Dann kommt der Einkauf sofort auf die Einkaufsliste.",
     tl_plan: "**{n} Vorschläge** kommen als Kacheln. Wünsche bis dahin unten unter **Essenswünsche** eintragen.", tl_deadline: "**Auswahlschluss:** nicht Gewähltes verschwindet, die Woche steht.", tl_release: "**{trip}** kommt auf die Einkaufsliste, später Gewähltes sofort.",
     m_admin: "Geschmacksprofil und Rezepte können nur Administratoren ändern.",
@@ -49,6 +50,7 @@ const I18N = {
     m_more: "{n} weitere anzeigen", m_count: "{n} Rezepte",
   },
   en: {
+    swap: "Swap", swap_sure: "Tap again: other dish", more: "More suggestions", more_hint: "Adds 5 more dishes, picked ones stay. Just pick what fits.", cand: "To choose for this week", cand_hint: "only goes on the shopping list once you pick it", plan_now: "Plan suggestions now", plan_now_sure: "Tap again: plan now", plan_now_hint: "Plans the coming week right away instead of at the scheduled time.", busy: "AI is searching recipes, 1 to 3 minutes …",
     shop_now: "Shop {trip} now", shop_sure: "Tap again: {trip} goes on the list now", shop_hint: "Shopping earlier? Then this trip goes on the shopping list right away.",
     tl_plan: "**{n} suggestions** arrive as tiles. Add wishes below under **Meal wishes** before then.", tl_deadline: "**Selection closes:** unpicked suggestions disappear, the week is set.", tl_release: "**{trip}** goes on the shopping list, later picks right away.",
     m_admin: "Only administrators can change the taste profile and recipes.",
@@ -88,6 +90,7 @@ const I18N = {
     m_more: "Show {n} more", m_count: "{n} recipes",
   },
   es: {
+    swap: "Cambiar", swap_sure: "Toca otra vez: otro plato", more: "Más propuestas", more_hint: "Añade 5 platos más, lo elegido se queda. Elegid lo que encaje.", cand: "Para elegir esta semana", cand_hint: "solo va a la lista al elegirlo", plan_now: "Planificar ahora", plan_now_sure: "Toca otra vez: planificar ahora", plan_now_hint: "Planifica la próxima semana ya, en lugar de a la hora fijada.", busy: "La IA busca recetas, de 1 a 3 minutos …",
     shop_now: "Comprar {trip} ahora", shop_sure: "Toca otra vez: {trip} pasa ahora a la lista", shop_hint: "¿Compráis antes? Entonces esta compra pasa ya a la lista.",
     tl_plan: "Llegan **{n} propuestas** como tarjetas. Antes, añade deseos abajo en **Deseos de comida**.", tl_deadline: "**Cierre de la elección:** lo no elegido desaparece, la semana queda fijada.", tl_release: "**{trip}** pasa a la lista de la compra, lo elegido después al momento.",
     m_admin: "Solo los administradores pueden cambiar el perfil de gustos y las recetas.",
@@ -127,6 +130,7 @@ const I18N = {
     cancel: "Cancelar", back: "Atrás", all_settings: "Todos los ajustes", no_choice: "Nada que elegir.",
   },
   pt: {
+    swap: "Trocar", swap_sure: "Toca outra vez: outro prato", more: "Mais sugestões", more_hint: "Acrescenta mais 5 pratos, o escolhido fica. Escolham o que servir.", cand: "Para escolher esta semana", cand_hint: "só vai para a lista quando o escolherem", plan_now: "Planear agora", plan_now_sure: "Toca outra vez: planear agora", plan_now_hint: "Planeia a próxima semana já, em vez de à hora definida.", busy: "A IA procura receitas, 1 a 3 minutos …",
     shop_now: "Comprar {trip} agora", shop_sure: "Toca outra vez: {trip} vai agora para a lista", shop_hint: "Vão às compras mais cedo? Então esta compra vai já para a lista.",
     tl_plan: "Chegam **{n} sugestões** como cartões. Antes disso, adiciona desejos abaixo em **Desejos de refeição**.", tl_deadline: "**Fecho da escolha:** o que não foi escolhido desaparece, a semana fica definida.", tl_release: "**{trip}** vai para a lista de compras, escolhas posteriores de imediato.",
     m_admin: "Só os administradores podem alterar o perfil de gostos e as receitas.",
@@ -166,6 +170,7 @@ const I18N = {
     cancel: "Cancelar", back: "Voltar", all_settings: "Todas as definições", no_choice: "Nada para escolher.",
   },
   fr: {
+    swap: "Échanger", swap_sure: "Touchez encore : autre plat", more: "Plus de propositions", more_hint: "Ajoute 5 plats de plus, les choix restent. Prenez ce qui convient.", cand: "À choisir cette semaine", cand_hint: "ne va sur la liste qu’une fois choisi", plan_now: "Planifier maintenant", plan_now_sure: "Touchez encore : planifier maintenant", plan_now_hint: "Planifie la semaine prochaine tout de suite au lieu de l'heure prévue.", busy: "L'IA cherche des recettes, 1 à 3 minutes …",
     shop_now: "Faire {trip} maintenant", shop_sure: "Touchez encore : {trip} va sur la liste maintenant", shop_hint: "Vous faites les courses plus tôt ? Cette course va tout de suite sur la liste.",
     tl_plan: "**{n} propositions** arrivent en tuiles. Ajoutez vos envies avant, ci-dessous sous **Envies de repas**.", tl_deadline: "**Clôture du choix :** ce qui n'est pas choisi disparaît, la semaine est fixée.", tl_release: "**{trip}** va sur la liste de courses, les choix suivants tout de suite.",
     m_admin: "Seuls les administrateurs peuvent modifier le profil de goûts et les recettes.",
@@ -473,8 +478,11 @@ class EssensplanerCard extends HTMLElement {
           ? this._items.items.map((i) => `<label class="item"><input type="checkbox" data-act="item" data-id="${esc(d.id)}" data-name="${esc(i.name)}" ${i.at_home ? "checked" : ""}> ${esc(i.name)} <small>${esc(i.spec)}</small></label>`).join("")
           + `<span class="hint">${t("items_hint")}</span>`
           : `<span class="hint">${t("no_items")}</span>`}</div>` : "";
-      return `<div class="darow"><button class="small ${d.ingredients_ready ? "on" : ""}" data-act="ready" data-id="${esc(d.id)}">${d.ingredients_ready ? "✓ " : ""}${t("ready")}</button>${!d.ingredients_ready ? `<button class="small ${part ? "on" : ""}" data-act="items" data-id="${esc(d.id)}">${part ? t("part_n", { n: part }) : t("partly")}</button>` : ""}<span class="hint">${d.ingredients_ready ? t("not_on_list") : ""}</span></div>${list}`;
+      return `<div class="darow"><button class="small ${d.ingredients_ready ? "on" : ""}" data-act="ready" data-id="${esc(d.id)}">${d.ingredients_ready ? "✓ " : ""}${t("ready")}</button>${!d.ingredients_ready ? `<button class="small ${part ? "on" : ""}" data-act="items" data-id="${esc(d.id)}">${part ? t("part_n", { n: part }) : t("partly")}</button>` : ""}${swapBtn(d)}<span class="hint">${d.ingredients_ready ? t("not_on_list") : ""}</span></div>${list}`;
     };
+    const swapBtn = (d) => d.cooked_on ? "" : this._busy === d.id
+      ? `<button class="small on" disabled>⏳ ${t("busy")}</button>`
+      : `<button class="small ${this._sure === "swap:" + d.id ? "on" : ""}" data-act="swap" data-id="${esc(d.id)}"${this._busy ? " disabled" : ""}>🔄 ${t(this._sure === "swap:" + d.id ? "swap_sure" : "swap")}</button>`;
     const tripBtns = (d) => {
       const btns = trips.map((trip) => `<button class="opt ${d.choice === trip.key ? "on" : ""} ${d.tip === trip.key && d.choice !== trip.key ? "tip" : ""}" data-act="pick" data-trip="${esc(trip.key)}" data-id="${esc(d.id)}"${d.tip === trip.key ? ` title="${esc(t("tip"))}"` : ""}>${esc(short ? trip.name.slice(0, 6) : trip.name)}${short ? "" : `<small>${esc(tripSub(trip))}</small>`}</button>`).join("");
       return `<div class="opts" style="grid-template-columns:repeat(${trips.length},1fr)${d.url ? " auto" : ""}">${btns}${link(d)}</div>`;
@@ -520,10 +528,17 @@ class EssensplanerCard extends HTMLElement {
         <div class="grid">${props.map(propTile).join("")}</div>`;
       if ((prop.deficits || []).length) body += `<div class="darow pick"><span class="hint">${t("open")}${esc(prop.deficits.join(", "))}</span></div>`;
     }
-    if (plan.length) {
-      const cooked = plan.filter((d) => d.cooked_on).length;
-      body += `<div class="sec">${esc(t("week", { c: cooked, n: plan.length }))}<span>${t("week_hint")}</span></div>
-        <div class="grid">${plan.map(weekTile).join("")}</div>`;
+    // Kandidaten in der laufenden Woche (über „Mehr Vorschläge“ dazugeholt, noch nicht gewählt)
+    const cands = plan.filter((d) => d.choice === "none" && !d.cooked_on);
+    const taken = plan.filter((d) => !cands.includes(d));
+    if (taken.length) {
+      const cooked = taken.filter((d) => d.cooked_on).length;
+      body += `<div class="sec">${esc(t("week", { c: cooked, n: taken.length }))}<span>${t("week_hint")}</span></div>
+        <div class="grid">${taken.map(weekTile).join("")}</div>`;
+    }
+    if (cands.length) {
+      body += `<div class="sec">${esc(t("cand"))}<span>${esc(t("cand_hint"))}</span></div>
+        <div class="grid">${cands.map(propTile).join("")}</div>`;
     }
     // Früher einkaufen: Einkäufe mit festem Termin, die noch nicht auf der Liste sind, sofort freigeben
     const waiting = trips.filter((x) => [[prop, props], [week, plan]].some(([b, ds]) =>
@@ -532,6 +547,11 @@ class EssensplanerCard extends HTMLElement {
       body += `<div class="darow shop">${waiting.map((x) => `<button class="small ${this._shopSure === x.key ? "on" : ""}" data-act="shopnow" data-trip="${esc(x.key)}">🛒 ${esc(this._shopSure === x.key ? t("shop_sure", { trip: x.name }) : t("shop_now", { trip: x.name }))}</button>`).join("")}<span class="hint">${esc(t("shop_hint"))}</span></div>`;
     }
     if (!props.length && !plan.length) body += `<div class="empty">${t("empty")}</div>`;
+    // Mehr Vorschläge: holt weitere Gerichte dazu, ohne Vorschläge und Woche wird jetzt geplant
+    const rk = props.length || plan.length ? "more" : "plan_now";
+    body += `<div class="darow shop">${this._busy === "more"
+      ? `<button class="small on" disabled>⏳ ${t("busy")}</button>`
+      : `<button class="small ${this._sure === "more" ? "on" : ""}" data-act="more" data-kind="${rk}"${this._busy ? " disabled" : ""}>${rk === "more" ? "➕" : "✨"} ${t(this._sure === "more" ? "plan_now_sure" : rk)}</button>`}<span class="hint">${t(rk + "_hint")}</span></div>`;
     if (this._hass.states[this._config.wishes]) {
       const open = this._wishes.filter((w) => w.status !== "completed");
       body += `<div class="sec">${t("wishes")}<span>${esc(t("wishes_hint"))}</span></div>
@@ -573,6 +593,16 @@ class EssensplanerCard extends HTMLElement {
       const act = el.dataset.act;
       if (act === "wish" || act === "wishown") return this._addWish(act === "wishown");
       if (act === "delwish") return this._hass.callService("todo", "remove_item", { item: el.dataset.uid }, { entity_id: this._config.wishes });
+      if (act === "more" || act === "swap") {
+        const key = act === "swap" ? "swap:" + el.dataset.id : "more";
+        // Tauschen und vorzeitiges Planen mit zweitem Tippen bestätigen, Dazuholen sofort
+        if (el.dataset.kind !== "more" && this._sure !== key) { this._sure = key; return this._render(); }
+        this._sure = null;
+        this._busy = act === "swap" ? el.dataset.id : "more";
+        this._render();
+        const done = () => { this._busy = null; this._render(); };
+        return (act === "swap" ? this._svc("swap_dish", { dish_id: el.dataset.id }) : this._svc("more_proposals", {})).then(done, done);
+      }
       if (act === "shopnow") {
         // zweimal tippen: der Einkauf landet sofort auf der Liste
         if (this._shopSure !== el.dataset.trip) { this._shopSure = el.dataset.trip; return this._render(); }
