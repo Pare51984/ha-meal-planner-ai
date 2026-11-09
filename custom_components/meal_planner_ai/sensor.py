@@ -36,7 +36,7 @@ class BoardSensor(SensorEntity):
 
     _attr_has_entity_name = True
     _attr_should_poll = False
-    _unrecorded_attributes = frozenset({"dishes", "trips", "schedule", "wishes_entity", *BOARD_FIELDS})
+    _unrecorded_attributes = frozenset({"dishes", "trips", "schedule", "wishes_entity", "busy", *BOARD_FIELDS})
 
     def __init__(self, entry: ConfigEntry, key: str, object_id: str, translation_key: str) -> None:
         self._entry = entry
@@ -69,7 +69,8 @@ class BoardSensor(SensorEntity):
         # Zeitplan für die „So geht's“-Hilfe der Karte
         schedule = {k: settings.get(k) for k in SCHEDULE_KEYS}
         extra = {"trips": trips, "schedule": schedule,
-                 "wishes_entity": self._entry.runtime_data.planner.wishes_entity()}
+                 "wishes_entity": self._entry.runtime_data.planner.wishes_entity(),
+                 "busy": self._entry.runtime_data.planner.busy}
         if not board:
             return {**extra, "dishes": []}
         return {

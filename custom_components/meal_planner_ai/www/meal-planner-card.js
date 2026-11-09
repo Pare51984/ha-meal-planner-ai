@@ -25,7 +25,7 @@ const I18N = {
     no_items: "Keine Zutatenliste verfügbar.", ready: "Zutaten schon da", part_n: "{n} schon da", partly: "Teilweise da …",
     not_on_list: "kommt nicht auf die Einkaufsliste", tip: "Tipp", declined: "abgewählt", declined_hint: ", Zutaten kommen von der Liste",
     undo: "Rückgängig", stars: "{n} Sterne", cooked: "gekocht", not_cooked: "noch nicht gekocht", how: "Wie war's?", note: "+ Notiz",
-    decline: "Doch nicht", note_ph: "z. B. nächstes Mal weniger scharf", save: "Speichern", release: "{trip} kommt {at} auf die Liste",
+    decline: "Doch nicht", removed: "„{title}“ entfernt", note_ph: "z. B. nächstes Mal weniger scharf", save: "Speichern", release: "{trip} kommt {at} auf die Liste",
     proposals: "Vorschläge KW {kw}", proposals_hint: "Pro Gericht einen Einkauf antippen, nochmal tippen = abwählen. Auswahlschluss {at}",
     open: "Offen: ", week: "Diese Woche · {c}/{n} gekocht",
     week_hint: "Kreis antippen = gekocht. Sterne sind freiwillig und fließen in die nächsten Vorschläge ein",
@@ -65,7 +65,7 @@ const I18N = {
     no_items: "No ingredient list available.", ready: "Have everything", part_n: "{n} at home", partly: "Partly at home …",
     not_on_list: "not added to the shopping list", tip: "Tip", declined: "removed", declined_hint: ", ingredients come off the list",
     undo: "Undo", stars: "{n} stars", cooked: "cooked", not_cooked: "not cooked yet", how: "How was it?", note: "+ Note",
-    decline: "Not after all", note_ph: "e.g. less spicy next time", save: "Save", release: "{trip} goes on the list {at}",
+    decline: "Not after all", removed: "“{title}” removed", note_ph: "e.g. less spicy next time", save: "Save", release: "{trip} goes on the list {at}",
     proposals: "Proposals week {kw}", proposals_hint: "Tap a shopping trip per dish, tap again to remove. Choice closes {at}",
     open: "Open: ", week: "This week · {c}/{n} cooked",
     week_hint: "Tap the circle = cooked. Stars are optional and shape the next proposals",
@@ -115,7 +115,7 @@ const I18N = {
     no_items: "No hay lista de ingredientes.", ready: "Lo tengo todo", part_n: "{n} en casa", partly: "Parte en casa …",
     not_on_list: "no va a la lista de la compra", tip: "Consejo", declined: "descartado", declined_hint: ", los ingredientes salen de la lista",
     undo: "Deshacer", stars: "{n} estrellas", cooked: "cocinado", not_cooked: "aún sin cocinar", how: "¿Qué tal?", note: "+ Nota",
-    decline: "Mejor no", note_ph: "p. ej. la próxima vez menos picante", save: "Guardar", release: "{trip} pasa a la lista {at}",
+    decline: "Mejor no", removed: "«{title}» quitado", note_ph: "p. ej. la próxima vez menos picante", save: "Guardar", release: "{trip} pasa a la lista {at}",
     proposals: "Propuestas semana {kw}", proposals_hint: "Toca una compra por plato, otra vez para quitar. Cierre {at}",
     open: "Pendiente: ", week: "Esta semana · {c}/{n} cocinados",
     week_hint: "Toca el círculo = cocinado. Las estrellas son opcionales e influyen en las próximas propuestas",
@@ -155,7 +155,7 @@ const I18N = {
     no_items: "Sem lista de ingredientes.", ready: "Tenho tudo", part_n: "{n} em casa", partly: "Parte em casa …",
     not_on_list: "não vai para a lista de compras", tip: "Dica", declined: "removido", declined_hint: ", os ingredientes saem da lista",
     undo: "Desfazer", stars: "{n} estrelas", cooked: "cozinhado", not_cooked: "ainda não cozinhado", how: "Que tal?", note: "+ Nota",
-    decline: "Afinal não", note_ph: "p. ex. menos picante da próxima vez", save: "Guardar", release: "{trip} vai para a lista {at}",
+    decline: "Afinal não", removed: "«{title}» removido", note_ph: "p. ex. menos picante da próxima vez", save: "Guardar", release: "{trip} vai para a lista {at}",
     proposals: "Propostas semana {kw}", proposals_hint: "Toca numa compra por prato, de novo para retirar. Fecho {at}",
     open: "Em falta: ", week: "Esta semana · {c}/{n} cozinhados",
     week_hint: "Toca no círculo = cozinhado. As estrelas são opcionais e contam para as próximas propostas",
@@ -195,7 +195,7 @@ const I18N = {
     no_items: "Pas de liste d'ingrédients.", ready: "J'ai tout", part_n: "{n} à la maison", partly: "En partie …",
     not_on_list: "ne va pas sur la liste de courses", tip: "Conseil", declined: "retiré", declined_hint: ", les ingrédients sortent de la liste",
     undo: "Annuler", stars: "{n} étoiles", cooked: "cuisiné", not_cooked: "pas encore cuisiné", how: "C'était comment ?", note: "+ Note",
-    decline: "Finalement non", note_ph: "p. ex. moins épicé la prochaine fois", save: "Enregistrer", release: "{trip} va sur la liste {at}",
+    decline: "Finalement non", removed: "« {title} » retiré", note_ph: "p. ex. moins épicé la prochaine fois", save: "Enregistrer", release: "{trip} va sur la liste {at}",
     proposals: "Propositions semaine {kw}", proposals_hint: "Touche une course par plat, encore une fois pour retirer. Clôture {at}",
     open: "Manquant : ", week: "Cette semaine · {c}/{n} cuisinés",
     week_hint: "Touche le cercle = cuisiné. Les étoiles sont facultatives et guident les prochaines propositions",
@@ -326,6 +326,7 @@ const cardCss = (config) => `
       .darow{display:flex;align-items:center;gap:8px;margin-top:8px}
       .darow.shop{flex-wrap:wrap;margin:-4px 4px 14px}
       .darow.pick{margin:-4px 4px 14px}
+      .undobar{position:sticky;bottom:12px;z-index:2;display:flex;align-items:center;gap:12px;justify-content:space-between;margin:0 4px 14px;padding:10px 14px;border-radius:12px;background:var(--_text);color:var(--_tile);box-shadow:0 4px 14px rgba(0,0,0,.18);font-size:14px}
       .rbox input,.wish input{flex:1;min-width:0;font:inherit;font-size:13px;border:1px solid var(--_border);border-radius:calc(var(--_radius) * .6);padding:7px 10px;background:var(--_input);color:var(--_text)}
       .wish{display:flex;gap:6px;margin:0 0 8px}
       .items{display:flex;flex-direction:column;gap:4px;margin-top:8px;padding:8px 10px;border-radius:calc(var(--_radius) * .6);background:var(--_chip)}
@@ -433,7 +434,10 @@ class EssensplanerCard extends HTMLElement {
 
   _svc(service, data) {
     return this._hass.callService(DOMAIN, service, data).catch((e) => {
-      this._err = String(e.message || e); this._render();
+      const m = String(e.message || e);
+      // läuft schon eine Suche (z. B. von einem anderen Gerät gestartet): kein Fehler, die Anzeige zeigt „läuft …“
+      this._err = /gerade schon erstellt/.test(m) ? null : m;
+      this._render();
     });
   }
   _attrs(id) { return (this._hass?.states[id] || {}).attributes || {}; }
@@ -449,6 +453,8 @@ class EssensplanerCard extends HTMLElement {
     if (MEM_TABS.includes(this._tab)) return this._showMemory(tabs);
     const prop = this._attrs(this._config.proposals);
     const week = this._attrs(this._config.week);
+    // läuft gerade eine KI-Suche? (vom Sensor, also auch nach Neuladen und auf anderen Geräten richtig)
+    const serverBusy = !!(prop.busy || week.busy);
     const trips = prop.trips || week.trips || [];
     const tripName = (k) => (trips.find((t) => t.key === k) || {}).name || k;
     const sched = prop.schedule || week.schedule || null;
@@ -482,7 +488,7 @@ class EssensplanerCard extends HTMLElement {
     };
     const swapBtn = (d) => d.cooked_on ? "" : this._busy === d.id
       ? `<button class="small on" disabled>⏳ ${t("busy")}</button>`
-      : `<button class="small ${this._sure === "swap:" + d.id ? "on" : ""}" data-act="swap" data-id="${esc(d.id)}"${this._busy ? " disabled" : ""}>🔄 ${t(this._sure === "swap:" + d.id ? "swap_sure" : "swap")}</button>`;
+      : `<button class="small ${this._sure === "swap:" + d.id ? "on" : ""}" data-act="swap" data-id="${esc(d.id)}"${this._busy || serverBusy ? " disabled" : ""}>🔄 ${t(this._sure === "swap:" + d.id ? "swap_sure" : "swap")}</button>`;
     const tripBtns = (d) => {
       const btns = trips.map((trip) => `<button class="opt ${d.choice === trip.key ? "on" : ""} ${d.tip === trip.key && d.choice !== trip.key ? "tip" : ""}" data-act="pick" data-trip="${esc(trip.key)}" data-id="${esc(d.id)}"${d.tip === trip.key ? ` title="${esc(t("tip"))}"` : ""}>${esc(short ? trip.name.slice(0, 6) : trip.name)}${short ? "" : `<small>${esc(tripSub(trip))}</small>`}</button>`).join("");
       return `<div class="opts" style="grid-template-columns:repeat(${trips.length},1fr)${d.url ? " auto" : ""}">${btns}${link(d)}</div>`;
@@ -530,7 +536,8 @@ class EssensplanerCard extends HTMLElement {
     }
     // Kandidaten in der laufenden Woche (über „Mehr Vorschläge“ dazugeholt, noch nicht gewählt)
     const cands = plan.filter((d) => d.choice === "none" && !d.cooked_on);
-    const taken = plan.filter((d) => !cands.includes(d));
+    // „Doch nicht“: abgewählte Gerichte verschwinden aus der Woche (Rückgängig über die Leiste unten)
+    const taken = plan.filter((d) => !cands.includes(d) && d.choice !== "declined");
     if (taken.length) {
       const cooked = taken.filter((d) => d.cooked_on).length;
       body += `<div class="sec">${esc(t("week", { c: cooked, n: taken.length }))}<span>${t("week_hint")}</span></div>
@@ -549,9 +556,13 @@ class EssensplanerCard extends HTMLElement {
     if (!props.length && !plan.length) body += `<div class="empty">${t("empty")}</div>`;
     // Mehr Vorschläge: holt weitere Gerichte dazu, ohne Vorschläge und Woche wird jetzt geplant
     const rk = props.length || plan.length ? "more" : "plan_now";
-    body += `<div class="darow shop">${this._busy === "more"
+    body += `<div class="darow shop">${this._busy === "more" || (serverBusy && !this._busy)
       ? `<button class="small on" disabled>⏳ ${t("busy")}</button>`
-      : `<button class="small ${this._sure === "more" ? "on" : ""}" data-act="more" data-kind="${rk}"${this._busy ? " disabled" : ""}>${rk === "more" ? "➕" : "✨"} ${t(this._sure === "more" ? "plan_now_sure" : rk)}</button>`}<span class="hint">${t(rk + "_hint")}</span></div>`;
+      : `<button class="small ${this._sure === "more" ? "on" : ""}" data-act="more" data-kind="${rk}"${this._busy || serverBusy ? " disabled" : ""}>${rk === "more" ? "➕" : "✨"} ${t(this._sure === "more" ? "plan_now_sure" : rk)}</button>`}<span class="hint">${t(rk + "_hint")}</span></div>`;
+    const undo = this._undo && plan.find((d) => d.id === this._undo.id && d.choice === "declined");
+    if (undo) {
+      body += `<div class="undobar"><span>${esc(t("removed", { title: undo.title }))}</span><button class="small on" data-act="restore" data-id="${esc(undo.id)}">${t("undo")}</button></div>`;
+    }
     if (this._hass.states[this._config.wishes]) {
       const open = this._wishes.filter((w) => w.status !== "completed");
       body += `<div class="sec">${t("wishes")}<span>${esc(t("wishes_hint"))}</span></div>
@@ -614,8 +625,17 @@ class EssensplanerCard extends HTMLElement {
       else if (act === "ready") this._svc("set_ingredients_ready", { dish_id: d.id, ready: !d.ingredients_ready });
       else if (act === "cooked") this._svc("mark_cooked", { dish_id: d.id, cooked: !d.cooked_on });
       else if (act === "star") this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: +el.dataset.n });
-      else if (act === "decline") { this._prev = { ...(this._prev || {}), [d.id]: d.choice }; this._svc("choose_dish", { dish_id: d.id, choice: "declined" }); }
-      else if (act === "restore") this._svc("choose_dish", { dish_id: d.id, choice: (this._prev || {})[d.id] || d.tip || (trips[0] || {}).key });
+      else if (act === "decline") {
+        this._prev = { ...(this._prev || {}), [d.id]: d.choice };
+        clearTimeout(this._undoTimer);
+        this._undo = { id: d.id };
+        this._undoTimer = setTimeout(() => { this._undo = null; this._render(); }, 8000);
+        this._svc("choose_dish", { dish_id: d.id, choice: "declined" });
+      }
+      else if (act === "restore") {
+        clearTimeout(this._undoTimer); this._undo = null;
+        this._svc("choose_dish", { dish_id: d.id, choice: (this._prev || {})[d.id] || d.tip || (trips[0] || {}).key });
+      }
       else if (act === "items") this._toggleItems(d);
       else if (act === "item") this._saveItems(d);
       else if (act === "note") { this._open = this._open === d.id ? null : d.id; this._render(); }

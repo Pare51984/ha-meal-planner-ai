@@ -32,9 +32,13 @@ jobs:
             echo "Release $TAG exists, nothing to do."
             exit 0
           fi
+          # ZIP der Integration als Release-Asset: HACS installiert daraus (zip_release in hacs.json),
+          # und GitHub zählt die Downloads
+          (cd custom_components/meal_planner_ai && zip -qr "$GITHUB_WORKSPACE/meal_planner_ai.zip" . -x '__pycache__/*' '*.pyc')
+          unzip -l meal_planner_ai.zip | grep -q ' manifest.json$'
           NOTES_FILE="release-notes/$TAG.md"
           if [ -f "$NOTES_FILE" ]; then
-            gh release create "$TAG" --target "$TARGET" --title "$TAG" --notes-file "$NOTES_FILE"
+            gh release create "$TAG" meal_planner_ai.zip --target "$TARGET" --title "$TAG" --notes-file "$NOTES_FILE"
           else
-            gh release create "$TAG" --target "$TARGET" --title "$TAG" --generate-notes
+            gh release create "$TAG" meal_planner_ai.zip --target "$TARGET" --title "$TAG" --generate-notes
           fi

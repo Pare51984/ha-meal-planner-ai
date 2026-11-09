@@ -8,14 +8,17 @@ werden nie angefasst und nie neu angelegt.
 
 from __future__ import annotations
 
+import logging
 import math
 from typing import Any
 
 from homeassistant.components.todo import TodoListEntityFeature
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 
 from .classify import format_amount, parse_ingredient, servings_from_yields
+
+_LOGGER = logging.getLogger(__name__)
 
 DEFAULT_STAPLES = "Salz, Pfeffer, Zucker, Öl, Olivenöl, Rapsöl, Sonnenblumenöl, Pflanzenöl, Essig, Mehl, Brühe, Gemüsebrühe, Wasser"
 DEFAULT_CATALOG = """Emmentaler gerieben = Reibekäse
@@ -183,6 +186,19 @@ async def _open_items(hass: HomeAssistant, entity_id: str) -> list[dict[str, Any
     return list((resp or {}).get(entity_id, {}).get("items", []))
 
 
+async def _item_call(hass: HomeAssistant, entity_id: str, service: str, data: dict[str, Any]) -> bool:
+    """update_item/remove_item für einen Eintrag; False, wenn es den Eintrag nicht mehr gibt.
+
+    Manche Listen (z. B. Bring!) liefern nach jeder Änderung frische Daten, ein vorher gelesener
+    Eintrag kann dann schon weg sein oder anders heißen. Das ist kein Fehler für den Nutzer."""
+    try:
+        await hass.services.async_call("todo", service, {"entity_id": entity_id, **data}, blocking=True)
+    except ServiceValidationError as err:
+        _LOGGER.debug("%s auf %s übersprungen: %s", service, entity_id, err)
+        return False
+    return True
+
+
 async def async_add_items(
     hass: HomeAssistant, entity_id: str, items: list[dict[str, str]], tag: str
 ) -> list[dict[str, str]]:
@@ -210,12 +226,23 @@ async def async_add_items(
                 result.append({**item, "action": "already"})
                 continue
             new_desc = f"{desc} + {part}" if desc else part
-            await hass.services.async_call(
-                "todo", "update_item",
-                {"entity_id": entity_id, "item": found["uid"], "description": new_desc}, blocking=True)
-            found["description"] = new_desc
-            result.append({**item, "action": "merged"})
-            continue
+            if await _item_call(hass, entity_id, "update_item", {"item": found["uid"], "description": new_desc}):
+                found["description"] = new_desc
+                result.append({**item, "action": "merged"})
+                continue
+            # Eintrag inzwischen weg (abgehakt, gelöscht, neu vergeben): frisch lesen und neu versuchen
+            existing = {i["summary"].strip().lower(): i for i in await _open_items(hass, entity_id)}
+            found = _find_existing(existing, item["name"])
+            if found and found.get("uid") and f"({tag})" in (found.get("description") or ""):
+                result.append({**item, "action": "already"})
+                continue
+            if found and found.get("uid"):
+                desc = found.get("description") or ""
+                new_desc = f"{desc} + {part}" if desc else part
+                if await _item_call(hass, entity_id, "update_item", {"item": found["uid"], "description": new_desc}):
+                    found["description"] = new_desc
+                    result.append({**item, "action": "merged"})
+                    continue
         await hass.services.async_call(
             "todo", "add_item",
             {"entity_id": entity_id, "item": item["name"], "description": part}, blocking=True)
@@ -226,27 +253,33 @@ async def async_add_items(
 
 
 async def async_remove_tag(hass: HomeAssistant, entity_id: str, tag: str) -> list[str]:
-    """Alle Teile eines Gerichts aus offenen Einträgen entfernen; leere Einträge löschen."""
+    """Alle Teile eines Gerichts aus offenen Einträgen entfernen; leere Einträge löschen.
+
+    Nach jeder Änderung wird die Liste neu gelesen, weil manche Listen dabei die IDs neu vergeben.
+    Einträge, die es nicht mehr gibt, werden still übergangen (dann ist ja nichts mehr auszutragen)."""
     features = await _features(hass, entity_id)
     with_desc = bool(features & TodoListEntityFeature.SET_DESCRIPTION_ON_ITEM)
+    marker = f"({tag})"
     removed: list[str] = []
-    for item in await _open_items(hass, entity_id):
-        if not with_desc:
-            if item["summary"].endswith(f"({tag})"):
-                await hass.services.async_call(
-                    "todo", "remove_item", {"entity_id": entity_id, "item": item["uid"]}, blocking=True)
-                removed.append(item["summary"])
-            continue
-        desc = item.get("description") or ""
-        if f"({tag})" not in desc:
-            continue
-        rest = strip_tag(desc, tag)
-        if rest:
-            await hass.services.async_call(
-                "todo", "update_item",
-                {"entity_id": entity_id, "item": item["uid"], "description": rest}, blocking=True)
+    failed: dict[str, int] = {}
+    for _ in range(200):  # Notbremse, normal sind es wenige Einträge
+        items = await _open_items(hass, entity_id)
+        if with_desc:
+            hits = [i for i in items if marker in (i.get("description") or "")
+                    and failed.get(i["summary"], 0) < 2]
         else:
-            await hass.services.async_call(
-                "todo", "remove_item", {"entity_id": entity_id, "item": item["uid"]}, blocking=True)
-        removed.append(item["summary"])
+            hits = [i for i in items if i["summary"].endswith(marker) and failed.get(i["summary"], 0) < 2]
+        if not hits:
+            break
+        item = hits[0]
+        rest = strip_tag(item.get("description"), tag) if with_desc else ""
+        if rest:
+            ok = await _item_call(hass, entity_id, "update_item", {"item": item["uid"], "description": rest})
+        else:
+            ok = await _item_call(hass, entity_id, "remove_item", {"item": item["uid"]})
+        if ok:
+            removed.append(item["summary"])
+        else:
+            # frisch gelesen nochmal versuchen (neue ID), danach in Ruhe lassen
+            failed[item["summary"]] = failed.get(item["summary"], 0) + 1
     return removed

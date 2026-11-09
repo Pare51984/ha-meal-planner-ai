@@ -8,6 +8,7 @@ damit es mit jedem Anbieter gleich funktioniert.
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date
 import json
 import logging
@@ -18,6 +19,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import (
+    AI_TIMEOUT,
     CONF_DEVICES,
     CONF_CUSTOM_DEVICES,
     CONF_DIET,
@@ -80,10 +82,13 @@ async def async_ask(hass: HomeAssistant, entity_id: str, task_name: str, instruc
         raise AIError(f"KI {entity_id} nicht gefunden. Bitte im Essensplaner neu auswählen.")
     if entity_id.startswith("conversation."):
         try:
-            resp = await hass.services.async_call(
-                "conversation", "process",
-                {"agent_id": entity_id, "text": instructions, "language": hass.config.language},
-                blocking=True, return_response=True)
+            async with asyncio.timeout(AI_TIMEOUT):
+                resp = await hass.services.async_call(
+                    "conversation", "process",
+                    {"agent_id": entity_id, "text": instructions, "language": hass.config.language},
+                    blocking=True, return_response=True)
+        except TimeoutError as err:
+            raise AIError(f"KI {entity_id} hat nicht innerhalb von {AI_TIMEOUT // 60} Minuten geantwortet.") from err
         except HomeAssistantError as err:
             raise AIError(f"KI-Aufruf fehlgeschlagen: {err}") from err
         response = (resp or {}).get("response") or {}
@@ -96,13 +101,16 @@ async def async_ask(hass: HomeAssistant, entity_id: str, task_name: str, instruc
             _LOGGER.debug("Unbrauchbare KI-Antwort für %s: %s", task_name, text[:500])
             raise
     try:
-        resp = await hass.services.async_call(
-            "ai_task",
-            "generate_data",
-            {"task_name": task_name, "entity_id": entity_id, "instructions": instructions},
-            blocking=True,
-            return_response=True,
-        )
+        async with asyncio.timeout(AI_TIMEOUT):
+            resp = await hass.services.async_call(
+                "ai_task",
+                "generate_data",
+                {"task_name": task_name, "entity_id": entity_id, "instructions": instructions},
+                blocking=True,
+                return_response=True,
+            )
+    except TimeoutError as err:
+        raise AIError(f"KI {entity_id} hat nicht innerhalb von {AI_TIMEOUT // 60} Minuten geantwortet.") from err
     except HomeAssistantError as err:
         raise AIError(f"KI-Aufruf fehlgeschlagen: {err}") from err
     data = (resp or {}).get("data")

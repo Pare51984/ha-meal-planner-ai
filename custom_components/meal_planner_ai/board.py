@@ -317,23 +317,34 @@ class WeekPlanner:
 
     async def async_sync(self) -> dict[str, list[str]]:
         """Einkaufsliste an die Auswahl angleichen (eintragen bzw. austragen)."""
-        report: dict[str, list[str]] = {"added": [], "removed": []}
+        report: dict[str, list[str]] = {"added": [], "removed": [], "errors": []}
         target = self._list_entity()
+        failed: list[tuple[str, Exception]] = []
         for key in ("current", "next"):
             board = self.boards.get(key)
             for dish in (board or {}).get("dishes", []):
                 want = self._wants_list(board, dish)
-                if want and not dish["on_list"]:
-                    items = await self._items_for(dish)
-                    if items:
-                        await async_add_items(self.hass, target, items, dish["title"])
-                    dish["on_list"] = True
-                    report["added"].append(dish["title"])
-                elif not want and dish["on_list"] and not dish["cooked_on"]:
-                    await async_remove_tag(self.hass, target, dish["title"])
-                    dish["on_list"] = False
-                    report["removed"].append(dish["title"])
+                # jedes Gericht für sich: ein Fehler bei einem darf die anderen nicht aufhalten
+                try:
+                    if want and not dish["on_list"]:
+                        items = await self._items_for(dish)
+                        if items:
+                            await async_add_items(self.hass, target, items, dish["title"])
+                        dish["on_list"] = True
+                        report["added"].append(dish["title"])
+                    elif not want and dish["on_list"] and not dish["cooked_on"]:
+                        await async_remove_tag(self.hass, target, dish["title"])
+                        dish["on_list"] = False
+                        report["removed"].append(dish["title"])
+                except HomeAssistantError as err:
+                    _LOGGER.warning("Einkaufsliste für '%s' nicht abgeglichen: %s", dish["title"], err)
+                    failed.append((dish["title"], err))
+                    report["errors"].append(f"{dish['title']}: {err}")
         self._changed()
+        if failed and not report["added"] and not report["removed"]:
+            # nichts ging: einmal deutlich melden (beim nächsten Abgleich wird es erneut versucht)
+            title, err = failed[0]
+            raise HomeAssistantError(f"Einkaufsliste für '{title}' nicht abgeglichen: {err}") from err
         return report
 
     # ---------------------------------------------------------- Aktionen ---
@@ -1123,12 +1134,14 @@ class WeekPlanner:
             job.close()
             raise HomeAssistantError("Die Vorschläge werden gerade schon erstellt.")
         self.busy = True
+        async_dispatcher_send(self.hass, SIGNAL_BOARD_UPDATED)  # Karte zeigt „läuft …“, auch auf anderen Geräten
         self._frozen = self.settings
         self._budget = SEARCH_BUDGET
         try:
             return await job
         finally:
             self.busy = False
+            async_dispatcher_send(self.hass, SIGNAL_BOARD_UPDATED)
             self._frozen = None
             if self.reload_pending:  # inzwischen gespeicherte Einstellungen jetzt übernehmen
                 self.reload_pending = False

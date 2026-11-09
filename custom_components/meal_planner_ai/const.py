@@ -10,6 +10,7 @@ USER_AGENT = (
     "+https://github.com/Pare51984/ha-meal-planner-ai)"
 )
 FETCH_TIMEOUT = 20  # Sekunden
+AI_TIMEOUT = 240  # Sekunden für einen KI-Aufruf (Such-Agent mit Websuche braucht teils 1 bis 2 Minuten)
 MAX_HTML_BYTES = 5 * 1024 * 1024
 
 STORAGE_VERSION = 1
