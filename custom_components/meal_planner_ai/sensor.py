@@ -16,7 +16,7 @@ from .const import DOMAIN, SIGNAL_BOARD_UPDATED, TRIP_KEYS
 DISH_FIELDS = (
     "id", "nr", "title", "url", "time_min", "kcal", "kcal_note", "meatless", "low_cholesterol",
     "fits", "skip_items", "foreign_language", "own_recipe", "tip", "choice", "ingredients_ready", "on_list", "cooked_on",
-    "rating", "note", "carried", "checked", "reason",
+    "rating", "note", "carried", "checked", "reason", "wish",
 )
 SCHEDULE_KEYS = ("plan_weekday", "plan_time", "deadline_weekday", "deadline_time", "recipes_per_week")
 BOARD_FIELDS = ("kw", "start", "end", "deadline", "release_at", "released", "problems", "deficits")

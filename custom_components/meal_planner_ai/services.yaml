@@ -153,7 +153,7 @@ assess_recipes:
       selector:
         select:
           multiple: true
-          options: [vegetarian, vegan, lactose_free, gluten_free, low_cholesterol, low_calorie]
+          options: [vegetarian, vegan, lactose_free, gluten_free, low_cholesterol]
           translation_key: diet
     force:
       default: false

@@ -13,11 +13,10 @@ DOMAIN = "meal_planner_ai"
 async def test_external_list_and_rules(hass: HomeAssistant, tmp_path):
     import os
     os.makedirs(hass.config.path(".storage"), exist_ok=True)
-    if True:
-        local = MockConfigEntry(domain="local_todo", data={"todo_list_name": "Zuhause", "storage_key": "zuhause"})
-        local.add_to_hass(hass)
-        assert await hass.config_entries.async_setup(local.entry_id)
-        await hass.async_block_till_done()
+    local = MockConfigEntry(domain="local_todo", data={"todo_list_name": "Zuhause", "storage_key": "zuhause"})
+    local.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(local.entry_id)
+    await hass.async_block_till_done()
     assert hass.states.get("todo.zuhause") is not None
 
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})

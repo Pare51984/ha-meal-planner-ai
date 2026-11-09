@@ -162,11 +162,22 @@ def _find_existing(existing: dict[str, dict[str, Any]], name: str) -> dict[str, 
 
 
 def _part(spec: str, tag: str) -> str:
-    return f"{spec} ({tag})" if spec else f"({tag})"
+    return f"{spec} {_marker(tag)}" if spec else _marker(tag)
+
+
+def _marker(tag: str) -> str:
+    """„(Gericht)“; ein „ + “ im Titel würde mit dem Trenner zwischen Gerichten verwechselt."""
+    return f"({tag.replace(' + ', ' & ')})"
+
+
+def has_tag(description: str | None, tag: str) -> bool:
+    """Steht ein Teil „… (Gericht)“ in der Beschreibung? Gleiche Regel wie strip_tag."""
+    marker = _marker(tag)
+    return any(p.strip().endswith(marker) for p in (description or "").split(" + "))
 
 
 def strip_tag(description: str | None, tag: str) -> str:
-    marker = f"({tag})"
+    marker = _marker(tag)
     parts = [p.strip() for p in (description or "").split(" + ")]
     return " + ".join(p for p in parts if p and not p.endswith(marker))
 
@@ -222,7 +233,7 @@ async def async_add_items(
         found = _find_existing(existing, item["name"])
         if found and can_update and found.get("uid"):
             desc = found.get("description") or ""
-            if f"({tag})" in desc:
+            if has_tag(desc, tag):
                 result.append({**item, "action": "already"})
                 continue
             new_desc = f"{desc} + {part}" if desc else part
@@ -233,7 +244,7 @@ async def async_add_items(
             # Eintrag inzwischen weg (abgehakt, gelöscht, neu vergeben): frisch lesen und neu versuchen
             existing = {i["summary"].strip().lower(): i for i in await _open_items(hass, entity_id)}
             found = _find_existing(existing, item["name"])
-            if found and found.get("uid") and f"({tag})" in (found.get("description") or ""):
+            if found and found.get("uid") and has_tag(found.get("description"), tag):
                 result.append({**item, "action": "already"})
                 continue
             if found and found.get("uid"):
@@ -259,13 +270,13 @@ async def async_remove_tag(hass: HomeAssistant, entity_id: str, tag: str) -> lis
     Einträge, die es nicht mehr gibt, werden still übergangen (dann ist ja nichts mehr auszutragen)."""
     features = await _features(hass, entity_id)
     with_desc = bool(features & TodoListEntityFeature.SET_DESCRIPTION_ON_ITEM)
-    marker = f"({tag})"
+    marker = _marker(tag)
     removed: list[str] = []
     failed: dict[str, int] = {}
     for _ in range(200):  # Notbremse, normal sind es wenige Einträge
         items = await _open_items(hass, entity_id)
         if with_desc:
-            hits = [i for i in items if marker in (i.get("description") or "")
+            hits = [i for i in items if has_tag(i.get("description"), tag)
                     and failed.get(i["summary"], 0) < 2]
         else:
             hits = [i for i in items if i["summary"].endswith(marker) and failed.get(i["summary"], 0) < 2]
@@ -273,6 +284,8 @@ async def async_remove_tag(hass: HomeAssistant, entity_id: str, tag: str) -> lis
             break
         item = hits[0]
         rest = strip_tag(item.get("description"), tag) if with_desc else ""
+        if rest and rest == (item.get("description") or "").strip():
+            break  # nichts zu entfernen (sollte mit has_tag nicht vorkommen): nie im Kreis laufen
         if rest:
             ok = await _item_call(hass, entity_id, "update_item", {"item": item["uid"], "description": rest})
         else:

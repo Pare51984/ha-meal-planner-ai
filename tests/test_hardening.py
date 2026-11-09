@@ -266,7 +266,7 @@ async def test_option_labels_follow_language(hass: HomeAssistant):
     result = await hass.config_entries.flow.async_configure(result["flow_id"], {"devices": ["stove_oven"]})
     assert result["data_schema"].schema["ai_task"].config["options"][0]["label"] == "No AI"
     result = await hass.config_entries.flow.async_configure(result["flow_id"], {"ai_task": "none"})
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {"display": "none"})
+    await hass.config_entries.flow.async_configure(result["flow_id"], {"display": "none"})
     entry = hass.config_entries.async_entries(DOMAIN)[0]
     assert [t["name"] for t in entry.options["trips"]] == ["Shopping 1", "Shopping 2"]
 

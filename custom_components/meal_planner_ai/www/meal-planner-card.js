@@ -1,11 +1,11 @@
 // meal-planner-card: Kacheln für die Integration "Essensplaner".
 // Liest sensor.meal_planner_proposals, sensor.meal_planner_week und todo.meal_planner_wishes,
 // schaltet über die Aktionen der Integration. Knöpfe richten sich nach den eingestellten Einkäufen.
-const VERSION = "2.4.0";
+const VERSION = "2.4.1";
 const DOMAIN = "meal_planner_ai";
 console.info("%c MEAL-PLANNER-CARD %c " + VERSION + " ", "background:#6E7F4E;color:#fff", "");
 
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 // Oberflächentexte; Sprache = Home-Assistant-Profil (Rückfall: Englisch, dann Deutsch)
 const I18N = {

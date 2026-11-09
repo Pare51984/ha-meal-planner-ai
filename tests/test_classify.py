@@ -113,7 +113,7 @@ def test_region_sources_and_languages():
     de = settings_from_options({})
     assert de["region"] == "de" and "chefkoch.de" in enabled_sources(de)  # ältere Einrichtung bleibt deutsch
     fr = settings_from_options({"region": "fr", "devices": ["stove_oven", "thermomix"]})
-    assert "marmiton.org" in enabled_sources(fr) and "cookidoo.fr" in enabled_sources(fr)
+    assert "marmiton.org" in enabled_sources(fr) and "cookidoo.fr" in enabled_sources(fr)  # codeql[py/incomplete-url-substring-sanitization] Listenprüfung, keine URL-Prüfung
     assert "chefkoch.de" not in enabled_sources(fr)
     en_no_tm = settings_from_options({"region": "en"})
     assert "cookidoo.co.uk" not in enabled_sources(en_no_tm)

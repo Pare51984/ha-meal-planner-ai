@@ -55,13 +55,12 @@ def parse_json(text: Any) -> Any:
     if isinstance(text, (dict, list)):
         return text
     raw = str(text or "").strip()
-    fenced = _FENCE_RE.search(raw)
-    if fenced:
-        raw = fenced.group(1).strip()
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        pass
+    # alle Codeblöcke probieren (die KI schickt manchmal erst ein Beispiel, dann das echte JSON)
+    for block in [m.strip() for m in _FENCE_RE.findall(raw)] + [raw]:
+        try:
+            return json.loads(block)
+        except json.JSONDecodeError:
+            continue
     for open_c, close_c in (("{", "}"), ("[", "]")):
         start, end = raw.find(open_c), raw.rfind(close_c)
         if start != -1 and end > start:

@@ -72,13 +72,14 @@ def parse_ingredient(line: str) -> dict[str, Any]:
         unit = raw_unit
         name = rest.strip() or original
     note = None
+    # Pluralendung zuerst auflösen: „Zwiebel(n) (fein gewürfelt)“ → „Zwiebeln (fein gewürfelt)“
+    name = re.sub(r"\((n|en|e|s|er)\)", lambda m: m.group(1), name)
     if "," in name:
         name, note = (part.strip() for part in name.split(",", 1))
     elif "(" in name and name.endswith(")"):
-        base, extra = name.split("(", 1)
-        if len(base.strip()) > 2 and not re.match(r"^(n|en|e|s)\)$", extra):
+        base, extra = name.rsplit("(", 1)
+        if len(base.strip()) > 2:
             name, note = base.strip(), extra[:-1].strip()
-    name = re.sub(r"\((n|en|e|s|er)\)", lambda m: m.group(1) if m.group(1) != "n" else "n", name)
     return {"original": original, "amount": amount, "unit": unit, "name": name.strip(), "note": note}
 
 

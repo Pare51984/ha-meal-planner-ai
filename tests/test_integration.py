@@ -144,7 +144,7 @@ async def test_full_flow(hass: HomeAssistant):
         await hass.async_block_till_done()
         settings = await call(hass, "get_settings")
         assert "chefkoch.de" not in settings["planner"]["enabled_sources"]
-        assert "meinblog.example.org" in settings["planner"]["enabled_sources"]
+        assert "meinblog.example.org" in settings["planner"]["enabled_sources"]  # codeql[py/incomplete-url-substring-sanitization] Listenprüfung, keine URL-Prüfung
 
         # Daten überleben Reload
         await hass.config_entries.async_reload(entry.entry_id)

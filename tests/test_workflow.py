@@ -86,7 +86,7 @@ async def test_week(hass: HomeAssistant, freezer):
     r = await hass.config_entries.flow.async_configure(r["flow_id"], {"region": "de", "shopping_list": "own"})
     r = await hass.config_entries.flow.async_configure(r["flow_id"], {"devices": ["stove_oven"]})
     r = await hass.config_entries.flow.async_configure(r["flow_id"], {"ai_task": "ai_task.gemini", "ai_shopping_names": False})
-    r = await hass.config_entries.flow.async_configure(r["flow_id"], {"display": "none"})
+    await hass.config_entries.flow.async_configure(r["flow_id"], {"display": "none"})
     await hass.async_block_till_done()
     entry = hass.config_entries.async_entries(DOMAIN)[0]
 
@@ -106,6 +106,7 @@ async def test_week(hass: HomeAssistant, freezer):
                                 {"kcal_max": 800, "kcal_max_without_side": 650}])
     assert f["type"] == "create_entry", f
     f = await options("habits", [{"habit_1": "Suppen/Eintöpfe höchstens 1x pro Woche", "habit_3": "mindestens 1x Fisch"}])
+    assert f["type"] == "create_entry", f
     assert entry.options["habits"] == ["Suppen/Eintöpfe höchstens 1x pro Woche", "mindestens 1x Fisch"]
     f = await options("schedule", [{"plan_weekday": "fri", "plan_time": "18:00:00", "deadline_weekday": "sat",
                                     "deadline_time": "12:00:00",
@@ -234,7 +235,7 @@ async def test_three_trips_sunday(hass: HomeAssistant, freezer):
     r = await hass.config_entries.flow.async_configure(r["flow_id"], {"region": "de", "shopping_list": "own"})
     r = await hass.config_entries.flow.async_configure(r["flow_id"], {"devices": ["stove_oven", "thermomix"]})
     r = await hass.config_entries.flow.async_configure(r["flow_id"], {"ai_task": "ai_task.gemini", "ai_shopping_names": False})
-    r = await hass.config_entries.flow.async_configure(r["flow_id"], {"display": "none"})
+    await hass.config_entries.flow.async_configure(r["flow_id"], {"display": "none"})
     await hass.async_block_till_done()
     entry = hass.config_entries.async_entries(DOMAIN)[0]
     f = await hass.config_entries.options.async_init(entry.entry_id)

@@ -481,10 +481,14 @@ async def async_assess(
         keys_needed = sorted({k for _, ks in batch for k in ks}, key=DIETS.index)
         answer = await async_ask(hass, ai, "Essensplaner Ernährung prüfen",
                                  assess_prompt([r for r, _ in batch], keys_needed))
-        by_id = {str(x.get("id")): x for x in (answer.get("results") or [])} if isinstance(answer, dict) else {}
+        results_raw = answer.get("results") if isinstance(answer, dict) else None
+        by_id = {str(x.get("id")): x for x in (results_raw if isinstance(results_raw, list) else [])
+                 if isinstance(x, dict)}
         for rec, ks in batch:
             got = by_id.get(rec["id"])
             if not got:
+                continue
+            if rec["id"] not in store.recipes:  # während der KI-Antwort gelöscht
                 continue
             ai_diet = {**(rec.get("ai_diet") or {})}
             for k in ks:

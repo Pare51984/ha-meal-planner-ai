@@ -88,12 +88,15 @@ def _site_key(domain: str) -> str:
 
 
 def _writable_lists(hass: HomeAssistant) -> list[sel.SelectOptionDict]:
+    from homeassistant.helpers import entity_registry as er
+
+    registry = er.async_get(hass)
     options: list[sel.SelectOptionDict] = []
     for state in hass.states.async_all("todo"):
         features = int(state.attributes.get("supported_features", 0))
-        if features & TodoListEntityFeature.CREATE_TODO_ITEM and not (
-            state.entity_id.startswith(f"todo.{DOMAIN}_")
-        ):
+        reg = registry.async_get(state.entity_id)
+        # eigene Listen (Wunschliste, eingebaute Einkaufsliste) nicht anbieten, auch nach Umbenennen
+        if features & TodoListEntityFeature.CREATE_TODO_ITEM and not (reg and reg.platform == DOMAIN):
             options.append({"value": state.entity_id, "label": f"{state.name} ({state.entity_id})"})
     options.sort(key=lambda o: o["label"].lower())
     return options

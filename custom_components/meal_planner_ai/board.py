@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import asyncio
 from datetime import date, datetime, time, timedelta
+import hashlib
+import json
 import logging
 import re
 from typing import TYPE_CHECKING, Any
@@ -118,7 +120,21 @@ def _short(text: str, limit: int = 60) -> str:
 
 
 def _norm_title(title: str | None) -> str:
-    return re.sub(r"\s+", " ", (title or "").strip().lower())
+    """Titel zum Vergleichen; „ (TM)“ am Ende zählt nicht (sonst rutscht dasselbe Rezept doppelt durch)."""
+    text = re.sub(r"\s+", " ", (title or "").strip().lower())
+    return re.sub(r"\s*\(tm\)$", "", text)
+
+
+def _wish_matches(text: str, values: tuple[str | None, ...]) -> bool:
+    """Wunschtext (normalisiert) passt zu Wunsch, Titel oder Link eines Gerichts? Auch als Teilwort."""
+    def within(part: str, whole: str) -> bool:
+        return len(part) >= 3 and re.search(rf"(?<!\w){re.escape(part)}(?!\w)", whole) is not None
+
+    for raw in values:
+        value = _norm_title(raw)
+        if text and value and (text == value or within(text, value) or within(value, text)):
+            return True
+    return False
 
 
 def next_weekday_at(after: datetime, weekday: int, at: time) -> datetime:
@@ -142,8 +158,10 @@ def week_meta(plan_at: datetime, settings: dict[str, Any]) -> dict[str, Any]:
     released: dict[str, bool] = {}
     for trip in settings[CONF_TRIPS]:
         if trip["release"] == RELEASE_TIMED:
+            # frühestens zum Auswahlschluss (auch genau dann), nie davor: sonst ginge ein Einkauf
+            # noch vor Ende der Auswahl auf die Liste
             release_at[trip["key"]] = next_weekday_at(
-                plan_at, trip["weekday"], _parse_time(trip["time"])).isoformat()
+                deadline - timedelta(seconds=1), trip["weekday"], _parse_time(trip["time"])).isoformat()
             released[trip["key"]] = False
         else:
             released[trip["key"]] = True
@@ -202,6 +220,7 @@ class WeekPlanner:
         self.reload_pending = False
         self._store = entry.runtime_data.store  # fest merken: bleibt gültig, auch wenn neu geladen wird
         self._tick_lock = asyncio.Lock()
+        self._sync_lock = asyncio.Lock()  # schnelle Klicks: Liste nie doppelt oder überholt abgleichen
         self._labels: set[str] = set()
         self._rotation = 0
         self._wish_texts: set[str] = set()
@@ -287,7 +306,9 @@ class WeekPlanner:
                                      settings[CONF_SKIP_SPICES])
         catalog = parse_catalog(settings[CONF_CATALOG])
         if settings[CONF_AI_TASK] and settings[CONF_AI_SHOPPING] and items:
-            cache_key = f"p{portions}"
+            # Schlüssel hängt an allem, was das Ergebnis ändert (Zutaten nach Grundzutaten-Filter, Katalog, Sprache)
+            basis = json.dumps([items, catalog, settings[CONF_REGION]], sort_keys=True, ensure_ascii=False, default=str)
+            cache_key = f"p{portions}-{hashlib.sha1(basis.encode(), usedforsecurity=False).hexdigest()[:8]}"
             cached = (recipe.get("ai_shopping") or {}).get(cache_key)
             if cached:
                 items = cached
@@ -317,6 +338,10 @@ class WeekPlanner:
 
     async def async_sync(self) -> dict[str, list[str]]:
         """Einkaufsliste an die Auswahl angleichen (eintragen bzw. austragen)."""
+        async with self._sync_lock:
+            return await self._sync()
+
+    async def _sync(self) -> dict[str, list[str]]:
         report: dict[str, list[str]] = {"added": [], "removed": [], "errors": []}
         target = self._list_entity()
         failed: list[tuple[str, Exception]] = []
@@ -347,6 +372,16 @@ class WeekPlanner:
             raise HomeAssistantError(f"Einkaufsliste für '{title}' nicht abgeglichen: {first}") from first
         return report
 
+    async def _untag_dropped(self, old: dict[str, Any] | None, new_dishes: list[dict[str, Any]]) -> None:
+        """Beim Ersetzen einer Tafel: Zutaten wegfallender Gerichte von der Einkaufsliste nehmen."""
+        keep = {d["id"] for d in new_dishes}
+        for dish in (old or {}).get("dishes", []):
+            if dish["id"] not in keep and dish.get("on_list") and not dish.get("cooked_on"):
+                try:
+                    await async_remove_tag(self.hass, self._list_entity(), dish["title"])
+                except HomeAssistantError as err:
+                    _LOGGER.warning("Einkaufsliste für '%s' nicht bereinigt: %s", dish["title"], err)
+
     # ---------------------------------------------------------- Aktionen ---
     async def async_choose(self, dish_id: str, choice: str) -> dict[str, Any]:
         _, _, dish = self.find(dish_id)
@@ -375,7 +410,10 @@ class WeekPlanner:
             dish["note"] = before.get("dish_note")
             self._changed()
             return {"dish": dish}
-        if not dish.get("cooked_on"):
+        if dish.get("cooked_on"):
+            # schon gekocht, jetzt nur Sterne oder Notiz: Kochtag bleibt, kein zweiter Eintrag im Verlauf
+            today = date.fromisoformat(dish["cooked_on"])
+        else:
             rec = self.store.get(dish["recipe_id"]) if dish.get("recipe_id") else None
             hist = (rec or {}).get("history") or {}
             dish["before_cooked"] = {"rating": hist.get("rating"), "note": hist.get("note"),
@@ -421,8 +459,14 @@ class WeekPlanner:
         if not nxt:
             return {"finalized": False, "reason": "keine Vorschläge"}
         target = self._list_entity()
+        # in der laufenden Woche inzwischen gekocht: die übernommene Kopie braucht es nicht mehr
+        cooked = {_norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])
+                  if d["cooked_on"]}
         for dish in nxt["dishes"]:
-            if dish["choice"] in (CHOICE_NONE, CHOICE_DECLINED) and dish["on_list"]:
+            if dish.get("carried") and _norm_title(dish["title"]) in cooked:
+                dish["choice"] = CHOICE_DECLINED
+            # auch Einkäufe, die es nach einer Änderung der Einstellungen nicht mehr gibt
+            if dish["choice"] not in self.trip_keys and dish["on_list"]:
                 await async_remove_tag(self.hass, target, dish["title"])
                 dish["on_list"] = False
         kept = [d for d in nxt["dishes"] if d["choice"] in self.trip_keys]
@@ -452,6 +496,7 @@ class WeekPlanner:
         now = dt_util.now()
         if board_key == "next":
             if not dishes:
+                await self._untag_dropped(self.boards.get("next"), [])
                 self.boards["next"] = None
                 self._changed()
                 return {"board": "next", "count": 0, "cleared": True}
@@ -499,6 +544,7 @@ class WeekPlanner:
                  "source": "import", "excluded": [], "deficits": [], "notified": True}
         if board_key == "current":
             board["finalized_at"] = now.isoformat()
+        await self._untag_dropped(self.boards.get(board_key), built)
         self.boards[board_key] = board
         report = await self.async_sync()
         return {"board": board_key, "kw": meta["kw"], "count": len(built), "problems": problems, **report}
@@ -681,6 +727,7 @@ class WeekPlanner:
             host = (urlparse(url).hostname or "").removeprefix("www.")
         if host.startswith("cookidoo."):
             url = await self._cookidoo_local(url, dish)
+            host = (urlparse(url).hostname or "").removeprefix("www.")
         # Wünsche dürfen nur die Seite nutzen, deren Link jemand selbst auf die Wunschliste geschrieben hat
         if host not in enabled_sources(settings) and not (wish and host in self._wish_hosts):
             reason = f"'{title}': Seite {host} ist nicht freigegeben"
@@ -785,14 +832,7 @@ class WeekPlanner:
 
     def _is_open_wish(self, wish: str, title: str) -> bool:
         """Gehört der Vorschlag zu einem Eintrag auf der Wunschliste?"""
-        def within(part: str, whole: str) -> bool:
-            return len(part) >= 3 and re.search(rf"(?<!\w){re.escape(part)}(?!\w)", whole) is not None
-
-        for text in self._wish_texts:
-            for value in (_norm_title(wish), _norm_title(title)):
-                if text and value and (text == value or within(text, value) or within(value, text)):
-                    return True
-        return False
+        return any(_wish_matches(text, (wish, title)) for text in self._wish_texts)
 
     async def _search_dish(
         self, prop: dict[str, Any], title: str, prefer: str, taken: set[str], today: date, reason: str
@@ -892,7 +932,8 @@ class WeekPlanner:
                     "Hauptzutaten). Nur echte Links. Antworte ausschließlich mit JSON: "
                     '{"url": "https://…" oder null, "title": "Titel in der Landessprache"}'))
                 alt = str((answer or {}).get("url") or "").strip() if isinstance(answer, dict) else ""
-                if alt and f"/{locale.lower()}/" in alt.lower():
+                alt_host = (urlparse(alt).hostname or "").removeprefix("www.") if alt else ""
+                if alt and alt_host.startswith("cookidoo.") and f"/{locale.lower()}/" in alt.lower():
                     recipe = self.store.upsert(await fetch_recipe(self.hass, alt), alt)
                     new_title = str(answer.get("title") or recipe.get("title") or "").strip()
                     if new_title:
@@ -1009,9 +1050,10 @@ class WeekPlanner:
 
     @staticmethod
     def _open_wishes(wishes: list[dict[str, Any]], dishes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        done = {_norm_title(d["wish"]) for d in dishes if d.get("wish")} | {
-            _norm_title(d["title"]) for d in dishes if d.get("wish")}
-        return [w for w in wishes if _norm_title(w["text"]) not in done]
+        """Wünsche, zu denen noch kein Gericht eingeplant ist (gleiche Zuordnung wie beim Prüfen)."""
+        wished = [d for d in dishes if d.get("wish")]
+        return [w for w in wishes if not any(
+            _wish_matches(_norm_title(w["text"]), (d["wish"], d["title"], d.get("url"))) for d in wished)]
 
     def _drop_unfit(self, dishes: list[dict[str, Any]], excluded: set[str]) -> list[str]:
         """Plan voll, aber Vorgaben offen: unpassende Gerichte (keine Wünsche, nicht übernommen) austauschen."""
@@ -1039,7 +1081,11 @@ class WeekPlanner:
                 break
             if not isinstance(prop, dict):
                 continue
-            taken = {_norm_title(d["title"]) for d in dishes} | excluded
+            taken = {_norm_title(d["title"]) for d in dishes}
+            wish = str(prop.get("wish") or "")
+            if not (wish and self._is_open_wish(wish, str(prop.get("title") or ""))):
+                # ausgeschlossene Titel (zuletzt gekocht, schon verworfen) gelten nicht für echte Wünsche
+                taken |= excluded
             try:
                 dish, reason = await self._check_dish(prop, taken, today)
             except Exception as err:  # noqa: BLE001 - ein kaputter Vorschlag darf den Lauf nicht abbrechen
@@ -1085,15 +1131,19 @@ class WeekPlanner:
                  "deficits": [label for label, *_ in self._week_deficits(dishes)]}
         board["created"] = board["created"] or dt_util.now().isoformat()
         board["notified"] = bool(old.get("notified")) and old.get("id") == meta["id"]
+        await self._untag_dropped(old, dishes)
         self.boards["next"] = board
         self._changed()
         open_wishes = self._open_wishes(wishes, dishes)
         open_uids = {w["uid"] for w in open_wishes}
         fulfilled = [w for w in wishes if w["uid"] not in open_uids]
         for wish in fulfilled:  # nicht eingeplante Wünsche bleiben für nächste Woche stehen
-            await self.hass.services.async_call(
-                "todo", "remove_item", {"entity_id": self.wishes_entity(), "item": wish["uid"]},
-                blocking=True)
+            try:
+                await self.hass.services.async_call(
+                    "todo", "remove_item", {"entity_id": self.wishes_entity(), "item": wish["uid"]},
+                    blocking=True)
+            except HomeAssistantError as err:  # schon gelöscht o. Ä.: die Benachrichtigung trotzdem senden
+                _LOGGER.debug("Wunsch nicht entfernt: %s", err)
         if notify and not board["notified"]:
             board["notified"] = True
             self._changed()
@@ -1164,11 +1214,12 @@ class WeekPlanner:
 
     async def _fill(self, meta: dict[str, Any], ctx: dict[str, Any], dishes: list[dict[str, Any]],
                     excluded: set[str], total: int, notes: str | None,
-                    quota: bool = True) -> tuple[list[str], int]:
+                    quota: bool = True, drop: bool = True) -> tuple[list[str], int]:
         """KI so lange fragen, bis `dishes` voll ist und die Wochenvorgaben passen (höchstens MAX_PLAN_ROUNDS).
 
         quota=False (Zusatzvorschläge): nur auffüllen, Wochenvorgaben wie Schnell-Anteil oder fleischlose
-        Gerichte gelten dann nicht, weil die neuen Gerichte Alternativen sind und keine Wochenplätze."""
+        Gerichte gelten dann nicht, weil die neuen Gerichte Alternativen sind und keine Wochenplätze.
+        drop=False (Tauschen): andere Gerichte nie aussortieren, nur den freien Platz füllen."""
         def unmet() -> bool:
             return quota and bool(self._week_deficits(dishes))
 
@@ -1177,7 +1228,7 @@ class WeekPlanner:
         rounds = 0
         for rounds in range(1, MAX_PLAN_ROUNDS + 1):
             if len(dishes) >= total:
-                if not unmet():
+                if not unmet() or not drop:
                     break
                 feedback.extend(self._drop_unfit(dishes, excluded))
                 if len(dishes) >= total or rounds == MAX_PLAN_ROUNDS:
@@ -1198,7 +1249,7 @@ class WeekPlanner:
             proposals = answer.get("dishes", []) if isinstance(answer, dict) else []
             feedback = []
             await self._accept(proposals, dishes, excluded, rejected, total, quota)
-            if len(dishes) >= total and not unmet():
+            if len(dishes) >= total and (not unmet() or not drop):
                 break
         return rejected, rounds
 
@@ -1270,7 +1321,9 @@ class WeekPlanner:
         others = [d for d in board["dishes"] if d is not dish]
         excluded = set(board.get("excluded") or []) | {_norm_title(dish["title"])}
         dishes = list(others)
-        rejected, _ = await self._fill(meta, ctx, dishes, excluded, len(others) + 1, notes)
+        # Tauschen füllt genau einen Platz: Wochenvorgaben nur bei den Vorschlägen, die laufende Woche steht
+        rejected, _ = await self._fill(meta, ctx, dishes, excluded, len(others) + 1, notes,
+                                       quota=key == "next", drop=False)
         new = next((d for d in dishes if d not in others), None)
         if new is None:
             raise HomeAssistantError("Kein passendes anderes Gericht gefunden. " + "; ".join(rejected[-3:]))
