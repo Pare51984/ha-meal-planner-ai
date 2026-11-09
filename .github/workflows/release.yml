@@ -1,0 +1,40 @@
+name: Release
+
+# Runs after "Validate" (HACS action + hassfest + tests) finished successfully on main
+# and creates tag + GitHub release for the version in manifest.json, if that
+# release does not exist yet. So every release is created after validation passed.
+on:
+  workflow_run:
+    workflows: [Validate]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Create release if missing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          VER=$(python3 -c "import json;print(json.load(open('custom_components/meal_planner_ai/manifest.json'))['version'])")
+          TAG="v$VER"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists, nothing to do."
+            exit 0
+          fi
+          NOTES_FILE="release-notes/$TAG.md"
+          if [ -f "$NOTES_FILE" ]; then
+            gh release create "$TAG" --target "$TARGET" --title "$TAG" --notes-file "$NOTES_FILE"
+          else
+            gh release create "$TAG" --target "$TARGET" --title "$TAG" --generate-notes
+          fi
