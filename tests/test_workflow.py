@@ -6,7 +6,7 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant, SupportsResponse
 
-from .test_integration import PAGES, URL1, URL2, call, fake_fetch, page
+from .test_integration import PAGES, URL1, URL2, call, page
 
 DOMAIN = "meal_planner_ai"
 URL3 = "https://www.chefkoch.de/rezepte/3/Gemuesepfanne.html"

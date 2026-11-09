@@ -143,7 +143,7 @@ async def fetch_html(hass: HomeAssistant, url: str) -> tuple[str, str]:
                         break
                 raw = b"".join(chunks)
                 return raw.decode(resp.charset or "utf-8", errors="replace"), str(current)
-    except (aiohttp.ClientError, asyncio.TimeoutError) as err:
+    except (TimeoutError, aiohttp.ClientError) as err:
         raise RecipeFetchError(f"Rezeptseite nicht erreichbar: {err}") from err
     raise RecipeFetchError(f"Zu viele Weiterleitungen ({current.host}).")
 

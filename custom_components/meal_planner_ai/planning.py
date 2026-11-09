@@ -57,7 +57,7 @@ def trips_from_options(options: dict[str, Any]) -> list[dict[str, Any]]:
             raw[1]["weekday"] = int(options.get("late_weekday", 0))
             raw[1]["time"] = str(options.get("late_time", "18:00"))
     trips = []
-    for key, trip in zip(TRIP_KEYS, raw):
+    for key, trip in zip(TRIP_KEYS, raw, strict=False):  # höchstens so viele Einkäufe wie Schlüssel
         release = trip.get("release", RELEASE_IMMEDIATE)
         trips.append({
             "key": key,

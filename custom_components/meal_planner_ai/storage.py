@@ -29,11 +29,11 @@ def normalize_url(url: str) -> str:
 
 
 def recipe_id_for(url: str) -> str:
-    return hashlib.sha1(normalize_url(url).encode()).hexdigest()[:12]
+    return hashlib.sha1(normalize_url(url).encode(), usedforsecurity=False).hexdigest()[:12]
 
 
 def title_id_for(title: str) -> str:
-    return "t" + hashlib.sha1(title.strip().lower().encode()).hexdigest()[:11]
+    return "t" + hashlib.sha1(title.strip().lower().encode(), usedforsecurity=False).hexdigest()[:11]
 
 
 def _empty_history() -> dict[str, Any]:

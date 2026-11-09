@@ -1,0 +1,56 @@
+name: Code quality
+
+# Zusätzliche Prüfungen. Blockieren keine Releases (die hängen nur an "Validate"),
+# Ergebnisse stehen im Lauf und bei CodeQL unter Security → Code scanning.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install ruff
+      - run: ruff check --output-format=github custom_components tests
+
+  mypy:
+    runs-on: ubuntu-latest
+    # noch viele Hinweise zu fehlenden None-Prüfungen offen: nur berichten, nicht rot werden
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install mypy -r requirements_test.txt
+      - run: mypy custom_components/meal_planner_ai | tee mypy.txt; echo "### mypy: $(tail -1 mypy.txt)" >> "$GITHUB_STEP_SUMMARY"
+
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, javascript-typescript]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{ matrix.language }}

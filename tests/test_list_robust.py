@@ -59,7 +59,7 @@ async def test_remove_survives_new_ids(hass: HomeAssistant):
     items = [{"uid": "a", "summary": "Linsen", "description": "200 g (Spätzle)"},
              {"uid": "b", "summary": "Zwiebeln", "description": "1 (Curry) + 2 (Spätzle)"},
              {"uid": "c", "summary": "Milch", "description": "1 l (Curry)"}]
-    calls = _fake_list(hass, items, new_ids=True, stale_first=1)
+    _fake_list(hass, items, new_ids=True, stale_first=1)
     removed = await async_remove_tag(hass, ENTITY, "Spätzle")
     assert sorted(removed) == ["Linsen", "Zwiebeln"]
     assert [i["summary"] for i in items] == ["Zwiebeln", "Milch"]

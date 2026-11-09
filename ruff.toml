@@ -1,0 +1,12 @@
+# Code-Prüfung (läuft im Workflow "Code quality", blockiert keine Releases)
+target-version = "py313"
+line-length = 120
+
+[lint]
+# E/W Stil, F echte Fehler (unbenutzt, undefiniert), B typische Fallen, ASYNC asyncio-Fehler,
+# S Sicherheit, UP veraltete Syntax, SIM Vereinfachungen
+select = ["E", "W", "F", "B", "ASYNC", "S", "UP", "SIM"]
+ignore = ["E501", "SIM105", "SIM108"]
+
+[lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106", "E741"]

@@ -5,7 +5,7 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 
-from .test_integration import PAGES, URL1, URL2, call, fake_fetch
+from .test_integration import URL1, URL2, call, fake_fetch
 
 DOMAIN = "meal_planner_ai"
 

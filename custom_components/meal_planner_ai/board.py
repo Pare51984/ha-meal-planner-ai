@@ -343,8 +343,8 @@ class WeekPlanner:
         self._changed()
         if failed and not report["added"] and not report["removed"]:
             # nichts ging: einmal deutlich melden (beim nächsten Abgleich wird es erneut versucht)
-            title, err = failed[0]
-            raise HomeAssistantError(f"Einkaufsliste für '{title}' nicht abgeglichen: {err}") from err
+            title, first = failed[0]
+            raise HomeAssistantError(f"Einkaufsliste für '{title}' nicht abgeglichen: {first}") from first
         return report
 
     # ---------------------------------------------------------- Aktionen ---
@@ -1314,7 +1314,7 @@ class WeekPlanner:
             return {"due": False, "reason": why, "next_planning": plan_at, "need": 0,
                     "how_to_submit": "Nichts zu tun, Lauf beenden."}
         if not due:
-            why = "Von Hand neu begonnen (außerhalb des Zeitplans)." 
+            why = "Von Hand neu begonnen (außerhalb des Zeitplans)."
         meta = self._plan_meta()
         total = self.settings[CONF_RECIPES_PER_WEEK]
         board = None if restart else self._next_for(meta)

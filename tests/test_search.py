@@ -3,7 +3,6 @@ from datetime import date
 from unittest.mock import patch
 
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
 
 from custom_components.meal_planner_ai.search import extract_links, search_url
 
