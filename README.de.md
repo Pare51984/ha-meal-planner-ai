@@ -65,6 +65,10 @@ Rezepte mit Suche und Sortierung. Sterne und Notizen lassen sich ändern, Bewert
 Wer beides als eigene Karte woanders haben will, nimmt `custom:meal-planner-memory-card`.
 
 ## Wochenablauf
+Einkäufe mit festem Termin (z. B. Samstag 12 Uhr) haben in der Karte einen Knopf **„jetzt einkaufen“**: Wer früher
+einkauft, tippt ihn zweimal, und die gewählten Gerichte kommen sofort auf die Liste. Die Zeitleiste in „So geht's“ zeigt aus
+den Einstellungen, wann was passiert.
+
 Alles ist einstellbar: Wann die Vorschläge kommen, wann Auswahlschluss ist und wie oft eingekauft wird
 (1 bis 7 Einkäufe pro Woche, je mit Namen, Kochtagen und Freigabe „sofort“ oder „Wochentag + Uhrzeit“,
 auch sonntags). Zum eingestellten Zeitpunkt (Standard Freitag 18 Uhr) erstellt die KI die Vorschläge für die kommende
@@ -146,7 +150,7 @@ Planungszeitpunkt, muss nur die Uhrzeit der Aufgabe angepasst werden; der Einric
 ## Was getestet ist
 Live getestet: Home Assistant 2026.11 auf Raspberry Pi 4, Deutsch, Bring!, Gemini als KI und Such-Agent, Claude als
 externe KI über eine geplante Aufgabe mit MCP-App, alle Anzeigearten, Übernahme vom Vorgänger „Essensplaner“.
-Die automatischen Tests (77) laufen gegen Home Assistant 2026.2.
+Die automatischen Tests (79) laufen gegen Home Assistant 2026.2.
 
 **Noch nicht getestet, Tester willkommen:** die offizielle Integration *Model Context Protocol Server* als MCP-Weg,
 Claude und ChatGPT als KI in Home Assistant, ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,

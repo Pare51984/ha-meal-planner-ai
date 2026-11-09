@@ -1,7 +1,7 @@
 // meal-planner-card: Kacheln für die Integration "Essensplaner".
 // Liest sensor.meal_planner_proposals, sensor.meal_planner_week und todo.meal_planner_wishes,
 // schaltet über die Aktionen der Integration. Knöpfe richten sich nach den eingestellten Einkäufen.
-const VERSION = "2.2.0";
+const VERSION = "2.3.0";
 const DOMAIN = "meal_planner_ai";
 console.info("%c MEAL-PLANNER-CARD %c " + VERSION + " ", "background:#6E7F4E;color:#fff", "");
 
@@ -10,6 +10,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 // Oberflächentexte; Sprache = Home-Assistant-Profil (Rückfall: Englisch, dann Deutsch)
 const I18N = {
   de: {
+    shop_now: "{trip} jetzt einkaufen", shop_sure: "Nochmal tippen: {trip} kommt jetzt auf die Liste", shop_hint: "Ihr kauft früher ein? Dann kommt der Einkauf sofort auf die Einkaufsliste.",
     tl_plan: "**{n} Vorschläge** kommen als Kacheln. Wünsche bis dahin unten unter **Essenswünsche** eintragen.", tl_deadline: "**Auswahlschluss:** nicht Gewähltes verschwindet, die Woche steht.", tl_release: "**{trip}** kommt auf die Einkaufsliste, später Gewähltes sofort.",
     m_admin: "Geschmacksprofil und Rezepte können nur Administratoren ändern.",
     title: "Essensplan", h_title: "So geht's", h_pick: "**Auswählen:** Pro Gericht einen Einkauf antippen ({trips}), nochmal tippen = abwählen. Gestrichelt = Tipp des Planers.", h_now: "{trip} kommt sofort nach dem Antippen auf die Einkaufsliste.", h_undo: "**Umentschieden?** Auf der Kachel **Doch nicht** drücken, die Zutaten kommen wieder von der Liste.", h_cook: "**Gekocht?** Kreis antippen. **Sterne** sind freiwillig und fließen in die nächsten Vorschläge ein.", sub_now: "sofort", sub_at: "ab {at}",
@@ -48,6 +49,7 @@ const I18N = {
     m_more: "{n} weitere anzeigen", m_count: "{n} Rezepte",
   },
   en: {
+    shop_now: "Shop {trip} now", shop_sure: "Tap again: {trip} goes on the list now", shop_hint: "Shopping earlier? Then this trip goes on the shopping list right away.",
     tl_plan: "**{n} suggestions** arrive as tiles. Add wishes below under **Meal wishes** before then.", tl_deadline: "**Selection closes:** unpicked suggestions disappear, the week is set.", tl_release: "**{trip}** goes on the shopping list, later picks right away.",
     m_admin: "Only administrators can change the taste profile and recipes.",
     title: "Meal plan", h_title: "How it works", h_pick: "**Choose:** tap a shopping trip per dish ({trips}), tap again to deselect. Dashed = the planner's tip.", h_now: "{trip} goes on the shopping list as soon as you tap.", h_undo: "**Changed your mind?** Press **Not after all** on the tile, the ingredients come off the list.", h_cook: "**Cooked?** Tap the circle. **Stars** are optional and shape the next suggestions.", sub_now: "right away", sub_at: "from {at}",
@@ -86,6 +88,7 @@ const I18N = {
     m_more: "Show {n} more", m_count: "{n} recipes",
   },
   es: {
+    shop_now: "Comprar {trip} ahora", shop_sure: "Toca otra vez: {trip} pasa ahora a la lista", shop_hint: "¿Compráis antes? Entonces esta compra pasa ya a la lista.",
     tl_plan: "Llegan **{n} propuestas** como tarjetas. Antes, añade deseos abajo en **Deseos de comida**.", tl_deadline: "**Cierre de la elección:** lo no elegido desaparece, la semana queda fijada.", tl_release: "**{trip}** pasa a la lista de la compra, lo elegido después al momento.",
     m_admin: "Solo los administradores pueden cambiar el perfil de gustos y las recetas.",
     title: "Menú", h_title: "Cómo funciona", h_pick: "**Elegir:** toca una compra por plato ({trips}), otra vez = quitar. Discontinuo = consejo del planificador.", h_now: "{trip} pasa a la lista de la compra al tocarlo.", h_undo: "**¿Cambio de idea?** Pulsa **Mejor no** en la tarjeta, los ingredientes salen de la lista.", h_cook: "**¿Cocinado?** Toca el círculo. Las **estrellas** son opcionales y orientan las próximas propuestas.", sub_now: "al momento", sub_at: "desde {at}",
@@ -124,6 +127,7 @@ const I18N = {
     cancel: "Cancelar", back: "Atrás", all_settings: "Todos los ajustes", no_choice: "Nada que elegir.",
   },
   pt: {
+    shop_now: "Comprar {trip} agora", shop_sure: "Toca outra vez: {trip} vai agora para a lista", shop_hint: "Vão às compras mais cedo? Então esta compra vai já para a lista.",
     tl_plan: "Chegam **{n} sugestões** como cartões. Antes disso, adiciona desejos abaixo em **Desejos de refeição**.", tl_deadline: "**Fecho da escolha:** o que não foi escolhido desaparece, a semana fica definida.", tl_release: "**{trip}** vai para a lista de compras, escolhas posteriores de imediato.",
     m_admin: "Só os administradores podem alterar o perfil de gostos e as receitas.",
     title: "Ementa", h_title: "Como funciona", h_pick: "**Escolher:** toca numa compra por prato ({trips}), de novo = retirar. Tracejado = dica do planeador.", h_now: "{trip} vai para a lista de compras ao tocar.", h_undo: "**Mudaste de ideias?** Carrega em **Afinal não** no cartão, os ingredientes saem da lista.", h_cook: "**Cozinhado?** Toca no círculo. As **estrelas** são opcionais e orientam as próximas sugestões.", sub_now: "já", sub_at: "a partir de {at}",
@@ -162,6 +166,7 @@ const I18N = {
     cancel: "Cancelar", back: "Voltar", all_settings: "Todas as definições", no_choice: "Nada para escolher.",
   },
   fr: {
+    shop_now: "Faire {trip} maintenant", shop_sure: "Touchez encore : {trip} va sur la liste maintenant", shop_hint: "Vous faites les courses plus tôt ? Cette course va tout de suite sur la liste.",
     tl_plan: "**{n} propositions** arrivent en tuiles. Ajoutez vos envies avant, ci-dessous sous **Envies de repas**.", tl_deadline: "**Clôture du choix :** ce qui n'est pas choisi disparaît, la semaine est fixée.", tl_release: "**{trip}** va sur la liste de courses, les choix suivants tout de suite.",
     m_admin: "Seuls les administrateurs peuvent modifier le profil de goûts et les recettes.",
     title: "Menu", h_title: "Mode d'emploi", h_pick: "**Choisir :** touchez une course par plat ({trips}), à nouveau = retirer. Pointillés = conseil du planificateur.", h_now: "{trip} va sur la liste de courses dès que vous touchez.", h_undo: "**Changé d'avis ?** Appuyez sur **Finalement non** sur la tuile, les ingrédients quittent la liste.", h_cook: "**Cuisiné ?** Touchez le cercle. Les **étoiles** sont facultatives et guident les prochaines propositions.", sub_now: "tout de suite", sub_at: "dès {at}",
@@ -314,6 +319,7 @@ const cardCss = (config) => `
       .small.on{background:var(--_accent);color:var(--_accent-text)}
       .rbox{display:flex;gap:6px;margin-top:8px}
       .darow{display:flex;align-items:center;gap:8px;margin-top:8px}
+      .darow.shop{flex-wrap:wrap;margin:-4px 4px 14px}
       .darow.pick{margin:-4px 4px 14px}
       .rbox input,.wish input{flex:1;min-width:0;font:inherit;font-size:13px;border:1px solid var(--_border);border-radius:calc(var(--_radius) * .6);padding:7px 10px;background:var(--_input);color:var(--_text)}
       .wish{display:flex;gap:6px;margin:0 0 8px}
@@ -519,6 +525,12 @@ class EssensplanerCard extends HTMLElement {
       body += `<div class="sec">${esc(t("week", { c: cooked, n: plan.length }))}<span>${t("week_hint")}</span></div>
         <div class="grid">${plan.map(weekTile).join("")}</div>`;
     }
+    // Früher einkaufen: Einkäufe mit festem Termin, die noch nicht auf der Liste sind, sofort freigeben
+    const waiting = trips.filter((x) => [[prop, props], [week, plan]].some(([b, ds]) =>
+      (b.released || {})[x.key] === false && ds.some((d) => d.choice === x.key && !d.ingredients_ready && !d.own_recipe)));
+    if (waiting.length) {
+      body += `<div class="darow shop">${waiting.map((x) => `<button class="small ${this._shopSure === x.key ? "on" : ""}" data-act="shopnow" data-trip="${esc(x.key)}">🛒 ${esc(this._shopSure === x.key ? t("shop_sure", { trip: x.name }) : t("shop_now", { trip: x.name }))}</button>`).join("")}<span class="hint">${esc(t("shop_hint"))}</span></div>`;
+    }
     if (!props.length && !plan.length) body += `<div class="empty">${t("empty")}</div>`;
     if (this._hass.states[this._config.wishes]) {
       const open = this._wishes.filter((w) => w.status !== "completed");
@@ -561,6 +573,12 @@ class EssensplanerCard extends HTMLElement {
       const act = el.dataset.act;
       if (act === "wish" || act === "wishown") return this._addWish(act === "wishown");
       if (act === "delwish") return this._hass.callService("todo", "remove_item", { item: el.dataset.uid }, { entity_id: this._config.wishes });
+      if (act === "shopnow") {
+        // zweimal tippen: der Einkauf landet sofort auf der Liste
+        if (this._shopSure !== el.dataset.trip) { this._shopSure = el.dataset.trip; return this._render(); }
+        this._shopSure = null;
+        return this._svc("release_shopping", { trip: el.dataset.trip });
+      }
       const d = find(el.dataset.id); if (!d) return;
       if (act === "pick") this._svc("choose_dish", { dish_id: d.id, choice: d.choice === el.dataset.trip ? "none" : el.dataset.trip });
       else if (act === "ready") this._svc("set_ingredients_ready", { dish_id: d.id, ready: !d.ingredients_ready });

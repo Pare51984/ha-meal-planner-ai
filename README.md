@@ -21,6 +21,7 @@ No extra app and no cloud service of its own: recipes are read straight from the
   (each with its own name, cooking days and release time).
 * Dashboard card with tiles per dish: choose a shopping trip, mark "ingredients at home", tick off cooked
   dishes, rate them with stars, add wishes. A timeline built from your settings shows when what happens.
+* Shopping trips with a fixed time (e.g. Saturday 12:00) get a **Shop now** button for when you go earlier.
 * Rules the integration checks itself: time limit, quick dishes per week, kcal per serving, vegetarian, vegan,
   lactose free, gluten free and low cholesterol counts, max dishes with the same main ingredient, habits in your own
   words, kitchen devices, calendar rules (e.g. "guest eats with us").
@@ -78,7 +79,7 @@ on their own.
 ## What is tested
 Tested live: Home Assistant 2026.11 on a Raspberry Pi 4, German, Bring! via the Bring! integration, Gemini as AI task and
 search agent, Claude as external AI through a scheduled task with an MCP add-on, all display modes, migration from the
-predecessor "Essensplaner". The automated tests (77) run against Home Assistant 2026.2.
+predecessor "Essensplaner". The automated tests (79) run against Home Assistant 2026.2.
 
 **Not tested yet, testers welcome:**
 * the official *Model Context Protocol Server* integration as the MCP path

@@ -334,3 +334,39 @@ async def test_import_week_current_and_clear_next(hass: HomeAssistant, freezer):
     freezer.move_to("2026-11-09 18:00:05+01:00")
     done = await planner.async_tick(dt_util.now())
     assert "release" in done and cur["dishes"][0]["on_list"] is True
+
+
+# ------------------------------------- Einkauf mit Termin = Auswahlschluss, „jetzt einkaufen“ ---
+async def test_trip_released_at_deadline_and_shop_now(hass: HomeAssistant, freezer):
+    freezer.move_to("2026-11-13 18:30:00+01:00")
+    entry = await _external(hass)
+    trips = [{"key": "trip1", "name": "Sa–Di", "release": "timed", "weekday": 5, "time": "12:00", "days": []},
+             {"key": "trip2", "name": "Mi–Fr", "release": "timed", "weekday": 0, "time": "18:00", "days": []}]
+    hass.config_entries.async_update_entry(entry, options={**entry.options, "trips": trips})
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "submit_proposals", {"dishes": [{"title": "Linsencurry", "url": URL2}]})
+        dish = planner.boards["next"]["dishes"][0]
+        await call(hass, "choose_dish", {"dish_id": dish["id"], "choice": "trip1"})
+        assert dish["on_list"] is False  # wartet auf Samstag 12 Uhr
+        freezer.move_to("2026-11-14 12:00:05+01:00")
+        done = await planner.async_tick(dt_util.now())
+    assert "finalize" in done and "release" in done
+    assert planner.boards["current"]["dishes"][0]["on_list"] is True
+
+
+async def test_shop_now_releases_early(hass: HomeAssistant, freezer):
+    freezer.move_to("2026-11-13 18:30:00+01:00")
+    entry = await _external(hass)
+    trips = [{"key": "trip1", "name": "Sa–Di", "release": "timed", "weekday": 5, "time": "12:00", "days": []}]
+    hass.config_entries.async_update_entry(entry, options={**entry.options, "trips": trips})
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "submit_proposals", {"dishes": [{"title": "Linsencurry", "url": URL2}]})
+        dish = planner.boards["next"]["dishes"][0]
+        await call(hass, "choose_dish", {"dish_id": dish["id"], "choice": "trip1"})
+        assert dish["on_list"] is False
+        await call(hass, "release_shopping", {"trip": "trip1"})
+    assert dish["on_list"] is True
