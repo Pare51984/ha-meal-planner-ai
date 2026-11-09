@@ -1,0 +1,307 @@
+import_recipe:
+  fields:
+    url:
+      required: true
+      example: "https://www.chefkoch.de/rezepte/3199691476184958/Nudeln-mit-Spinat-Hackfleisch-Sosse.html"
+      selector:
+        text:
+          type: url
+    save:
+      default: true
+      selector:
+        boolean:
+
+get_recipe:
+  fields:
+    recipe_id:
+      selector:
+        text:
+    url:
+      selector:
+        text:
+          type: url
+    title:
+      selector:
+        text:
+
+list_recipes:
+  fields:
+    query:
+      selector:
+        text:
+    status:
+      selector:
+        select:
+          options: [new, bought, cooked]
+          translation_key: status
+    min_rating:
+      selector:
+        number:
+          min: 1
+          max: 5
+    limit:
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 1000
+          mode: box
+
+delete_recipe:
+  fields:
+    recipe_id:
+      required: true
+      selector:
+        text:
+
+add_to_shopping_list:
+  fields:
+    recipe_id:
+      selector:
+        text:
+    url:
+      selector:
+        text:
+          type: url
+    title:
+      selector:
+        text:
+    servings:
+      selector:
+        number:
+          min: 0.5
+          max: 50
+          step: 0.5
+          mode: box
+    force:
+      default: false
+      selector:
+        boolean:
+
+update_history:
+  fields:
+    recipe_id:
+      selector:
+        text:
+    url:
+      selector:
+        text:
+          type: url
+    title:
+      selector:
+        text:
+    rating:
+      selector:
+        number:
+          min: 0
+          max: 5
+    cooked_on:
+      selector:
+        date:
+    remove_cooked_on:
+      selector:
+        date:
+    status:
+      selector:
+        select:
+          options: [new, bought, cooked]
+          translation_key: status
+    note:
+      selector:
+        text:
+
+import_history:
+  fields:
+    entries:
+      required: true
+      example: '[{"title": "Gnocchi-Pfanne", "url": "https://www.chefkoch.de/rezepte/...", "rating": 4, "cooked_on": ["2026-10-12"]}]'
+      selector:
+        object:
+    fetch_recipes:
+      default: false
+      selector:
+        boolean:
+
+validate_plan:
+  fields:
+    recipe_ids:
+      selector:
+        object:
+    urls:
+      selector:
+        object:
+
+get_settings:
+
+search_recipes:
+  fields:
+    query:
+      required: true
+      example: "Kürbis Gnocchi"
+      selector:
+        text:
+    sites:
+      selector:
+        object:
+
+assess_recipes:
+  fields:
+    recipe_ids:
+      selector:
+        object:
+    keys:
+      selector:
+        select:
+          multiple: true
+          options: [vegetarian, vegan, lactose_free, gluten_free, low_cholesterol, low_calorie]
+          translation_key: diet
+    force:
+      default: false
+      selector:
+        boolean:
+
+generate_proposals:
+  fields:
+    notes:
+      example: "Mittwoch etwas Schnelles, einmal Fisch"
+      selector:
+        text:
+          multiline: true
+    force:
+      default: false
+      selector:
+        boolean:
+
+memory_overview:
+
+external_setup:
+  fields:
+    activate:
+      default: false
+      selector:
+        boolean:
+    view:
+      default: false
+      selector:
+        boolean:
+
+set_profile:
+  fields:
+    text:
+      example: "Wir essen gern scharf, keine Pilze"
+      selector:
+        text:
+          multiline: true
+
+planning_brief:
+  fields:
+    notes:
+      example: "Mittwoch etwas Schnelles"
+      selector:
+        text:
+          multiline: true
+    restart:
+      default: false
+      selector:
+        boolean:
+
+submit_proposals:
+  fields:
+    dishes:
+      required: true
+      example: '[{"title": "Linsen-Dal", "url": "https://www.chefkoch.de/rezepte/…", "tip": "trip1"}]'
+      selector:
+        object:
+    final:
+      default: false
+      selector:
+        boolean:
+    restart:
+      default: false
+      selector:
+        boolean:
+
+choose_dish:
+  fields:
+    dish_id:
+      required: true
+      selector:
+        text:
+    choice:
+      required: true
+      selector:
+        select:
+          options: [none, declined, trip1, trip2, trip3, trip4, trip5, trip6, trip7]
+          translation_key: choice
+
+set_ingredients_ready:
+  fields:
+    dish_id:
+      required: true
+      selector:
+        text:
+    ready:
+      default: true
+      selector:
+        boolean:
+
+mark_cooked:
+  fields:
+    dish_id:
+      required: true
+      selector:
+        text:
+    cooked:
+      default: true
+      selector:
+        boolean:
+    rating:
+      selector:
+        number:
+          min: 1
+          max: 5
+    note:
+      selector:
+        text:
+
+dish_items:
+  fields:
+    dish_id:
+      required: true
+      selector:
+        text:
+
+set_items_at_home:
+  fields:
+    dish_id:
+      required: true
+      selector:
+        text:
+    items:
+      example: '["Zwiebeln", "Sahne"]'
+      selector:
+        object:
+
+finalize_week:
+
+import_week:
+  fields:
+    dishes:
+      required: true
+      selector:
+        object:
+    board:
+      default: current
+      selector:
+        select:
+          options: [current, next]
+
+release_shopping:
+  fields:
+    trip:
+      selector:
+        select:
+          options: [trip1, trip2, trip3, trip4, trip5, trip6, trip7]
+          translation_key: choice
+
+sync_shopping_list:

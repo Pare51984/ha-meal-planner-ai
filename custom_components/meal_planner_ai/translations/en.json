@@ -1,0 +1,957 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Shopping list",
+        "description": "Language and country of the recipes. This decides the suggested recipe sites (e.g. Allrecipes for English, Marmiton for French), the language of dish names and shopping items, and the Cookidoo country. The interface language follows your Home Assistant profile.\n\nWhere should ingredients go? An existing to-do list (e.g. Bring!) or the planner's own list. Items follow the Bring! pattern: article as item, amount and dish in the description.",
+        "data": {
+          "shopping_list": "Shopping list",
+          "region": "Language / region"
+        },
+        "data_description": {
+          "shopping_list": "“Own list” creates “Essensplaner Einkaufsliste”, handy for testing.",
+          "region": "German is tested live. The other languages use supported recipe sites whose search is not yet field-tested; a search agent with web search helps most there."
+        }
+      },
+      "devices": {
+        "title": "Kitchen appliances",
+        "description": "Which devices do you own? Only dishes you can cook are proposed. Thermomix recipes need the Thermomix selected.",
+        "data": {
+          "devices": "Available appliances",
+          "custom_devices": "Custom appliances (comma separated)"
+        },
+        "data_description": {
+          "devices": "Deselect what you don't own.",
+          "custom_devices": "More devices, comma separated, e.g. “slow cooker, grill”."
+        }
+      },
+      "ai": {
+        "title": "AI",
+        "description": "The meal planner uses the AI in your Home Assistant. It proposes dishes, rates “low cholesterol” and makes item names shop-ready. Every link is checked; if the AI has no working link, the integration searches the recipe sites itself.\n\n**How to set up an AI** (once, in Settings → Devices & services → Add integration):\n**Claude (Anthropic)** – most reliable for recipe search, incl. Cookidoo. Sign in at console.anthropic.com, add credit under “Billing” ($5 lasts long), create a key under “API Keys”, then add the “Anthropic” integration with that key. Cost: web search about 1 cent per search, a weekly run roughly 10–50 cents (estimate).\n**Gemini (Google)** – usable for free. Create an API key at aistudio.google.com, then add “Google Generative AI”. Google search is limited on the free plan and Gemini more often returns broken links; the integration then searches itself.\n**ChatGPT (OpenAI)** – add credit and create an API key at platform.openai.com, then add “OpenAI Conversation”.\nThen reopen this section and choose a provider under “Create search agent at”. Tip: Gemini as main AI (free) and Claude only for recipe search is a good mix. Never share API keys.\n\n**External AI on your subscription (no API key):** Instead of an AI in Home Assistant, an AI outside can find the recipes, for example your Claude or ChatGPT subscription. It works like this: you create a scheduled task in your AI once. At the set time it starts, asks the meal planner whether planning is due, fetches the brief with your current rules, wishes and appointments, searches the web for recipes and hands them back. The meal planner checks every dish exactly as with the built-in AI and reports what is still missing; the AI then delivers more.\nYou need: 1. an AI subscription with scheduled tasks and web search, 2. a connection from that AI to your Home Assistant via MCP (e.g. the “Model Context Protocol Server” integration with the “Meal Planner AI” tool set), 3. remote access to Home Assistant from outside (e.g. Home Assistant Cloud or Cloudflare).\nIf you choose “External AI” below, the Settings tab of the card shows the ready-made text and schedule for the task to copy. If nothing arrives 5 hours after the planning time, the AI in Home Assistant steps in, if one is selected.",
+        "data": {
+          "proposals_from": "Proposals come from",
+          "ai_task": "AI (AI Task entity)",
+          "ai_shopping_names": "AI normalises shopping item names",
+          "ai_search": "Recipe search: AI with web search (conversation agent)",
+          "create_search_agent": "Create search agent with web search at"
+        },
+        "data_description": {
+          "proposals_from": "“AI in Home Assistant”: the AI selected below creates the proposals on schedule. “External AI”: an AI outside (e.g. a scheduled task in Claude, Gemini or ChatGPT) delivers them via the actions; the AI below is then only a fallback.",
+          "ai_search": "Optional, for better results: an agent with web search. Needed e.g. for Cookidoo. “None” = the AI suggests ideas, the integration searches. Tip: with Google Gemini the recipe search works without a subscription or external AI: get a free API key in Google AI Studio and set up the “Google Gemini” integration. Pick Gemini below under “Create search agent with web search at” and the meal planner sets it up with Google Search (gemini-2.5-flash; newer models sometimes refuse search on the free tier).",
+          "create_search_agent": "Adds an agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. Existing agents and voice control stay unchanged. “No” = create nothing.",
+          "ai_task": "The main AI, usually called “… AI Task”.",
+          "ai_shopping_names": "On: the AI turns “1 red pepper, diced” into “Pepper”. Good for Bring!."
+        }
+      },
+      "display": {
+        "title": "Display",
+        "description": "Where does the planner appear? As its own sidebar page, as a view “Essen” in an existing dashboard, or not at all (add the card yourself). The card can also be added to any dashboard. Saving applies exactly this setting: when you switch, the previous page or the view the planner created disappears. Cards you added yourself stay untouched.",
+        "data": {
+          "display": "Display",
+          "display_dashboard": "Dashboard (only for 'view in existing dashboard')",
+          "display_style": "Colors"
+        },
+        "data_description": {
+          "display": "Own page is simplest. “View in existing dashboard” adds a new tab, e.g. in Overview.",
+          "display_dashboard": "Only for “View in existing dashboard”: which dashboard. “lovelace” is Overview.",
+          "display_style": "“Like my Home Assistant” follows your theme (incl. dark mode). “Warm” is the planner's own style."
+        }
+      },
+      "import_legacy": {
+        "title": "Previous version found",
+        "description": "The previous integration “Essensplaner” is still set up. Its settings can be taken over; recipes, ratings, wishes and the own shopping list are copied automatically on start. Afterwards delete the old “Essensplaner” integration so that two planners don't run.",
+        "data": {
+          "import_settings": "Take over settings"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Already configured."
+    },
+    "error": {
+      "agent_failed": "The search agent could not be created. Save without the checkbox or add the agent in the AI integration yourself."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Essensplaner",
+        "menu_options": {
+          "schedule": "Schedule and notifications",
+          "trips": "Shopping trips",
+          "calendar": "Calendars",
+          "rules": "Rules and taste",
+          "diet_count": "Diet and proposals per week",
+          "shopping_list": "Shopping list",
+          "sources": "Recipe sources",
+          "devices": "Kitchen appliances",
+          "ai": "AI",
+          "display": "Display",
+          "habits": "Eating habits",
+          "region": "Language and region"
+        },
+        "description": "Configure how the meal planner works. Tap a section, change values and save. In short:\n**Language and region** – country of recipes, recipe sites and language of proposals.\n**Schedule** – when proposals arrive and when the choice closes.\n**Shopping trips** – how often you shop and when ingredients go on the list.\n**Calendar** – events that affect meals (e.g. guests).\n**Rules and taste** – servings, cooking time, calories, preferences.\n**Eating habits** – fixed rules like “soup at most once a week”.\n**Diet** – proposals per week and how many e.g. vegetarian.\n**Shopping list** – where ingredients go and what never goes on it.\n**Recipe sources** – which sites are searched.\n**Kitchen devices** – what you own (e.g. Thermomix) and how often to use it.\n**AI** – which AI plans and searches.\n**Display** – where the planner appears."
+      },
+      "shopping_list": {
+        "title": "Shopping list",
+        "description": "Where should ingredients go? An existing to-do list (e.g. Bring!) or the planner's own list. Items follow the Bring! pattern: article as item, amount and dish in the description.",
+        "data": {
+          "shopping_list": "Shopping list",
+          "staples": "Staples never added (comma separated)",
+          "skip_spices": "Skip spices",
+          "catalog": "Fixed catalog names (one per line: recipe = list name)"
+        },
+        "data_description": {
+          "shopping_list": "“Own list” creates “Essensplaner Einkaufsliste”, handy for testing.",
+          "staples": "Things you always have never go on the list. Comma separated; compounds are recognised (salt → sea salt).",
+          "skip_spices": "On: dried spices are left out.",
+          "catalog": "One per line, “recipe name = list name”, e.g. “passata = canned tomatoes”."
+        }
+      },
+      "sources": {
+        "title": "Recipe sources",
+        "description": "Which sites are searched. Only enabled sites are used; every recipe is fetched and checked before it is proposed. Cookidoo, Rezeptwelt and Zaubertopf are Thermomix sites. Own sites: {custom}. {thermomix_note} {error}",
+        "data": {
+          "site_chefkoch_de": "chefkoch.de",
+          "site_rezeptwelt_de": "rezeptwelt.de",
+          "site_zaubertopf_de": "zaubertopf.de",
+          "site_lecker_de": "lecker.de",
+          "site_eatsmarter_de": "eatsmarter.de",
+          "site_kitchenstories_com": "kitchenstories.com",
+          "site_emmikochteinfach_de": "emmikochteinfach.de",
+          "site_springlane_de": "springlane.de",
+          "site_kochbar_de": "kochbar.de",
+          "site_rewe_de": "rewe.de",
+          "site_hellofresh_de": "hellofresh.de",
+          "site_sallys_blog_de": "sallys-blog.de",
+          "remove_custom": "Remove custom sites",
+          "new_source_url": "New site: example recipe link",
+          "site_cookidoo_de": "cookidoo.de",
+          "site_einfachkochen_de": "einfachkochen.de",
+          "site_essen_und_trinken_de": "essen-und-trinken.de",
+          "site_kuechengoetter_de": "kuechengoetter.de",
+          "site_allrecipes_com": "allrecipes.com",
+          "site_bbcgoodfood_com": "bbcgoodfood.com",
+          "site_seriouseats_com": "seriouseats.com",
+          "site_simplyrecipes_com": "simplyrecipes.com",
+          "site_recipetineats_com": "recipetineats.com",
+          "site_budgetbytes_com": "budgetbytes.com",
+          "site_jamieoliver_com": "jamieoliver.com",
+          "site_eatingwell_com": "eatingwell.com",
+          "site_food_com": "food.com",
+          "site_cookidoo_co_uk": "cookidoo.co.uk",
+          "site_directoalpaladar_com": "directoalpaladar.com",
+          "site_recetasgratis_net": "recetasgratis.net",
+          "site_hellofresh_es": "hellofresh.es",
+          "site_cookidoo_es": "cookidoo.es",
+          "site_tudogostoso_com_br": "tudogostoso.com.br",
+          "site_panelinha_com_br": "panelinha.com.br",
+          "site_receitas_globo_com": "receitas.globo.com",
+          "site_receitasnestle_com_br": "receitasnestle.com.br",
+          "site_pingodoce_pt": "pingodoce.pt",
+          "site_cookidoo_pt": "cookidoo.pt",
+          "site_marmiton_org": "marmiton.org",
+          "site_cuisineaz_com": "cuisineaz.com",
+          "site_750g_com": "750g.com",
+          "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
+          "site_jow_fr": "jow.fr",
+          "site_hellofresh_fr": "hellofresh.fr",
+          "site_cookidoo_fr": "cookidoo.fr"
+        },
+        "data_description": {
+          "new_source_url": "Add a site: paste a link to any recipe of it. The integration tests reading it, then enables the site.",
+          "remove_custom": "Own sites to remove."
+        }
+      },
+      "diet_count": {
+        "title": "Proposals per week",
+        "description": "How many dishes should be proposed per week? You don't have to take all. Next you set how many of them e.g. vegetarian.",
+        "data": {
+          "recipes_per_week": "Proposals per week"
+        },
+        "data_description": {
+          "recipes_per_week": "Proposals per week, e.g. 10 for 7 days with some choice."
+        }
+      },
+      "diet": {
+        "title": "Diet",
+        "description": "Per diet: **Off** = don't care, **Always** = every dish, **Count** = this many of the {recipes} dishes. A dish may count several times (vegan counts as vegetarian). Ingredients decide vegetarian/vegan/lactose-/gluten-free; low cholesterol is rated by the AI. Calories are under “Rules and taste”. {clamped}",
+        "data": {
+          "vegetarian_mode": "Vegetarian",
+          "vegetarian_count": "Vegetarian: per week",
+          "vegan_mode": "Vegan",
+          "vegan_count": "Vegan: per week",
+          "lactose_free_mode": "Lactose-free",
+          "lactose_free_count": "Lactose-free: per week",
+          "gluten_free_mode": "Gluten-free",
+          "gluten_free_count": "Gluten-free: per week",
+          "low_cholesterol_mode": "Low cholesterol",
+          "low_cholesterol_count": "Low cholesterol: per week"
+        },
+        "data_description": {
+          "vegetarian_mode": "Off, Always or Count.",
+          "vegetarian_count": "Only for “Count”: at least this many per week.",
+          "vegan_mode": "Off, Always or Count.",
+          "vegan_count": "Only for “Count”: at least this many per week.",
+          "lactose_free_mode": "Off, Always or Count.",
+          "lactose_free_count": "Only for “Count”: at least this many per week.",
+          "gluten_free_mode": "Off, Always or Count.",
+          "gluten_free_count": "Only for “Count”: at least this many per week.",
+          "low_cholesterol_mode": "Off, Always or Count.",
+          "low_cholesterol_count": "Only for “Count”: at least this many per week."
+        }
+      },
+      "diet_overlap": {
+        "title": "Note: overlaps required",
+        "description": "These counts only fit if at least {overlap} of {recipes} dishes meet several options at once. Save anyway?"
+      },
+      "devices": {
+        "title": "Kitchen appliances",
+        "data": {
+          "devices": "Available appliances",
+          "custom_devices": "Custom appliances (comma separated)"
+        },
+        "description": "Which devices do you own? Only dishes you can cook are proposed. Thermomix recipes need the Thermomix selected.",
+        "data_description": {
+          "devices": "Deselect what you don't own.",
+          "custom_devices": "More devices, comma separated, e.g. “slow cooker, grill”."
+        }
+      },
+      "device_counts": {
+        "title": "Appliances per week (optional)",
+        "description": "Optional: how many of the {recipes} dishes should use a device? 0 = don't care. Example: Thermomix 2 → at least two Thermomix dishes per week.",
+        "data": {
+          "count_stove_oven": "Stove and oven: dishes per week",
+          "count_thermomix": "Thermomix: dishes per week",
+          "count_airfryer": "Air fryer: dishes per week"
+        },
+        "data_description": {
+          "count_stove_oven": "At least this many dishes per week with this device. 0 = don't care.",
+          "count_thermomix": "At least this many dishes per week with this device. 0 = don't care.",
+          "count_airfryer": "At least this many dishes per week with this device. 0 = don't care."
+        }
+      },
+      "ai": {
+        "title": "AI",
+        "description": "The meal planner uses the AI in your Home Assistant. It proposes dishes, rates “low cholesterol” and makes item names shop-ready. Every link is checked; if the AI has no working link, the integration searches the recipe sites itself.\n\n**How to set up an AI** (once, in Settings → Devices & services → Add integration):\n**Claude (Anthropic)** – most reliable for recipe search, incl. Cookidoo. Sign in at console.anthropic.com, add credit under “Billing” ($5 lasts long), create a key under “API Keys”, then add the “Anthropic” integration with that key. Cost: web search about 1 cent per search, a weekly run roughly 10–50 cents (estimate).\n**Gemini (Google)** – usable for free. Create an API key at aistudio.google.com, then add “Google Generative AI”. Google search is limited on the free plan and Gemini more often returns broken links; the integration then searches itself.\n**ChatGPT (OpenAI)** – add credit and create an API key at platform.openai.com, then add “OpenAI Conversation”.\nThen reopen this section and choose a provider under “Create search agent at”. Tip: Gemini as main AI (free) and Claude only for recipe search is a good mix. Never share API keys.\n\n**External AI on your subscription (no API key):** Instead of an AI in Home Assistant, an AI outside can find the recipes, for example your Claude or ChatGPT subscription. It works like this: you create a scheduled task in your AI once. At the set time it starts, asks the meal planner whether planning is due, fetches the brief with your current rules, wishes and appointments, searches the web for recipes and hands them back. The meal planner checks every dish exactly as with the built-in AI and reports what is still missing; the AI then delivers more.\nYou need: 1. an AI subscription with scheduled tasks and web search, 2. a connection from that AI to your Home Assistant via MCP (e.g. the “Model Context Protocol Server” integration with the “Meal Planner AI” tool set), 3. remote access to Home Assistant from outside (e.g. Home Assistant Cloud or Cloudflare).\nIf you choose “External AI” below, the Settings tab of the card shows the ready-made text and schedule for the task to copy. If nothing arrives 5 hours after the planning time, the AI in Home Assistant steps in, if one is selected.",
+        "data": {
+          "proposals_from": "Proposals come from",
+          "ai_task": "AI (AI Task entity)",
+          "ai_shopping_names": "AI normalises shopping item names",
+          "ai_search": "Recipe search: AI with web search (conversation agent)",
+          "create_search_agent": "Create search agent with web search at"
+        },
+        "data_description": {
+          "proposals_from": "“AI in Home Assistant”: the AI selected below creates the proposals on schedule. “External AI”: an AI outside (e.g. a scheduled task in Claude, Gemini or ChatGPT) delivers them via the actions; the AI below is then only a fallback.",
+          "ai_search": "Optional, for better results: an agent with web search. Needed e.g. for Cookidoo. “None” = the AI suggests ideas, the integration searches. Tip: with Google Gemini the recipe search works without a subscription or external AI: get a free API key in Google AI Studio and set up the “Google Gemini” integration. Pick Gemini below under “Create search agent with web search at” and the meal planner sets it up with Google Search (gemini-2.5-flash; newer models sometimes refuse search on the free tier).",
+          "create_search_agent": "Adds an agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. Existing agents and voice control stay unchanged. “No” = create nothing.",
+          "ai_task": "The main AI, usually called “… AI Task”.",
+          "ai_shopping_names": "On: the AI turns “1 red pepper, diced” into “Pepper”. Good for Bring!."
+        }
+      },
+      "schedule": {
+        "title": "Schedule",
+        "description": "Once a week the planner proposes dishes for the coming week. Until the choice closes you pick what to cook; then unpicked dishes drop and the new week starts. Example: proposals Friday 18:00, choice closes Saturday 12:00.",
+        "data": {
+          "plan_weekday": "Proposals: weekday",
+          "plan_time": "Proposals: time",
+          "deadline_weekday": "Deadline: weekday",
+          "deadline_time": "Deadline: time",
+          "notify": "Push notifications to",
+          "dashboard_path": "Dashboard path opened from the push (e.g. /essensplaner)"
+        },
+        "data_description": {
+          "plan_weekday": "On this day the AI creates next week's proposals automatically.",
+          "plan_time": "Time of the automatic proposals. The search takes a few minutes, then the push follows.",
+          "deadline_weekday": "Pick dishes until this day. The new meal week starts here.",
+          "deadline_time": "Time the choice closes. Afterwards only picked dishes remain.",
+          "notify": "Who gets a push for new proposals, released shopping or errors? Empty = no push.",
+          "dashboard_path": "Page opened from the push, e.g. /essensplaner. Empty = the push just opens the app."
+        }
+      },
+      "rules": {
+        "title": "Rules and taste",
+        "description": "Basic rules for every proposed dish. Hard limits (time, kcal) are checked by the integration on the real recipe, soft ones like taste by the AI. Based on {recipes} proposals per week.",
+        "data": {
+          "portions": "Servings",
+          "time_max": "Max time",
+          "time_quick": "Quick dishes: max",
+          "quick_share": "Quick dishes per week",
+          "profile": "Ground rules and taste (free text for the AI)",
+          "kcal_aware": "Calorie-conscious planning",
+          "max_same_main": "Variety: at most this many dishes with the same main ingredient"
+        },
+        "data_description": {
+          "kcal_aware": "On: set kcal limits per serving in the next step. Off: calories don't matter.",
+          "portions": "Servings to shop for; list amounts are scaled to it.",
+          "time_max": "No dish takes longer than this total time per recipe.",
+          "time_quick": "Up to this time a dish counts as “quick”.",
+          "quick_share": "At least this many quick dishes per week.",
+          "profile": "Free text for the AI: likes and dislikes, e.g. “Mediterranean, no offal, kids don't like spicy”.",
+          "max_same_main": "E.g. 3: no more than three dishes with chicken, beef, pork, mince or salmon per week (detected from the dish name, wishes don't count). 0 = don't care."
+        }
+      },
+      "trips": {
+        "title": "Shopping trips",
+        "description": "How often do you shop for the dishes per week? Each dish is assigned to a trip and its ingredients go on the list accordingly. Example with 2 trips: Saturday for Sat–Tue, Tuesday for Wed–Fri.",
+        "data": {
+          "count": "Shopping trips per week"
+        },
+        "data_description": {
+          "count": "Next you set name, cooking days and timing for each trip."
+        }
+      },
+      "trip_details": {
+        "title": "Shopping trips",
+        "description": "**Name** appears as a button on every tile. **Cooking days** tell the AI which days a trip is for. **When on the list**: “Immediately” = ingredients go on the list when you tap. “Fixed time” = only at the chosen weekday and time; dishes picked later go on immediately.",
+        "data": {
+          "name_1": "Trip 1: name (e.g. Weekly shop, Market)",
+          "days_1": "Trip 1: cooking days (optional)",
+          "release_1": "Trip 1: when added to the list",
+          "weekday_1": "Trip 1: weekday (if scheduled)",
+          "time_1": "Trip 1: time (if scheduled)",
+          "name_2": "Trip 2: name (e.g. Weekly shop, Market)",
+          "days_2": "Trip 2: cooking days (optional)",
+          "release_2": "Trip 2: when added to the list",
+          "weekday_2": "Trip 2: weekday (if scheduled)",
+          "time_2": "Trip 2: time (if scheduled)",
+          "name_3": "Trip 3: name (e.g. Weekly shop, Market)",
+          "days_3": "Trip 3: cooking days (optional)",
+          "release_3": "Trip 3: when added to the list",
+          "weekday_3": "Trip 3: weekday (if scheduled)",
+          "time_3": "Trip 3: time (if scheduled)",
+          "name_4": "Trip 4: name (e.g. Weekly shop, Market)",
+          "days_4": "Trip 4: cooking days (optional)",
+          "release_4": "Trip 4: when added to the list",
+          "weekday_4": "Trip 4: weekday (if scheduled)",
+          "time_4": "Trip 4: time (if scheduled)",
+          "name_5": "Trip 5: name (e.g. Weekly shop, Market)",
+          "days_5": "Trip 5: cooking days (optional)",
+          "release_5": "Trip 5: when added to the list",
+          "weekday_5": "Trip 5: weekday (if scheduled)",
+          "time_5": "Trip 5: time (if scheduled)",
+          "name_6": "Trip 6: name (e.g. Weekly shop, Market)",
+          "days_6": "Trip 6: cooking days (optional)",
+          "release_6": "Trip 6: when added to the list",
+          "weekday_6": "Trip 6: weekday (if scheduled)",
+          "time_6": "Trip 6: time (if scheduled)",
+          "name_7": "Trip 7: name (e.g. Weekly shop, Market)",
+          "days_7": "Trip 7: cooking days (optional)",
+          "release_7": "Trip 7: when added to the list",
+          "weekday_7": "Trip 7: weekday (if scheduled)",
+          "time_7": "Trip 7: time (if scheduled)"
+        },
+        "data_description": {
+          "name_1": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_1": "Optional: days you cook the dishes of this trip.",
+          "release_1": "“Immediately” or “Fixed time” (see above).",
+          "weekday_1": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_1": "Only for “Fixed time”: at this time.",
+          "name_2": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_2": "Optional: days you cook the dishes of this trip.",
+          "release_2": "“Immediately” or “Fixed time” (see above).",
+          "weekday_2": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_2": "Only for “Fixed time”: at this time.",
+          "name_3": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_3": "Optional: days you cook the dishes of this trip.",
+          "release_3": "“Immediately” or “Fixed time” (see above).",
+          "weekday_3": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_3": "Only for “Fixed time”: at this time.",
+          "name_4": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_4": "Optional: days you cook the dishes of this trip.",
+          "release_4": "“Immediately” or “Fixed time” (see above).",
+          "weekday_4": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_4": "Only for “Fixed time”: at this time.",
+          "name_5": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_5": "Optional: days you cook the dishes of this trip.",
+          "release_5": "“Immediately” or “Fixed time” (see above).",
+          "weekday_5": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_5": "Only for “Fixed time”: at this time.",
+          "name_6": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_6": "Optional: days you cook the dishes of this trip.",
+          "release_6": "“Immediately” or “Fixed time” (see above).",
+          "weekday_6": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_6": "Only for “Fixed time”: at this time.",
+          "name_7": "Short name, e.g. “Weekly shop”, “Market”.",
+          "days_7": "Optional: days you cook the dishes of this trip.",
+          "release_7": "“Immediately” or “Fixed time” (see above).",
+          "weekday_7": "Only for “Fixed time”: day the ingredients go on the list.",
+          "time_7": "Only for “Fixed time”: at this time."
+        }
+      },
+      "display": {
+        "title": "Display",
+        "description": "Where does the planner appear? As its own sidebar page, as a view “Essen” in an existing dashboard, or not at all (add the card yourself). The card can also be added to any dashboard. Saving applies exactly this setting: when you switch, the previous page or the view the planner created disappears. Cards you added yourself stay untouched.",
+        "data": {
+          "display": "Display",
+          "display_dashboard": "Dashboard (only for 'view in existing dashboard')",
+          "display_style": "Colors"
+        },
+        "data_description": {
+          "display": "Own page is simplest. “View in existing dashboard” adds a new tab, e.g. in Overview.",
+          "display_dashboard": "Only for “View in existing dashboard”: which dashboard. “lovelace” is Overview.",
+          "display_style": "“Like my Home Assistant” follows your theme (incl. dark mode). “Warm” is the planner's own style."
+        }
+      },
+      "calendar": {
+        "title": "Calendars",
+        "description": "Up to three rules that let events influence planning. Pick calendars, optionally a keyword, and describe what those days mean. The AI considers it, matching dishes get a tag on the tile. Examples: “Guests” (hint “something special”), “Late shift” (hint “quick dishes only”). Rule without calendar = off.",
+        "data": {
+          "label_1": "Rule 1: tag on the tile (e.g. Guests, Late shift)",
+          "calendars_1": "Rule 1: calendars",
+          "keyword_1": "Rule 1: only events containing (empty = all)",
+          "hint_1": "Rule 1: what these days mean for planning",
+          "label_2": "Rule 2: tag on the tile (e.g. Guests, Late shift)",
+          "calendars_2": "Rule 2: calendars",
+          "keyword_2": "Rule 2: only events containing (empty = all)",
+          "hint_2": "Rule 2: what these days mean for planning",
+          "label_3": "Rule 3: tag on the tile (e.g. Guests, Late shift)",
+          "calendars_3": "Rule 3: calendars",
+          "keyword_3": "Rule 3: only events containing (empty = all)",
+          "hint_3": "Rule 3: what these days mean for planning"
+        },
+        "data_description": {
+          "label_1": "Short tag shown on matching tiles, e.g. “Guests”.",
+          "calendars_1": "Calendars to check. None = rule off.",
+          "keyword_1": "Only events whose title contains this word. Empty = all events.",
+          "hint_1": "What the AI should consider on these days, e.g. “one more person”.",
+          "label_2": "Short tag shown on matching tiles, e.g. “Guests”.",
+          "calendars_2": "Calendars to check. None = rule off.",
+          "keyword_2": "Only events whose title contains this word. Empty = all events.",
+          "hint_2": "What the AI should consider on these days, e.g. “one more person”.",
+          "label_3": "Short tag shown on matching tiles, e.g. “Guests”.",
+          "calendars_3": "Calendars to check. None = rule off.",
+          "keyword_3": "Only events whose title contains this word. Empty = all events.",
+          "hint_3": "What the AI should consider on these days, e.g. “one more person”."
+        }
+      },
+      "rules_kcal": {
+        "title": "Calorie-conscious",
+        "description": "Limits per serving, checked on the recipe. If the recipe has no value, the AI estimates with a 100 kcal buffer. Empty = no limit.",
+        "data": {
+          "kcal_max": "Max kcal per serving incl. side dish",
+          "kcal_max_without_side": "Max kcal per serving when the side dish is not included"
+        },
+        "data_description": {
+          "kcal_max_without_side": "If the recipe excludes the side dish, this lower value applies to the dish alone, e.g. 650. Empty = value above.",
+          "kcal_max": "For the whole meal incl. usual side dish, e.g. 800."
+        }
+      },
+      "habits": {
+        "title": "Eating habits",
+        "description": "Fixed rules for choosing recipes, up to five, in your own words. The AI follows them. With “max …x” the integration also counts by dish names. Empty = no rule.",
+        "data": {
+          "habit_1": "Rule 1",
+          "habit_2": "Rule 2",
+          "habit_3": "Rule 3",
+          "habit_4": "Rule 4",
+          "habit_5": "Rule 5"
+        },
+        "data_description": {
+          "habit_1": "e.g. “Soups/stews max 1x per week”",
+          "habit_2": "e.g. “at least 1x fish”",
+          "habit_3": "e.g. “no pork”",
+          "habit_4": "e.g. “casseroles max 2x per week”",
+          "habit_5": "e.g. “something special on Fridays”"
+        }
+      },
+      "region": {
+        "title": "Language and region",
+        "description": "Language and country of the recipes. This decides the suggested recipe sites (e.g. Allrecipes for English, Marmiton for French), the language of dish names and shopping items, and the Cookidoo country. The interface language follows your Home Assistant profile. Switching enables the recipe sites of the new country.",
+        "data": {
+          "region": "Language / region"
+        },
+        "data_description": {
+          "region": "German is tested live. The other languages use supported recipe sites whose search is not yet field-tested; a search agent with web search helps most there."
+        }
+      }
+    },
+    "error": {
+      "test_failed": "Test fetch failed: {error}",
+      "count_zero": "Choose a number above 0.",
+      "agent_failed": "The search agent could not be created. Save without the checkbox or add the agent in the AI integration yourself."
+    }
+  },
+  "selector": {
+    "device": {
+      "options": {
+        "stove_oven": "Stove and oven",
+        "thermomix": "Thermomix",
+        "airfryer": "Air fryer"
+      }
+    },
+    "diet_mode": {
+      "options": {
+        "off": "Off",
+        "always": "Always",
+        "count": "Some per week"
+      }
+    },
+    "status": {
+      "options": {
+        "new": "New",
+        "bought": "Bought, not cooked yet",
+        "cooked": "Cooked"
+      }
+    },
+    "diet": {
+      "options": {
+        "vegetarian": "Vegetarian",
+        "vegan": "Vegan",
+        "lactose_free": "Lactose-free",
+        "gluten_free": "Gluten-free",
+        "low_cholesterol": "Low cholesterol"
+      }
+    },
+    "weekday": {
+      "options": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      }
+    },
+    "choice": {
+      "options": {
+        "none": "Not chosen",
+        "declined": "Declined",
+        "trip1": "Trip 1",
+        "trip2": "Trip 2",
+        "trip3": "Trip 3",
+        "trip4": "Trip 4",
+        "trip5": "Trip 5",
+        "trip6": "Trip 6",
+        "trip7": "Trip 7"
+      }
+    },
+    "release": {
+      "options": {
+        "immediate": "Immediately",
+        "timed": "Scheduled"
+      }
+    },
+    "display": {
+      "options": {
+        "panel": "Own page in the sidebar",
+        "view": "'Essen' view in an existing dashboard",
+        "none": "None, add the card yourself"
+      }
+    },
+    "style": {
+      "options": {
+        "system": "Like my Home Assistant (theme)",
+        "warm": "Warm"
+      }
+    },
+    "region": {
+      "options": {
+        "de": "Deutsch (Deutschland)",
+        "en": "English (UK/US)",
+        "es": "Español (España)",
+        "pt": "Português (Portugal/Brasil)",
+        "fr": "Français (France)"
+      }
+    },
+    "proposals_from": {
+      "options": {
+        "ha": "AI in Home Assistant",
+        "external": "External AI via actions (e.g. your Claude, Gemini or ChatGPT subscription)"
+      }
+    }
+  },
+  "entity": {
+    "todo": {
+      "shopping_list": {
+        "name": "Shopping list"
+      },
+      "wishes": {
+        "name": "Wishes"
+      }
+    },
+    "sensor": {
+      "proposals": {
+        "name": "Proposals"
+      },
+      "week": {
+        "name": "Week"
+      }
+    }
+  },
+  "services": {
+    "import_recipe": {
+      "name": "Import recipe",
+      "description": "Fetches and stores a recipe.",
+      "fields": {
+        "url": {
+          "name": "Link",
+          "description": "Recipe address; short links are resolved."
+        },
+        "save": {
+          "name": "Save",
+          "description": "Store the recipe."
+        }
+      }
+    },
+    "get_recipe": {
+      "name": "Get recipe",
+      "description": "Stored recipe with history.",
+      "fields": {
+        "recipe_id": {
+          "name": "Recipe ID",
+          "description": "ID from import_recipe or list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Recipe address; short links are resolved."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Exact recipe title."
+        }
+      }
+    },
+    "list_recipes": {
+      "name": "List recipes",
+      "description": "Overview of stored recipes.",
+      "fields": {
+        "query": {
+          "name": "Search",
+          "description": "Text in title or ingredients."
+        },
+        "status": {
+          "name": "Status",
+          "description": "Only this status."
+        },
+        "min_rating": {
+          "name": "Min rating",
+          "description": "1–5"
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "Max entries."
+        }
+      }
+    },
+    "delete_recipe": {
+      "name": "Delete recipe",
+      "description": "Removes a recipe and its history.",
+      "fields": {
+        "recipe_id": {
+          "name": "Recipe ID",
+          "description": "ID from import_recipe or list_recipes."
+        }
+      }
+    },
+    "add_to_shopping_list": {
+      "name": "Add to shopping list",
+      "description": "Adds ingredients to the chosen list.",
+      "fields": {
+        "recipe_id": {
+          "name": "Recipe ID",
+          "description": "ID from import_recipe or list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Recipe address; short links are resolved."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Exact recipe title."
+        },
+        "servings": {
+          "name": "Servings",
+          "description": "Scale amounts."
+        },
+        "force": {
+          "name": "Force",
+          "description": "Even if already bought."
+        }
+      }
+    },
+    "update_history": {
+      "name": "Update history",
+      "description": "Set rating, cooked date, status or note.",
+      "fields": {
+        "recipe_id": {
+          "name": "Recipe ID",
+          "description": "ID from import_recipe or list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Recipe address; short links are resolved."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Exact recipe title."
+        },
+        "rating": {
+          "name": "Rating",
+          "description": "Rating 1–5, 0 removes the rating."
+        },
+        "cooked_on": {
+          "name": "Cooked on",
+          "description": "Date; sets status to cooked."
+        },
+        "status": {
+          "name": "Status",
+          "description": "New, bought or cooked."
+        },
+        "note": {
+          "name": "Note",
+          "description": "Free text."
+        },
+        "remove_cooked_on": {
+          "name": "Remove cooked day",
+          "description": "Delete this day from “cooked on”."
+        }
+      }
+    },
+    "import_history": {
+      "name": "Import history",
+      "description": "Import ratings and cooked dates.",
+      "fields": {
+        "entries": {
+          "name": "Entries",
+          "description": "List of entries."
+        },
+        "fetch_recipes": {
+          "name": "Fetch recipes",
+          "description": "Import recipes with a link."
+        }
+      }
+    },
+    "validate_plan": {
+      "name": "Validate plan",
+      "description": "Checks a selection against all rules.",
+      "fields": {
+        "recipe_ids": {
+          "name": "Recipe IDs",
+          "description": "List of recipe IDs."
+        },
+        "urls": {
+          "name": "Links",
+          "description": "List of recipe links."
+        }
+      }
+    },
+    "get_settings": {
+      "name": "Get settings",
+      "description": "Planner settings."
+    },
+    "assess_recipes": {
+      "name": "Assess recipes with AI",
+      "description": "Lets the AI assess unclear criteria and stores the result.",
+      "fields": {
+        "recipe_ids": {
+          "name": "Recipe IDs",
+          "description": "Empty = all recipes."
+        },
+        "keys": {
+          "name": "Criteria",
+          "description": "Empty = all unclear."
+        },
+        "force": {
+          "name": "Re-assess",
+          "description": "Ignore existing AI assessments."
+        }
+      }
+    },
+    "generate_proposals": {
+      "name": "Generate proposals",
+      "description": "AI creates next week's proposals.",
+      "fields": {
+        "notes": {
+          "name": "Notes",
+          "description": "Free text for this run."
+        },
+        "force": {
+          "name": "Regenerate",
+          "description": "Replace existing proposals."
+        }
+      }
+    },
+    "choose_dish": {
+      "name": "Choose dish",
+      "description": "Assign to a shopping trip; the list is updated.",
+      "fields": {
+        "dish_id": {
+          "name": "Dish",
+          "description": "id from the proposals/week sensor (or its number)."
+        },
+        "choice": {
+          "name": "Choice",
+          "description": "Shopping for this dish."
+        }
+      }
+    },
+    "set_ingredients_ready": {
+      "name": "Ingredients at home",
+      "description": "Ingredients are not added; carried over if not cooked.",
+      "fields": {
+        "dish_id": {
+          "name": "Dish",
+          "description": "id from the proposals/week sensor (or its number)."
+        },
+        "ready": {
+          "name": "At home",
+          "description": "Off = shop normally."
+        }
+      }
+    },
+    "mark_cooked": {
+      "name": "Cooked",
+      "description": "Mark cooked and rate.",
+      "fields": {
+        "dish_id": {
+          "name": "Dish",
+          "description": "id from the proposals/week sensor (or its number)."
+        },
+        "cooked": {
+          "name": "Cooked",
+          "description": "Off = undo."
+        },
+        "rating": {
+          "name": "Rating",
+          "description": "1–5"
+        },
+        "note": {
+          "name": "Note",
+          "description": "Free text."
+        }
+      }
+    },
+    "finalize_week": {
+      "name": "Finalize week",
+      "description": "Deadline now."
+    },
+    "sync_shopping_list": {
+      "name": "Sync shopping list",
+      "description": "Sync the list with the selection."
+    },
+    "release_shopping": {
+      "name": "Release shopping trip",
+      "description": "Add a scheduled trip now.",
+      "fields": {
+        "trip": {
+          "name": "Trip",
+          "description": "Empty = all."
+        }
+      }
+    },
+    "dish_items": {
+      "name": "Dish ingredients",
+      "description": "Shopping lines of a dish.",
+      "fields": {
+        "dish_id": {
+          "name": "Dish",
+          "description": "id from the proposals/week sensor (or its number)."
+        }
+      }
+    },
+    "set_items_at_home": {
+      "name": "Items at home",
+      "description": "These items are at home.",
+      "fields": {
+        "dish_id": {
+          "name": "Dish",
+          "description": "id from the proposals/week sensor (or its number)."
+        },
+        "items": {
+          "name": "Items",
+          "description": "Names as on the list; empty = buy all."
+        }
+      }
+    },
+    "search_recipes": {
+      "name": "Search recipes",
+      "description": "Searches the enabled recipe sites and lists the recipe links found per site.",
+      "fields": {
+        "query": {
+          "name": "Query",
+          "description": "E.g. “pumpkin gnocchi”."
+        },
+        "sites": {
+          "name": "Sites",
+          "description": "Optional, e.g. [\"chefkoch.de\"]. Empty = all enabled."
+        }
+      }
+    },
+    "planning_brief": {
+      "name": "Get brief for external AI",
+      "description": "Returns the planning brief for the coming week (rules, wishes, appointments, answer format) so an external AI can research the recipes.",
+      "fields": {
+        "notes": {
+          "name": "Notes",
+          "description": "Free text for this week only."
+        },
+        "restart": {
+          "name": "Start over",
+          "description": "Ignore existing proposals for the week."
+        }
+      }
+    },
+    "submit_proposals": {
+      "name": "Submit proposals",
+      "description": "Check dishes from an external AI (link, rules, search) and add them to next week's proposals. The response says what is missing.",
+      "fields": {
+        "dishes": {
+          "name": "Dishes",
+          "description": "List in the format from the brief (title, url, query, site, tip, wish, …)."
+        },
+        "final": {
+          "name": "Last call",
+          "description": "Send the notification afterwards, even if something is missing."
+        },
+        "restart": {
+          "name": "Start over",
+          "description": "Replace existing proposals for the week."
+        }
+      }
+    },
+    "memory_overview": {
+      "name": "Show stored data",
+      "description": "Taste profile (liked, disliked, recently cooked), basic rules and all stored recipes with rating."
+    },
+    "set_profile": {
+      "name": "Change basic rules and taste",
+      "description": "Free text the AI gets with every planning run.",
+      "fields": {
+        "text": {
+          "name": "Text",
+          "description": "Empty = no basic rules."
+        }
+      }
+    },
+    "external_setup": {
+      "name": "External AI setup",
+      "description": "For AIs with access to Home Assistant (MCP): call this when the user says “Set up my meal planner”. Returns the instructions (instructions_for_ai), the schedule from the settings and the task text for a scheduled task in the AI.",
+      "fields": {
+        "activate": {
+          "name": "Switch to external AI",
+          "description": "Sets “Proposals come from” to “External AI”."
+        },
+        "view": {
+          "name": "View only",
+          "description": "For the card: don't record the schedule as set up."
+        }
+      }
+    },
+    "import_week": {
+      "name": "Import week",
+      "description": "Take over the dishes of a running week (switching from another planner), or discard the proposals with an empty list.",
+      "fields": {
+        "dishes": {
+          "name": "Dishes",
+          "description": "List with title, url, choice (trip), on_list, ingredients_ready, own_recipe, skip_items, cooked_on, rating."
+        },
+        "board": {
+          "name": "Board",
+          "description": "current = running week, next = proposals for the coming week."
+        }
+      }
+    }
+  }
+}

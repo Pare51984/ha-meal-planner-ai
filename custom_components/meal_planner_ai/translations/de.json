@@ -1,0 +1,957 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Einkaufsliste",
+        "description": "Sprache und Land der Rezepte. Danach richten sich die vorgeschlagenen Rezeptseiten (z. B. Chefkoch für Deutsch, Marmiton für Französisch), die Sprache der Gerichtsnamen und Einkaufsartikel sowie das Cookidoo-Land. Die Sprache der Bedienoberfläche folgt deinem Home-Assistant-Profil.\n\nWohin sollen die Zutaten? Eine vorhandene To-do-Liste (z. B. Bring!, Google Notizen) oder eine eigene Liste des Essensplaners. Die Einträge folgen dem Bring!-Muster: Artikelname als Eintrag, Menge und Gericht in der Beschreibung.",
+        "data": {
+          "shopping_list": "Einkaufsliste",
+          "region": "Sprache / Region"
+        },
+        "data_description": {
+          "shopping_list": "„Eigene Liste“ legt eine Liste „Essensplaner Einkaufsliste“ an, gut zum Testen.",
+          "region": "Deutsch ist live geprüft. Bei den anderen Sprachen sind die Rezeptseiten unterstützt, ihre Suche ist aber noch nicht im Alltag erprobt; ein Such-Agent mit Websuche hilft dort am meisten."
+        }
+      },
+      "devices": {
+        "title": "Küchengeräte",
+        "description": "Welche Geräte habt ihr? Vorgeschlagen werden nur Gerichte, die ihr damit kochen könnt. Thermomix-Rezepte gibt es nur, wenn der Thermomix ausgewählt ist.",
+        "data": {
+          "devices": "Vorhandene Geräte",
+          "custom_devices": "Eigene Geräte (mit Komma getrennt, z. B. Slow Cooker, Grill)"
+        },
+        "data_description": {
+          "devices": "Alles abwählen, was ihr nicht habt.",
+          "custom_devices": "Weitere Geräte, mit Komma getrennt, z. B. „Slow Cooker, Grill“. Die KI berücksichtigt sie bei den Vorschlägen."
+        }
+      },
+      "ai": {
+        "title": "KI",
+        "description": "Der Essensplaner nutzt die KI aus deinem Home Assistant. Die KI schlägt Gerichte vor, bewertet „cholesterinarm“ und macht Artikelnamen einkaufstauglich. Jeder Link wird von der Integration geprüft; findet die KI keinen funktionierenden Link, sucht die Integration das Gericht selbst auf den Rezeptseiten.\n\n**So richtest du eine KI ein** (einmalig, in Einstellungen → Geräte & Dienste → Integration hinzufügen):\n**Claude (Anthropic)** – am zuverlässigsten bei der Rezeptsuche, auch für Cookidoo. Auf console.anthropic.com anmelden, unter „Billing“ Guthaben aufladen (5 $ reichen lange), unter „API Keys“ einen Schlüssel erstellen. Dann die Integration „Anthropic“ hinzufügen und den Schlüssel einfügen. Kosten: Websuche ca. 1 Cent pro Suche, ein Wochenlauf grob 10–50 Cent (Schätzung).\n**Gemini (Google)** – kostenlos nutzbar. Auf aistudio.google.com einen API-Schlüssel erstellen, dann die Integration „Google Generative AI“ hinzufügen. Die Google-Suche ist im kostenlosen Tarif begrenzt, und Gemini liefert öfter Links, die nicht funktionieren; die Integration sucht dann selbst nach.\n**ChatGPT (OpenAI)** – auf platform.openai.com Guthaben aufladen und einen API-Schlüssel erstellen, dann die Integration „OpenAI Conversation“ hinzufügen.\nDanach diesen Bereich neu öffnen und unten „Such-Agent anlegen bei“ den gewünschten Anbieter wählen. Tipp: Gemini als Haupt-KI (kostenlos) und Claude nur für die Rezeptsuche ist eine gute Mischung. API-Schlüssel nie weitergeben.\n\n**Externe KI über dein Abo (ohne API-Schlüssel):** Statt einer KI in Home Assistant kann eine KI außerhalb die Rezepte heraussuchen, zum Beispiel dein Claude- oder ChatGPT-Abo. Das läuft so: Du legst in deiner KI einmal eine geplante Aufgabe an. Zur eingestellten Zeit startet sie, fragt beim Essensplaner nach, ob gerade geplant werden soll, holt sich den Auftrag mit deinen aktuellen Regeln, Wünschen und Terminen, sucht die Rezepte im Web und gibt sie zurück. Der Essensplaner prüft jedes Gericht genauso wie bei der eingebauten KI und meldet zurück, was noch fehlt; die KI liefert dann nach.\nDafür brauchst du: 1. ein KI-Abo mit geplanten Aufgaben und Websuche, 2. eine Verbindung dieser KI zu deinem Home Assistant über MCP (z. B. die Integration „Model Context Protocol Server“ mit der Werkzeug-Sammlung „Meal Planner AI“), 3. Fernzugriff auf Home Assistant von außen (z. B. Home Assistant Cloud oder Cloudflare).\nWählst du unten „Externe KI“, zeigt der Reiter Einstellungen in der Karte den fertigen Text und Zeitplan für die Aufgabe zum Kopieren. Kommt 5 Stunden nach dem Planungszeitpunkt nichts, springt die KI in Home Assistant ein, falls eine gewählt ist.",
+        "data": {
+          "proposals_from": "Vorschläge kommen von",
+          "ai_task": "KI (AI-Task-Entität)",
+          "ai_shopping_names": "KI macht Artikelnamen katalogtauglich (z. B. für Bring!)",
+          "ai_search": "Rezeptsuche: KI mit Websuche (Gesprächsagent)",
+          "create_search_agent": "Such-Agent mit Websuche anlegen bei"
+        },
+        "data_description": {
+          "proposals_from": "„KI in Home Assistant“: die unten gewählte KI erstellt die Vorschläge nach Zeitplan. „Externe KI“: eine KI außerhalb (z. B. geplante Aufgabe in Claude, Gemini oder ChatGPT) liefert sie über die Aktionen; die KI unten dient dann nur als Ersatz.",
+          "ai_search": "Optional, für bessere Treffer: ein Agent mit Websuche. Nur damit sind z. B. Cookidoo-Rezepte auffindbar. „Keine“ = die KI liefert Ideen, die Integration sucht selbst. Tipp: Mit Google Gemini klappt die Rezeptsuche ohne Abo und ohne externe KI: kostenlosen API-Schlüssel in Google AI Studio holen und die Integration „Google Gemini“ einrichten. Unten bei „Such-Agent mit Websuche anlegen bei“ Gemini wählen, der Essensplaner richtet ihn mit Google-Suche ein (gemini-2.5-flash; neuere Modelle lehnen die Suche im Gratis-Tarif teils ab).",
+          "create_search_agent": "Legt beim gewählten Anbieter einen eigenen Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben als Rezeptsuche aus. Bestehende Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
+          "ai_task": "Die Haupt-KI. Bei Gemini, Claude und ChatGPT heißt sie meist „… AI Task“.",
+          "ai_shopping_names": "An: Die KI macht aus „1 rote Paprikaschote, gewürfelt“ den Eintrag „Paprika“. Gut für Bring!, das feste Artikel kennt."
+        }
+      },
+      "display": {
+        "title": "Anzeige",
+        "description": "Wo erscheint der Essensplaner? Als eigene Seite in der Seitenleiste, als Ansicht „Essen“ in einem vorhandenen Dashboard oder gar nicht (dann fügst du die Karte „Essensplaner“ selbst ein). Die Karte lässt sich auch zusätzlich in jedes Dashboard einfügen. Beim Speichern wird genau diese Einstellung umgesetzt: Wechselst du, verschwindet die bisherige Seite bzw. die vom Essensplaner angelegte Ansicht. Karten, die du selbst eingefügt hast, bleiben unberührt.",
+        "data": {
+          "display": "Anzeige",
+          "display_dashboard": "Dashboard (nur bei „Ansicht in vorhandenem Dashboard“)",
+          "display_style": "Farben"
+        },
+        "data_description": {
+          "display": "Eigene Seite ist am einfachsten. „Ansicht in vorhandenem Dashboard“ legt einen neuen Reiter an, z. B. in der Übersicht.",
+          "display_dashboard": "Nur bei „Ansicht in vorhandenem Dashboard“: in welches Dashboard. „lovelace“ ist die Übersicht.",
+          "display_style": "„Wie mein Home Assistant“ übernimmt Farben und Ecken deines Designs (auch Dunkelmodus). „Warm“ ist der eigene Essensplan-Stil."
+        }
+      },
+      "import_legacy": {
+        "title": "Frühere Version gefunden",
+        "description": "Die frühere Integration „Essensplaner“ ist noch eingerichtet. Ihre Einstellungen lassen sich übernehmen; Rezepte, Bewertungen, Wünsche und die eigene Einkaufsliste werden beim Start automatisch übernommen. Danach die alte Integration „Essensplaner“ löschen, damit nicht zwei Planer laufen.",
+        "data": {
+          "import_settings": "Einstellungen übernehmen"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Der Essensplaner ist bereits eingerichtet."
+    },
+    "error": {
+      "agent_failed": "Der Such-Agent konnte nicht angelegt werden. Ohne Häkchen speichern oder den Agenten in der KI-Integration selbst anlegen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Essensplaner",
+        "menu_options": {
+          "schedule": "Zeitplan und Benachrichtigungen",
+          "trips": "Einkäufe",
+          "calendar": "Kalender",
+          "rules": "Regeln und Geschmack",
+          "diet_count": "Ernährung und Vorschläge pro Woche",
+          "shopping_list": "Einkaufsliste",
+          "sources": "Rezeptquellen",
+          "devices": "Küchengeräte",
+          "ai": "KI",
+          "display": "Anzeige",
+          "habits": "Essgewohnheiten",
+          "region": "Sprache und Region"
+        },
+        "description": "Hier stellst du ein, wie der Essensplaner arbeitet. Tipp einen Bereich an, ändere die Werte und speichere. Kurz erklärt:\n**Sprache und Region** – Land der Rezepte, Rezeptseiten und Sprache der Vorschläge.\n**Zeitplan** – wann Vorschläge kommen und wann Auswahlschluss ist.\n**Einkäufe** – wie oft ihr einkauft und wann Zutaten auf die Liste kommen.\n**Kalender** – Termine, die das Essen beeinflussen (z. B. Gäste, Spätschicht).\n**Regeln und Geschmack** – Portionen, Kochzeit, Kalorien, Vorlieben.\n**Essgewohnheiten** – feste Regeln wie „höchstens 1x Suppe pro Woche“.\n**Ernährung** – wie viele Vorschläge pro Woche und wie viele davon z. B. vegetarisch.\n**Einkaufsliste** – wohin die Zutaten kommen und was nie draufkommt.\n**Rezeptquellen** – auf welchen Seiten gesucht wird.\n**Küchengeräte** – was ihr habt (z. B. Thermomix) und wie oft es genutzt werden soll.\n**KI** – welche KI plant und Rezepte sucht.\n**Anzeige** – wo und wie der Essensplaner im Dashboard erscheint."
+      },
+      "shopping_list": {
+        "title": "Einkaufsliste",
+        "description": "Wohin sollen die Zutaten? Eine vorhandene To-do-Liste (z. B. Bring!, Google Notizen) oder eine eigene Liste des Essensplaners. Die Einträge folgen dem Bring!-Muster: Artikelname als Eintrag, Menge und Gericht in der Beschreibung.",
+        "data": {
+          "shopping_list": "Einkaufsliste",
+          "staples": "Grundzutaten, die nie auf die Liste kommen (mit Komma getrennt)",
+          "skip_spices": "Gewürze weglassen",
+          "catalog": "Feste Katalognamen (je Zeile: Rezeptname = Listenname)"
+        },
+        "data_description": {
+          "shopping_list": "„Eigene Liste“ legt eine Liste „Essensplaner Einkaufsliste“ an, gut zum Testen.",
+          "staples": "Was ihr immer im Haus habt, kommt nie auf die Liste. Mit Komma trennen. Zusammensetzungen werden erkannt (Salz → auch Jodsalz, Meersalz).",
+          "skip_spices": "An: getrocknete Gewürze (Paprikapulver, Oregano …) kommen nicht auf die Liste.",
+          "catalog": "Ein Eintrag je Zeile, „Rezeptname = Listenname“. So heißt z. B. „passierte Tomaten“ auf der Liste „Dosentomaten“. Praktisch, wenn eure Liste feste Artikelnamen kennt (Bring!)."
+        }
+      },
+      "sources": {
+        "title": "Rezeptquellen",
+        "description": "Auf welchen Seiten gesucht wird. Nur eingeschaltete Seiten werden genutzt; jedes Rezept wird vor dem Vorschlag abgerufen und geprüft. Cookidoo, Rezeptwelt und Zaubertopf sind Thermomix-Seiten. Eigene Seiten: {custom}. {thermomix_note} {error}",
+        "data": {
+          "site_chefkoch_de": "chefkoch.de",
+          "site_rezeptwelt_de": "rezeptwelt.de",
+          "site_zaubertopf_de": "zaubertopf.de",
+          "site_lecker_de": "lecker.de",
+          "site_eatsmarter_de": "eatsmarter.de",
+          "site_kitchenstories_com": "kitchenstories.com",
+          "site_emmikochteinfach_de": "emmikochteinfach.de",
+          "site_springlane_de": "springlane.de",
+          "site_kochbar_de": "kochbar.de",
+          "site_rewe_de": "rewe.de",
+          "site_hellofresh_de": "hellofresh.de",
+          "site_sallys_blog_de": "sallys-blog.de",
+          "remove_custom": "Eigene Seiten entfernen",
+          "new_source_url": "Neue Seite: Beispiel-Rezeptlink",
+          "site_cookidoo_de": "cookidoo.de",
+          "site_einfachkochen_de": "einfachkochen.de",
+          "site_essen_und_trinken_de": "essen-und-trinken.de",
+          "site_kuechengoetter_de": "kuechengoetter.de",
+          "site_allrecipes_com": "allrecipes.com",
+          "site_bbcgoodfood_com": "bbcgoodfood.com",
+          "site_seriouseats_com": "seriouseats.com",
+          "site_simplyrecipes_com": "simplyrecipes.com",
+          "site_recipetineats_com": "recipetineats.com",
+          "site_budgetbytes_com": "budgetbytes.com",
+          "site_jamieoliver_com": "jamieoliver.com",
+          "site_eatingwell_com": "eatingwell.com",
+          "site_food_com": "food.com",
+          "site_cookidoo_co_uk": "cookidoo.co.uk",
+          "site_directoalpaladar_com": "directoalpaladar.com",
+          "site_recetasgratis_net": "recetasgratis.net",
+          "site_hellofresh_es": "hellofresh.es",
+          "site_cookidoo_es": "cookidoo.es",
+          "site_tudogostoso_com_br": "tudogostoso.com.br",
+          "site_panelinha_com_br": "panelinha.com.br",
+          "site_receitas_globo_com": "receitas.globo.com",
+          "site_receitasnestle_com_br": "receitasnestle.com.br",
+          "site_pingodoce_pt": "pingodoce.pt",
+          "site_cookidoo_pt": "cookidoo.pt",
+          "site_marmiton_org": "marmiton.org",
+          "site_cuisineaz_com": "cuisineaz.com",
+          "site_750g_com": "750g.com",
+          "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
+          "site_jow_fr": "jow.fr",
+          "site_hellofresh_fr": "hellofresh.fr",
+          "site_cookidoo_fr": "cookidoo.fr"
+        },
+        "data_description": {
+          "new_source_url": "Neue Seite hinzufügen: Link zu irgendeinem Rezept dieser Seite eintragen. Die Integration testet, ob sie es lesen kann, und schaltet die Seite dann frei.",
+          "remove_custom": "Eigene Seiten, die wieder entfernt werden sollen."
+        }
+      },
+      "diet_count": {
+        "title": "Vorschläge pro Woche",
+        "description": "Wie viele Gerichte soll der Essensplaner pro Woche vorschlagen? Ihr müsst nicht alle nehmen. Im nächsten Schritt legst du fest, wie viele davon z. B. vegetarisch sein sollen.",
+        "data": {
+          "recipes_per_week": "Vorschläge pro Woche"
+        },
+        "data_description": {
+          "recipes_per_week": "Anzahl der Vorschläge pro Woche, z. B. 10 für 7 Tage mit etwas Auswahl."
+        }
+      },
+      "diet": {
+        "title": "Ernährung",
+        "description": "Je Ernährungsform: **Aus** = egal, **Immer** = jedes Gericht muss passen, **Anteilig** = so viele der {recipes} Gerichte pro Woche. Ein Gericht darf mehrfach zählen (vegan zählt auch als vegetarisch). Vegetarisch, vegan, laktose- und glutenfrei erkennt die Integration an den Zutaten; cholesterinarm bewertet die KI am echten Rezept. Kalorien stellst du unter „Regeln und Geschmack“ ein. {clamped}",
+        "data": {
+          "vegetarian_mode": "Vegetarisch",
+          "vegetarian_count": "Vegetarisch: Anzahl pro Woche",
+          "vegan_mode": "Vegan",
+          "vegan_count": "Vegan: Anzahl pro Woche",
+          "lactose_free_mode": "Laktosefrei",
+          "lactose_free_count": "Laktosefrei: Anzahl pro Woche",
+          "gluten_free_mode": "Glutenfrei",
+          "gluten_free_count": "Glutenfrei: Anzahl pro Woche",
+          "low_cholesterol_mode": "Cholesterinarm",
+          "low_cholesterol_count": "Cholesterinarm: Anzahl pro Woche"
+        },
+        "data_description": {
+          "vegetarian_mode": "Aus, Immer oder Anteilig.",
+          "vegetarian_count": "Nur bei „Anteilig“: so viele Gerichte pro Woche mindestens.",
+          "vegan_mode": "Aus, Immer oder Anteilig.",
+          "vegan_count": "Nur bei „Anteilig“: so viele Gerichte pro Woche mindestens.",
+          "lactose_free_mode": "Aus, Immer oder Anteilig.",
+          "lactose_free_count": "Nur bei „Anteilig“: so viele Gerichte pro Woche mindestens.",
+          "gluten_free_mode": "Aus, Immer oder Anteilig.",
+          "gluten_free_count": "Nur bei „Anteilig“: so viele Gerichte pro Woche mindestens.",
+          "low_cholesterol_mode": "Aus, Immer oder Anteilig.",
+          "low_cholesterol_count": "Nur bei „Anteilig“: so viele Gerichte pro Woche mindestens."
+        }
+      },
+      "diet_overlap": {
+        "title": "Hinweis: Überschneidungen nötig",
+        "description": "Die gewählten Anzahlen passen nur, wenn mindestens {overlap} der {recipes} Gerichte mehrere Optionen gleichzeitig erfüllen. Trotzdem speichern?"
+      },
+      "devices": {
+        "title": "Küchengeräte",
+        "data": {
+          "devices": "Vorhandene Geräte",
+          "custom_devices": "Eigene Geräte (mit Komma getrennt, z. B. Slow Cooker, Grill)"
+        },
+        "description": "Welche Geräte habt ihr? Vorgeschlagen werden nur Gerichte, die ihr damit kochen könnt. Thermomix-Rezepte gibt es nur, wenn der Thermomix ausgewählt ist.",
+        "data_description": {
+          "devices": "Alles abwählen, was ihr nicht habt.",
+          "custom_devices": "Weitere Geräte, mit Komma getrennt, z. B. „Slow Cooker, Grill“. Die KI berücksichtigt sie bei den Vorschlägen."
+        }
+      },
+      "device_counts": {
+        "title": "Geräte pro Woche (optional)",
+        "description": "Optional: Wie viele der {recipes} Gerichte sollen ein bestimmtes Gerät nutzen? 0 = egal. Beispiel: Thermomix 2 → mindestens zwei Thermomix-Gerichte pro Woche.",
+        "data": {
+          "count_stove_oven": "Herd und Backofen: Gerichte pro Woche",
+          "count_thermomix": "Thermomix: Gerichte pro Woche",
+          "count_airfryer": "Airfryer: Gerichte pro Woche"
+        },
+        "data_description": {
+          "count_stove_oven": "Mindestens so viele Gerichte pro Woche mit diesem Gerät. 0 = egal.",
+          "count_thermomix": "Mindestens so viele Gerichte pro Woche mit diesem Gerät. 0 = egal.",
+          "count_airfryer": "Mindestens so viele Gerichte pro Woche mit diesem Gerät. 0 = egal."
+        }
+      },
+      "ai": {
+        "title": "KI",
+        "description": "Der Essensplaner nutzt die KI aus deinem Home Assistant. Die KI schlägt Gerichte vor, bewertet „cholesterinarm“ und macht Artikelnamen einkaufstauglich. Jeder Link wird von der Integration geprüft; findet die KI keinen funktionierenden Link, sucht die Integration das Gericht selbst auf den Rezeptseiten.\n\n**So richtest du eine KI ein** (einmalig, in Einstellungen → Geräte & Dienste → Integration hinzufügen):\n**Claude (Anthropic)** – am zuverlässigsten bei der Rezeptsuche, auch für Cookidoo. Auf console.anthropic.com anmelden, unter „Billing“ Guthaben aufladen (5 $ reichen lange), unter „API Keys“ einen Schlüssel erstellen. Dann die Integration „Anthropic“ hinzufügen und den Schlüssel einfügen. Kosten: Websuche ca. 1 Cent pro Suche, ein Wochenlauf grob 10–50 Cent (Schätzung).\n**Gemini (Google)** – kostenlos nutzbar. Auf aistudio.google.com einen API-Schlüssel erstellen, dann die Integration „Google Generative AI“ hinzufügen. Die Google-Suche ist im kostenlosen Tarif begrenzt, und Gemini liefert öfter Links, die nicht funktionieren; die Integration sucht dann selbst nach.\n**ChatGPT (OpenAI)** – auf platform.openai.com Guthaben aufladen und einen API-Schlüssel erstellen, dann die Integration „OpenAI Conversation“ hinzufügen.\nDanach diesen Bereich neu öffnen und unten „Such-Agent anlegen bei“ den gewünschten Anbieter wählen. Tipp: Gemini als Haupt-KI (kostenlos) und Claude nur für die Rezeptsuche ist eine gute Mischung. API-Schlüssel nie weitergeben.\n\n**Externe KI über dein Abo (ohne API-Schlüssel):** Statt einer KI in Home Assistant kann eine KI außerhalb die Rezepte heraussuchen, zum Beispiel dein Claude- oder ChatGPT-Abo. Das läuft so: Du legst in deiner KI einmal eine geplante Aufgabe an. Zur eingestellten Zeit startet sie, fragt beim Essensplaner nach, ob gerade geplant werden soll, holt sich den Auftrag mit deinen aktuellen Regeln, Wünschen und Terminen, sucht die Rezepte im Web und gibt sie zurück. Der Essensplaner prüft jedes Gericht genauso wie bei der eingebauten KI und meldet zurück, was noch fehlt; die KI liefert dann nach.\nDafür brauchst du: 1. ein KI-Abo mit geplanten Aufgaben und Websuche, 2. eine Verbindung dieser KI zu deinem Home Assistant über MCP (z. B. die Integration „Model Context Protocol Server“ mit der Werkzeug-Sammlung „Meal Planner AI“), 3. Fernzugriff auf Home Assistant von außen (z. B. Home Assistant Cloud oder Cloudflare).\nWählst du unten „Externe KI“, zeigt der Reiter Einstellungen in der Karte den fertigen Text und Zeitplan für die Aufgabe zum Kopieren. Kommt 5 Stunden nach dem Planungszeitpunkt nichts, springt die KI in Home Assistant ein, falls eine gewählt ist.",
+        "data": {
+          "proposals_from": "Vorschläge kommen von",
+          "ai_task": "KI (AI-Task-Entität)",
+          "ai_shopping_names": "KI macht Artikelnamen katalogtauglich (z. B. für Bring!)",
+          "ai_search": "Rezeptsuche: KI mit Websuche (Gesprächsagent)",
+          "create_search_agent": "Such-Agent mit Websuche anlegen bei"
+        },
+        "data_description": {
+          "proposals_from": "„KI in Home Assistant“: die unten gewählte KI erstellt die Vorschläge nach Zeitplan. „Externe KI“: eine KI außerhalb (z. B. geplante Aufgabe in Claude, Gemini oder ChatGPT) liefert sie über die Aktionen; die KI unten dient dann nur als Ersatz.",
+          "ai_search": "Optional, für bessere Treffer: ein Agent mit Websuche. Nur damit sind z. B. Cookidoo-Rezepte auffindbar. „Keine“ = die KI liefert Ideen, die Integration sucht selbst. Tipp: Mit Google Gemini klappt die Rezeptsuche ohne Abo und ohne externe KI: kostenlosen API-Schlüssel in Google AI Studio holen und die Integration „Google Gemini“ einrichten. Unten bei „Such-Agent mit Websuche anlegen bei“ Gemini wählen, der Essensplaner richtet ihn mit Google-Suche ein (gemini-2.5-flash; neuere Modelle lehnen die Suche im Gratis-Tarif teils ab).",
+          "create_search_agent": "Legt beim gewählten Anbieter einen eigenen Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben als Rezeptsuche aus. Bestehende Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
+          "ai_task": "Die Haupt-KI. Bei Gemini, Claude und ChatGPT heißt sie meist „… AI Task“.",
+          "ai_shopping_names": "An: Die KI macht aus „1 rote Paprikaschote, gewürfelt“ den Eintrag „Paprika“. Gut für Bring!, das feste Artikel kennt."
+        }
+      },
+      "schedule": {
+        "title": "Zeitplan",
+        "description": "Einmal pro Woche schlägt der Essensplaner Gerichte für die kommende Woche vor. Bis zum Auswahlschluss tippt ihr an, was ihr kochen wollt. Danach fällt nicht Gewähltes weg, und die neue Woche beginnt. Beispiel: Vorschläge Freitag 18:00, Auswahlschluss Samstag 12:00.",
+        "data": {
+          "plan_weekday": "Vorschläge: Wochentag",
+          "plan_time": "Vorschläge: Uhrzeit",
+          "deadline_weekday": "Auswahlschluss: Wochentag",
+          "deadline_time": "Auswahlschluss: Uhrzeit",
+          "notify": "Push-Benachrichtigungen an",
+          "dashboard_path": "Dashboard-Pfad zum Öffnen aus der Push (z. B. /essensplaner)"
+        },
+        "data_description": {
+          "plan_weekday": "An diesem Tag erstellt die KI automatisch die Vorschläge für die nächste Woche.",
+          "plan_time": "Uhrzeit der automatischen Vorschläge. Die Suche dauert ein paar Minuten, danach kommt die Push.",
+          "deadline_weekday": "Bis zu diesem Tag wählt ihr aus. Gleichzeitig beginnt hier die neue Essenswoche.",
+          "deadline_time": "Uhrzeit des Auswahlschlusses. Danach bleiben nur die gewählten Gerichte übrig.",
+          "notify": "Wer bekommt eine Push, wenn neue Vorschläge da sind, ein Einkauf freigegeben wird oder etwas schiefgeht? Leer = keine Push.",
+          "dashboard_path": "Seite, die sich beim Antippen der Push öffnet, z. B. /essensplaner (eigene Seite) oder /lovelace/essensplaner (Ansicht im Dashboard). Leer = die Push öffnet nur die App."
+        }
+      },
+      "rules": {
+        "title": "Regeln und Geschmack",
+        "description": "Grundregeln für jedes vorgeschlagene Gericht. Feste Grenzen (Zeit, kcal) prüft die Integration selbst am echten Rezept, Weiches wie Geschmack beachtet die KI. Bezug: {recipes} Vorschläge pro Woche.",
+        "data": {
+          "portions": "Portionen",
+          "time_max": "Zeit höchstens",
+          "time_quick": "Schnelle Gerichte: höchstens",
+          "quick_share": "Davon schnelle Gerichte pro Woche",
+          "profile": "Geschmack (Freitext für die KI)",
+          "kcal_aware": "Kalorienbewusst planen",
+          "max_same_main": "Abwechslung: höchstens so viele Gerichte mit derselben Hauptzutat"
+        },
+        "data_description": {
+          "kcal_aware": "An: im nächsten Schritt legst du kcal-Grenzen pro Portion fest. Aus: Kalorien spielen keine Rolle.",
+          "portions": "Für wie viele Portionen eingekauft wird. Die Mengen auf der Einkaufsliste werden darauf umgerechnet.",
+          "time_max": "Kein Gericht dauert länger als diese Gesamtzeit laut Rezept (Vorbereitung + Kochen).",
+          "time_quick": "Ab wann ein Gericht als „schnell“ gilt, z. B. 40 Minuten.",
+          "quick_share": "Wie viele der Gerichte pro Woche mindestens schnell sein sollen.",
+          "profile": "Freitext für die KI: was ihr mögt und nicht mögt, z. B. „gern mediterran, keine Innereien, Kinder mögen nichts Scharfes“.",
+          "max_same_main": "Z. B. 3: nicht mehr als drei Gerichte mit Hähnchen, Rind, Schwein, Hack oder Lachs pro Woche (erkannt am Gerichtsnamen, Wünsche zählen nicht). 0 = egal."
+        }
+      },
+      "trips": {
+        "title": "Einkäufe",
+        "description": "Wie oft kauft ihr pro Woche für die Gerichte ein? Jedes Gericht ordnet ihr später einem Einkauf zu, und die Zutaten kommen passend dazu auf die Liste. Beispiel mit 2 Einkäufen: Samstag für Sa–Di, Dienstag für Mi–Fr.",
+        "data": {
+          "count": "Anzahl Einkäufe pro Woche"
+        },
+        "data_description": {
+          "count": "Danach legst du für jeden Einkauf Namen, Kochtage und Zeitpunkt fest."
+        }
+      },
+      "trip_details": {
+        "title": "Einkäufe",
+        "description": "**Name** erscheint als Knopf auf jeder Kachel. **Kochtage** sagen der KI, für welche Tage ein Einkauf gedacht ist (z. B. Frisches eher früh). **Wann auf die Liste**: „Sofort“ = Zutaten kommen direkt beim Antippen auf die Liste. „Fester Termin“ = erst am gewählten Wochentag zur Uhrzeit, damit frische Zutaten nicht tagelang auf der Liste stehen; danach gewählte Gerichte kommen sofort drauf.",
+        "data": {
+          "name_1": "Einkauf 1: Name (z. B. Wocheneinkauf, Markt)",
+          "days_1": "Einkauf 1: für welche Kochtage (optional)",
+          "release_1": "Einkauf 1: wann auf die Liste",
+          "weekday_1": "Einkauf 1: Wochentag (bei festem Termin)",
+          "time_1": "Einkauf 1: Uhrzeit (bei festem Termin)",
+          "name_2": "Einkauf 2: Name (z. B. Wocheneinkauf, Markt)",
+          "days_2": "Einkauf 2: für welche Kochtage (optional)",
+          "release_2": "Einkauf 2: wann auf die Liste",
+          "weekday_2": "Einkauf 2: Wochentag (bei festem Termin)",
+          "time_2": "Einkauf 2: Uhrzeit (bei festem Termin)",
+          "name_3": "Einkauf 3: Name (z. B. Wocheneinkauf, Markt)",
+          "days_3": "Einkauf 3: für welche Kochtage (optional)",
+          "release_3": "Einkauf 3: wann auf die Liste",
+          "weekday_3": "Einkauf 3: Wochentag (bei festem Termin)",
+          "time_3": "Einkauf 3: Uhrzeit (bei festem Termin)",
+          "name_4": "Einkauf 4: Name (z. B. Wocheneinkauf, Markt)",
+          "days_4": "Einkauf 4: für welche Kochtage (optional)",
+          "release_4": "Einkauf 4: wann auf die Liste",
+          "weekday_4": "Einkauf 4: Wochentag (bei festem Termin)",
+          "time_4": "Einkauf 4: Uhrzeit (bei festem Termin)",
+          "name_5": "Einkauf 5: Name (z. B. Wocheneinkauf, Markt)",
+          "days_5": "Einkauf 5: für welche Kochtage (optional)",
+          "release_5": "Einkauf 5: wann auf die Liste",
+          "weekday_5": "Einkauf 5: Wochentag (bei festem Termin)",
+          "time_5": "Einkauf 5: Uhrzeit (bei festem Termin)",
+          "name_6": "Einkauf 6: Name (z. B. Wocheneinkauf, Markt)",
+          "days_6": "Einkauf 6: für welche Kochtage (optional)",
+          "release_6": "Einkauf 6: wann auf die Liste",
+          "weekday_6": "Einkauf 6: Wochentag (bei festem Termin)",
+          "time_6": "Einkauf 6: Uhrzeit (bei festem Termin)",
+          "name_7": "Einkauf 7: Name (z. B. Wocheneinkauf, Markt)",
+          "days_7": "Einkauf 7: für welche Kochtage (optional)",
+          "release_7": "Einkauf 7: wann auf die Liste",
+          "weekday_7": "Einkauf 7: Wochentag (bei festem Termin)",
+          "time_7": "Einkauf 7: Uhrzeit (bei festem Termin)"
+        },
+        "data_description": {
+          "name_1": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_1": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_1": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_1": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_1": "Nur bei „Fester Termin“: zu dieser Uhrzeit.",
+          "name_2": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_2": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_2": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_2": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_2": "Nur bei „Fester Termin“: zu dieser Uhrzeit.",
+          "name_3": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_3": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_3": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_3": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_3": "Nur bei „Fester Termin“: zu dieser Uhrzeit.",
+          "name_4": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_4": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_4": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_4": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_4": "Nur bei „Fester Termin“: zu dieser Uhrzeit.",
+          "name_5": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_5": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_5": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_5": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_5": "Nur bei „Fester Termin“: zu dieser Uhrzeit.",
+          "name_6": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_6": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_6": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_6": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_6": "Nur bei „Fester Termin“: zu dieser Uhrzeit.",
+          "name_7": "Kurzer Name, z. B. „Wocheneinkauf“, „Markt“ oder „Sa–Di“.",
+          "days_7": "Optional: an welchen Tagen ihr die Gerichte dieses Einkaufs kocht.",
+          "release_7": "„Sofort“ oder „Fester Termin“ (siehe oben).",
+          "weekday_7": "Nur bei „Fester Termin“: an diesem Tag kommen die Zutaten auf die Liste.",
+          "time_7": "Nur bei „Fester Termin“: zu dieser Uhrzeit."
+        }
+      },
+      "display": {
+        "title": "Anzeige",
+        "description": "Wo erscheint der Essensplaner? Als eigene Seite in der Seitenleiste, als Ansicht „Essen“ in einem vorhandenen Dashboard oder gar nicht (dann fügst du die Karte „Essensplaner“ selbst ein). Die Karte lässt sich auch zusätzlich in jedes Dashboard einfügen. Beim Speichern wird genau diese Einstellung umgesetzt: Wechselst du, verschwindet die bisherige Seite bzw. die vom Essensplaner angelegte Ansicht. Karten, die du selbst eingefügt hast, bleiben unberührt.",
+        "data": {
+          "display": "Anzeige",
+          "display_dashboard": "Dashboard (nur bei „Ansicht in vorhandenem Dashboard“)",
+          "display_style": "Farben"
+        },
+        "data_description": {
+          "display": "Eigene Seite ist am einfachsten. „Ansicht in vorhandenem Dashboard“ legt einen neuen Reiter an, z. B. in der Übersicht.",
+          "display_dashboard": "Nur bei „Ansicht in vorhandenem Dashboard“: in welches Dashboard. „lovelace“ ist die Übersicht.",
+          "display_style": "„Wie mein Home Assistant“ übernimmt Farben und Ecken deines Designs (auch Dunkelmodus). „Warm“ ist der eigene Essensplan-Stil."
+        }
+      },
+      "calendar": {
+        "title": "Kalender",
+        "description": "Bis zu drei Regeln, mit denen Termine die Planung beeinflussen. Für jede Regel wählst du Kalender, optional ein Stichwort und schreibst, was diese Tage bedeuten. Die KI berücksichtigt das für die betroffenen Tage, und passende Gerichte bekommen ein Kennzeichen auf der Kachel. Beispiele: „Gäste“ (Kalender Familie, Stichwort „Besuch“, Hinweis „etwas Besonderes, gut vorzubereiten“), „Spätschicht“ (Hinweis „nur schnelle Gerichte“). Regel ohne Kalender = aus.",
+        "data": {
+          "label_1": "Regel 1: Kennzeichen auf der Kachel (z. B. Gäste, Spätschicht)",
+          "calendars_1": "Regel 1: Kalender",
+          "keyword_1": "Regel 1: nur Termine mit diesem Wort (leer = alle)",
+          "hint_1": "Regel 1: was diese Tage für die Planung bedeuten",
+          "label_2": "Regel 2: Kennzeichen auf der Kachel (z. B. Gäste, Spätschicht)",
+          "calendars_2": "Regel 2: Kalender",
+          "keyword_2": "Regel 2: nur Termine mit diesem Wort (leer = alle)",
+          "hint_2": "Regel 2: was diese Tage für die Planung bedeuten",
+          "label_3": "Regel 3: Kennzeichen auf der Kachel (z. B. Gäste, Spätschicht)",
+          "calendars_3": "Regel 3: Kalender",
+          "keyword_3": "Regel 3: nur Termine mit diesem Wort (leer = alle)",
+          "hint_3": "Regel 3: was diese Tage für die Planung bedeuten"
+        },
+        "data_description": {
+          "label_1": "Kurzes Kennzeichen, das auf passenden Kacheln erscheint, z. B. „Gäste“.",
+          "calendars_1": "Welche Kalender geprüft werden. Keiner gewählt = Regel aus.",
+          "keyword_1": "Nur Termine, deren Titel dieses Wort enthält. Leer = alle Termine dieser Kalender zählen.",
+          "hint_1": "Was die KI an diesen Tagen beachten soll, z. B. „eine Person mehr“ oder „nur schnelle Gerichte“.",
+          "label_2": "Kurzes Kennzeichen, das auf passenden Kacheln erscheint, z. B. „Gäste“.",
+          "calendars_2": "Welche Kalender geprüft werden. Keiner gewählt = Regel aus.",
+          "keyword_2": "Nur Termine, deren Titel dieses Wort enthält. Leer = alle Termine dieser Kalender zählen.",
+          "hint_2": "Was die KI an diesen Tagen beachten soll, z. B. „eine Person mehr“ oder „nur schnelle Gerichte“.",
+          "label_3": "Kurzes Kennzeichen, das auf passenden Kacheln erscheint, z. B. „Gäste“.",
+          "calendars_3": "Welche Kalender geprüft werden. Keiner gewählt = Regel aus.",
+          "keyword_3": "Nur Termine, deren Titel dieses Wort enthält. Leer = alle Termine dieser Kalender zählen.",
+          "hint_3": "Was die KI an diesen Tagen beachten soll, z. B. „eine Person mehr“ oder „nur schnelle Gerichte“."
+        }
+      },
+      "rules_kcal": {
+        "title": "Kalorienbewusst",
+        "description": "Grenzen pro Portion. Die Integration prüft sie am Rezept. Steht dort nichts, schätzt die KI und rechnet mit 100 kcal Puffer. Leeres Feld = keine Grenze.",
+        "data": {
+          "kcal_max": "kcal pro Portion inkl. Beilage höchstens",
+          "kcal_max_without_side": "kcal pro Portion höchstens, wenn die Beilage nicht enthalten ist"
+        },
+        "data_description": {
+          "kcal_max_without_side": "Wenn das Rezept die Beilage nicht enthält (z. B. Gulasch ohne Nudeln), gilt dieser niedrigere Wert für das Gericht allein, z. B. 650. Leer = es gilt der Wert oben.",
+          "kcal_max": "Für das ganze Essen inklusive üblicher Beilage, z. B. 800."
+        }
+      },
+      "habits": {
+        "title": "Essgewohnheiten",
+        "description": "Feste Regeln für die Rezeptauswahl, bis zu fünf, in eigenen Worten. Die KI hält sich daran. Schreibst du „höchstens …x“, zählt die Integration zusätzlich anhand der Gerichtsnamen nach (z. B. „Suppen/Eintöpfe höchstens 1x pro Woche“). Leere Felder = keine Regel.",
+        "data": {
+          "habit_1": "Regel 1",
+          "habit_2": "Regel 2",
+          "habit_3": "Regel 3",
+          "habit_4": "Regel 4",
+          "habit_5": "Regel 5"
+        },
+        "data_description": {
+          "habit_1": "z. B. „Suppen/Eintöpfe höchstens 1x pro Woche“",
+          "habit_2": "z. B. „mindestens 1x Fisch“",
+          "habit_3": "z. B. „kein Schweinefleisch“",
+          "habit_4": "z. B. „Aufläufe höchstens 2x pro Woche“",
+          "habit_5": "z. B. „freitags gern etwas Besonderes“"
+        }
+      },
+      "region": {
+        "title": "Sprache und Region",
+        "description": "Sprache und Land der Rezepte. Danach richten sich die vorgeschlagenen Rezeptseiten (z. B. Chefkoch für Deutsch, Marmiton für Französisch), die Sprache der Gerichtsnamen und Einkaufsartikel sowie das Cookidoo-Land. Die Sprache der Bedienoberfläche folgt deinem Home-Assistant-Profil. Beim Wechsel werden die Rezeptseiten des neuen Landes eingeschaltet.",
+        "data": {
+          "region": "Sprache / Region"
+        },
+        "data_description": {
+          "region": "Deutsch ist live geprüft. Bei den anderen Sprachen sind die Rezeptseiten unterstützt, ihre Suche ist aber noch nicht im Alltag erprobt; ein Such-Agent mit Websuche hilft dort am meisten."
+        }
+      }
+    },
+    "error": {
+      "test_failed": "Testabruf fehlgeschlagen: {error}",
+      "count_zero": "Bei „anteilig“ bitte eine Anzahl über 0 wählen.",
+      "agent_failed": "Der Such-Agent konnte nicht angelegt werden. Ohne Häkchen speichern oder den Agenten in der KI-Integration selbst anlegen."
+    }
+  },
+  "selector": {
+    "device": {
+      "options": {
+        "stove_oven": "Herd und Backofen",
+        "thermomix": "Thermomix",
+        "airfryer": "Airfryer"
+      }
+    },
+    "diet_mode": {
+      "options": {
+        "off": "Aus",
+        "always": "Immer",
+        "count": "Anteilig"
+      }
+    },
+    "status": {
+      "options": {
+        "new": "Neu",
+        "bought": "Eingekauft, noch nicht gemacht",
+        "cooked": "Gekocht"
+      }
+    },
+    "diet": {
+      "options": {
+        "vegetarian": "Vegetarisch",
+        "vegan": "Vegan",
+        "lactose_free": "Laktosefrei",
+        "gluten_free": "Glutenfrei",
+        "low_cholesterol": "Cholesterinarm"
+      }
+    },
+    "weekday": {
+      "options": {
+        "mon": "Montag",
+        "tue": "Dienstag",
+        "wed": "Mittwoch",
+        "thu": "Donnerstag",
+        "fri": "Freitag",
+        "sat": "Samstag",
+        "sun": "Sonntag"
+      }
+    },
+    "choice": {
+      "options": {
+        "none": "Nicht gewählt",
+        "declined": "Doch nicht",
+        "trip1": "Einkauf 1",
+        "trip2": "Einkauf 2",
+        "trip3": "Einkauf 3",
+        "trip4": "Einkauf 4",
+        "trip5": "Einkauf 5",
+        "trip6": "Einkauf 6",
+        "trip7": "Einkauf 7"
+      }
+    },
+    "release": {
+      "options": {
+        "immediate": "Sofort bei Auswahl",
+        "timed": "Fester Termin"
+      }
+    },
+    "display": {
+      "options": {
+        "panel": "Eigene Seite in der Seitenleiste",
+        "view": "Ansicht „Essen“ in vorhandenem Dashboard",
+        "none": "Keine, Karte selbst einfügen"
+      }
+    },
+    "style": {
+      "options": {
+        "system": "Wie mein Home Assistant (Design)",
+        "warm": "Warm (Essensplan-Stil)"
+      }
+    },
+    "region": {
+      "options": {
+        "de": "Deutsch (Deutschland)",
+        "en": "English (UK/US)",
+        "es": "Español (España)",
+        "pt": "Português (Portugal/Brasil)",
+        "fr": "Français (France)"
+      }
+    },
+    "proposals_from": {
+      "options": {
+        "ha": "KI in Home Assistant",
+        "external": "Externe KI über Aktionen (z. B. dein Claude-, Gemini- oder ChatGPT-Abo)"
+      }
+    }
+  },
+  "entity": {
+    "todo": {
+      "shopping_list": {
+        "name": "Einkaufsliste"
+      },
+      "wishes": {
+        "name": "Wünsche"
+      }
+    },
+    "sensor": {
+      "proposals": {
+        "name": "Vorschläge"
+      },
+      "week": {
+        "name": "Woche"
+      }
+    }
+  },
+  "services": {
+    "import_recipe": {
+      "name": "Rezept importieren",
+      "description": "Liest ein Rezept per Link und speichert es; Antwort enthält Zutaten, Schritte, Zeiten, kcal und die Einordnung.",
+      "fields": {
+        "url": {
+          "name": "Link",
+          "description": "Adresse des Rezepts; Kurzlinks werden aufgelöst."
+        },
+        "save": {
+          "name": "Speichern",
+          "description": "Rezept im Essensplaner ablegen."
+        }
+      }
+    },
+    "get_recipe": {
+      "name": "Rezept abrufen",
+      "description": "Gespeichertes Rezept mit Verlauf und Einordnung.",
+      "fields": {
+        "recipe_id": {
+          "name": "Rezept-ID",
+          "description": "ID aus import_recipe oder list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Adresse des Rezepts; Kurzlinks werden aufgelöst."
+        },
+        "title": {
+          "name": "Titel",
+          "description": "Exakter Rezepttitel."
+        }
+      }
+    },
+    "list_recipes": {
+      "name": "Rezepte auflisten",
+      "description": "Kurzübersicht aller gespeicherten Rezepte.",
+      "fields": {
+        "query": {
+          "name": "Suche",
+          "description": "Text in Titel oder Zutaten."
+        },
+        "status": {
+          "name": "Status",
+          "description": "Nur Rezepte mit diesem Status."
+        },
+        "min_rating": {
+          "name": "Mindestbewertung",
+          "description": "1–5"
+        },
+        "limit": {
+          "name": "Höchstzahl",
+          "description": "Maximale Anzahl Einträge."
+        }
+      }
+    },
+    "delete_recipe": {
+      "name": "Rezept löschen",
+      "description": "Entfernt ein Rezept samt Verlauf.",
+      "fields": {
+        "recipe_id": {
+          "name": "Rezept-ID",
+          "description": "ID aus import_recipe oder list_recipes."
+        }
+      }
+    },
+    "add_to_shopping_list": {
+      "name": "Auf die Einkaufsliste",
+      "description": "Schreibt die Zutaten in die gewählte Liste und merkt „eingekauft“. Bereits eingekaufte, noch nicht gemachte Rezepte werden übersprungen.",
+      "fields": {
+        "recipe_id": {
+          "name": "Rezept-ID",
+          "description": "ID aus import_recipe oder list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Adresse des Rezepts; Kurzlinks werden aufgelöst."
+        },
+        "title": {
+          "name": "Titel",
+          "description": "Exakter Rezepttitel."
+        },
+        "servings": {
+          "name": "Portionen",
+          "description": "Mengen auf diese Portionszahl umrechnen."
+        },
+        "force": {
+          "name": "Trotzdem hinzufügen",
+          "description": "Auch wenn schon eingekauft."
+        }
+      }
+    },
+    "update_history": {
+      "name": "Verlauf aktualisieren",
+      "description": "Bewertung, gekocht am, Status oder Notiz setzen. Unbekannte Titel werden als Eintrag angelegt.",
+      "fields": {
+        "recipe_id": {
+          "name": "Rezept-ID",
+          "description": "ID aus import_recipe oder list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Adresse des Rezepts; Kurzlinks werden aufgelöst."
+        },
+        "title": {
+          "name": "Titel",
+          "description": "Exakter Rezepttitel."
+        },
+        "rating": {
+          "name": "Bewertung",
+          "description": "Bewertung 1–5, 0 entfernt die Bewertung."
+        },
+        "cooked_on": {
+          "name": "Gekocht am",
+          "description": "Datum; setzt den Status auf gekocht."
+        },
+        "status": {
+          "name": "Status",
+          "description": "Neu, eingekauft (noch nicht gemacht) oder gekocht."
+        },
+        "note": {
+          "name": "Notiz",
+          "description": "Freitext, z. B. „mehr Knoblauch“."
+        },
+        "remove_cooked_on": {
+          "name": "Kochtag entfernen",
+          "description": "Diesen Tag aus „gekocht am“ löschen."
+        }
+      }
+    },
+    "import_history": {
+      "name": "Verlauf übernehmen",
+      "description": "Bewertungen und Kochdaten aus einem anderen Planer übernehmen.",
+      "fields": {
+        "entries": {
+          "name": "Einträge",
+          "description": "Liste mit title, optional url, rating, cooked_on, status, note."
+        },
+        "fetch_recipes": {
+          "name": "Rezepte gleich abrufen",
+          "description": "Für Einträge mit Link das Rezept direkt importieren."
+        }
+      }
+    },
+    "validate_plan": {
+      "name": "Wochenplan prüfen",
+      "description": "Prüft eine Auswahl gegen Rezeptzahl, Ernährung, Geräte und Verlauf.",
+      "fields": {
+        "recipe_ids": {
+          "name": "Rezept-IDs",
+          "description": "Liste von Rezept-IDs."
+        },
+        "urls": {
+          "name": "Links",
+          "description": "Liste von Rezeptlinks; fehlende werden importiert."
+        }
+      }
+    },
+    "get_settings": {
+      "name": "Einstellungen abrufen",
+      "description": "Vorgaben für den Essensplaner (Quellen, Ernährung, Geräte)."
+    },
+    "assess_recipes": {
+      "name": "Rezepte von der KI bewerten",
+      "description": "Lässt die gewählte KI unklare Kriterien wie cholesterinarm bewerten und speichert das Ergebnis am Rezept.",
+      "fields": {
+        "recipe_ids": {
+          "name": "Rezept-IDs",
+          "description": "Leer = alle gespeicherten Rezepte."
+        },
+        "keys": {
+          "name": "Kriterien",
+          "description": "Leer = alle unklaren."
+        },
+        "force": {
+          "name": "Neu bewerten",
+          "description": "Vorhandene KI-Bewertungen ignorieren."
+        }
+      }
+    },
+    "generate_proposals": {
+      "name": "Vorschläge erstellen",
+      "description": "KI erstellt die Vorschläge für die kommende Woche (läuft sonst automatisch nach Zeitplan).",
+      "fields": {
+        "notes": {
+          "name": "Hinweise",
+          "description": "Freitext nur für diesen Lauf."
+        },
+        "force": {
+          "name": "Neu erstellen",
+          "description": "Vorhandene Vorschläge ersetzen."
+        }
+      }
+    },
+    "choose_dish": {
+      "name": "Gericht wählen",
+      "description": "Einem Einkauf zuordnen, nicht gewählt oder doch nicht; die Einkaufsliste wird angepasst.",
+      "fields": {
+        "dish_id": {
+          "name": "Gericht",
+          "description": "id aus sensor.meal_planner_proposals bzw. _woche (oder die Nummer)."
+        },
+        "choice": {
+          "name": "Auswahl",
+          "description": "Einkauf für dieses Gericht."
+        }
+      }
+    },
+    "set_ingredients_ready": {
+      "name": "Zutaten schon da",
+      "description": "Zutaten kommen nicht (mehr) auf die Liste; ungekocht wandert das Gericht in die nächste Woche.",
+      "fields": {
+        "dish_id": {
+          "name": "Gericht",
+          "description": "id aus sensor.meal_planner_proposals bzw. _woche (oder die Nummer)."
+        },
+        "ready": {
+          "name": "Schon da",
+          "description": "Aus = wieder normal einkaufen."
+        }
+      }
+    },
+    "mark_cooked": {
+      "name": "Gekocht",
+      "description": "Als gekocht abhaken und optional bewerten; fließt in künftige Vorschläge ein.",
+      "fields": {
+        "dish_id": {
+          "name": "Gericht",
+          "description": "id aus sensor.meal_planner_proposals bzw. _woche (oder die Nummer)."
+        },
+        "cooked": {
+          "name": "Gekocht",
+          "description": "Aus = Haken zurücknehmen."
+        },
+        "rating": {
+          "name": "Bewertung",
+          "description": "1–5"
+        },
+        "note": {
+          "name": "Notiz",
+          "description": "z. B. „mehr Knoblauch“."
+        }
+      }
+    },
+    "finalize_week": {
+      "name": "Auswahl abschließen",
+      "description": "Auswahlschluss jetzt (läuft sonst nach Zeitplan)."
+    },
+    "sync_shopping_list": {
+      "name": "Einkaufsliste abgleichen",
+      "description": "Liste an die Auswahl angleichen."
+    },
+    "release_shopping": {
+      "name": "Einkauf freigeben",
+      "description": "Zutaten eines Einkaufs mit festem Termin jetzt auf die Liste (läuft sonst nach Zeitplan).",
+      "fields": {
+        "trip": {
+          "name": "Einkauf",
+          "description": "Leer = alle."
+        }
+      }
+    },
+    "dish_items": {
+      "name": "Zutaten eines Gerichts",
+      "description": "Einkaufszeilen eines Gerichts mit Markierung, was schon da ist.",
+      "fields": {
+        "dish_id": {
+          "name": "Gericht",
+          "description": "id aus sensor.meal_planner_proposals bzw. _woche (oder die Nummer)."
+        }
+      }
+    },
+    "set_items_at_home": {
+      "name": "Zutaten teilweise da",
+      "description": "Diese Artikel eines Gerichts sind schon da und kommen nicht auf die Liste.",
+      "fields": {
+        "dish_id": {
+          "name": "Gericht",
+          "description": "id aus sensor.meal_planner_proposals bzw. _woche (oder die Nummer)."
+        },
+        "items": {
+          "name": "Artikel",
+          "description": "Namen wie in der Einkaufsliste; leer = alles einkaufen."
+        }
+      }
+    },
+    "search_recipes": {
+      "name": "Rezepte suchen",
+      "description": "Sucht auf den freigegebenen Rezeptseiten und zeigt je Seite die gefundenen Rezeptlinks.",
+      "fields": {
+        "query": {
+          "name": "Suchbegriff",
+          "description": "Z. B. „Kürbis Gnocchi“."
+        },
+        "sites": {
+          "name": "Seiten",
+          "description": "Optional, z. B. [\"chefkoch.de\"]. Leer = alle freigegebenen."
+        }
+      }
+    },
+    "planning_brief": {
+      "name": "Auftrag für externe KI holen",
+      "description": "Liefert den Planungsauftrag für die kommende Woche (Regeln, Wünsche, Termine, Antwortformat), damit eine externe KI die Rezepte recherchieren kann.",
+      "fields": {
+        "notes": {
+          "name": "Hinweise",
+          "description": "Freitext nur für diese Woche."
+        },
+        "restart": {
+          "name": "Neu beginnen",
+          "description": "Vorhandene Vorschläge der Woche ignorieren."
+        }
+      }
+    },
+    "submit_proposals": {
+      "name": "Vorschläge einreichen",
+      "description": "Gerichte einer externen KI prüfen (Link, Regeln, Suche) und in die Vorschläge der kommenden Woche übernehmen. Die Antwort nennt, was fehlt.",
+      "fields": {
+        "dishes": {
+          "name": "Gerichte",
+          "description": "Liste im Format aus dem Auftrag (title, url, query, site, tip, wish, …)."
+        },
+        "final": {
+          "name": "Letzter Aufruf",
+          "description": "Danach die Meldung verschicken, auch wenn noch etwas fehlt."
+        },
+        "restart": {
+          "name": "Neu beginnen",
+          "description": "Vorhandene Vorschläge der Woche ersetzen."
+        }
+      }
+    },
+    "memory_overview": {
+      "name": "Gemerktes anzeigen",
+      "description": "Geschmacksprofil (gemocht, nicht gemocht, kürzlich gekocht), Grundregeln und alle gespeicherten Rezepte mit Bewertung."
+    },
+    "set_profile": {
+      "name": "Grundregeln und Geschmack ändern",
+      "description": "Freitext, den die KI bei jeder Planung bekommt.",
+      "fields": {
+        "text": {
+          "name": "Text",
+          "description": "Leer = keine Grundregeln."
+        }
+      }
+    },
+    "external_setup": {
+      "name": "Einrichtung externe KI",
+      "description": "Für KIs mit Zugang zu Home Assistant (MCP): Aufrufen, wenn der Nutzer „Richte meinen Essensplaner ein“ sagt. Liefert die Anweisung (instructions_for_ai), den Zeitplan aus den Einstellungen und den Aufgabentext für eine geplante Aufgabe in der KI.",
+      "fields": {
+        "activate": {
+          "name": "Auf externe KI umstellen",
+          "description": "Stellt „Vorschläge kommen von“ auf „Externe KI“."
+        },
+        "view": {
+          "name": "Nur ansehen",
+          "description": "Für die Karte: Zeitplan nicht als eingerichtet merken."
+        }
+      }
+    },
+    "import_week": {
+      "name": "Woche übernehmen",
+      "description": "Gerichte einer laufenden Woche übernehmen (Umstieg von einem anderen Planer) oder mit leerer Liste die Vorschläge verwerfen.",
+      "fields": {
+        "dishes": {
+          "name": "Gerichte",
+          "description": "Liste mit title, url, choice (Einkauf), on_list, ingredients_ready, own_recipe, skip_items, cooked_on, rating."
+        },
+        "board": {
+          "name": "Tafel",
+          "description": "current = laufende Woche, next = Vorschläge der kommenden Woche."
+        }
+      }
+    }
+  }
+}

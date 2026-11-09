@@ -1,0 +1,29 @@
+{
+  "domain": "meal_planner_ai",
+  "name": "Meal Planner AI",
+  "after_dependencies": [
+    "lovelace",
+    "calendar",
+    "ai_task",
+    "notify",
+    "todo"
+  ],
+  "codeowners": [
+    "@Pare51984"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "frontend",
+    "http",
+    "panel_custom"
+  ],
+  "documentation": "https://github.com/Pare51984/ha-meal-planner-ai",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/Pare51984/ha-meal-planner-ai/issues",
+  "requirements": [
+    "recipe-scrapers==15.13.0"
+  ],
+  "single_config_entry": true,
+  "version": "0.38.1"
+}

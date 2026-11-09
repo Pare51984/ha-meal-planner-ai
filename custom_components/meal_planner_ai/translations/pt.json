@@ -1,0 +1,957 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Lista de compras",
+        "description": "Idioma e país das receitas. Define os sites de receitas sugeridos (p. ex. TudoGostoso para português, Marmiton para francês), o idioma dos nomes dos pratos e dos artigos, e o país do Cookidoo. O idioma da interface segue o teu perfil do Home Assistant.\n\nPara onde vão os ingredientes? Para uma lista de tarefas existente (p. ex. Bring!) ou para a lista própria do planeador. Os artigos seguem o modelo do Bring!: artigo como entrada, quantidade e prato na descrição.",
+        "data": {
+          "shopping_list": "Lista de compras",
+          "region": "Idioma / região"
+        },
+        "data_description": {
+          "shopping_list": "«Lista própria» cria «Essensplaner Einkaufsliste», prática para testar.",
+          "region": "O alemão está testado em uso real. Os outros idiomas usam sites de receitas compatíveis cuja pesquisa ainda não foi testada a fundo; aí o que mais ajuda é um agente com pesquisa web."
+        }
+      },
+      "devices": {
+        "title": "Eletrodomésticos",
+        "description": "Que aparelhos tens? Só são propostos pratos que consegues cozinhar. As receitas Thermomix exigem a Thermomix selecionada.",
+        "data": {
+          "devices": "Aparelhos disponíveis",
+          "custom_devices": "Aparelhos próprios (separados por vírgulas)"
+        },
+        "data_description": {
+          "devices": "Desmarca o que não tens.",
+          "custom_devices": "Mais aparelhos, separados por vírgulas, p. ex. «panela de cozedura lenta, grelhador»."
+        }
+      },
+      "ai": {
+        "title": "IA",
+        "description": "O planeador usa a IA do teu Home Assistant. Propõe pratos, avalia «pobre em colesterol» e adapta os nomes dos artigos para as compras. Cada link é verificado; se a IA não tiver um link válido, a integração pesquisa ela própria nos sites de receitas.\n\n**Como configurar uma IA** (uma vez, em Definições → Dispositivos e serviços → Adicionar integração):\n**Claude (Anthropic)** – a mais fiável a pesquisar receitas, também no Cookidoo. Entra em console.anthropic.com, adiciona saldo em «Billing» (5 $ duram muito), cria uma chave em «API Keys» e adiciona a integração «Anthropic» com essa chave. Custo: pesquisa web cerca de 1 cêntimo por pesquisa, uma execução semanal cerca de 10–50 cêntimos (estimativa).\n**Gemini (Google)** – utilizável gratuitamente. Cria uma chave API em aistudio.google.com e adiciona «Google Generative AI». A pesquisa Google é limitada no plano gratuito e o Gemini devolve mais vezes links partidos; nesse caso a integração pesquisa sozinha.\n**ChatGPT (OpenAI)** – adiciona saldo e cria uma chave API em platform.openai.com, depois adiciona «OpenAI Conversation».\nDepois volta a abrir esta secção e escolhe um fornecedor em «Criar agente de pesquisa em». Dica: Gemini como IA principal (grátis) e Claude só para pesquisar receitas é uma boa combinação. Nunca partilhes chaves API.\n\n**IA externa com a tua subscrição (sem chave API):** Em vez de uma IA no Home Assistant, pode ser uma IA externa a encontrar as receitas, por exemplo a tua subscrição Claude ou ChatGPT. Funciona assim: crias uma vez uma tarefa agendada na tua IA. À hora definida ela arranca, pergunta ao planeador se é altura de planear, vai buscar o pedido com as tuas regras, desejos e compromissos atuais, pesquisa receitas na web e devolve-as. O planeador verifica cada prato tal como com a IA integrada e indica o que ainda falta; a IA entrega então mais.\nPrecisas de: 1. uma subscrição de IA com tarefas agendadas e pesquisa web, 2. uma ligação dessa IA ao teu Home Assistant por MCP (p. ex. a integração «Model Context Protocol Server» com o conjunto de ferramentas «Meal Planner AI»), 3. acesso remoto ao Home Assistant a partir de fora (p. ex. Home Assistant Cloud ou Cloudflare).\nSe escolheres «IA externa» abaixo, o separador Definições do cartão mostra o texto e o horário da tarefa prontos a copiar. Se 5 horas depois da hora de planeamento nada tiver chegado, entra a IA do Home Assistant, se houver uma escolhida.",
+        "data": {
+          "proposals_from": "As propostas vêm de",
+          "ai_task": "IA (entidade AI Task)",
+          "ai_shopping_names": "A IA adapta os nomes dos artigos",
+          "ai_search": "Pesquisa de receitas: IA com pesquisa web (agente de conversação)",
+          "create_search_agent": "Criar agente de pesquisa com pesquisa web em"
+        },
+        "data_description": {
+          "proposals_from": "«IA no Home Assistant»: a IA escolhida abaixo cria as propostas segundo o horário. «IA externa»: uma IA de fora (p. ex. uma tarefa agendada no Claude, Gemini ou ChatGPT) entrega-as através das ações; a IA abaixo fica só como reserva.",
+          "ai_search": "Opcional, para melhores resultados: um agente com pesquisa web. Necessário p. ex. para o Cookidoo. «Nenhum» = a IA dá ideias e a integração pesquisa. Dica: com o Google Gemini a pesquisa de receitas funciona sem assinatura nem IA externa: obtém uma chave API gratuita no Google AI Studio e configura a integração «Google Gemini». Escolhe o Gemini abaixo em «Criar agente de pesquisa com pesquisa web em» e o planeador configura-o com o Google Search (gemini-2.5-flash; modelos mais recentes por vezes recusam a pesquisa no nível gratuito).",
+          "create_search_agent": "Adiciona um agente «Essensplaner Rezeptsuche» com pesquisa web no fornecedor escolhido e seleciona-o acima. Os agentes existentes e o controlo por voz não mudam. «Não» = não criar nada.",
+          "ai_task": "A IA principal, normalmente chamada «… AI Task».",
+          "ai_shopping_names": "Ligado: a IA transforma «1 pimento vermelho, em cubos» em «Pimento». Útil para o Bring!."
+        }
+      },
+      "display": {
+        "title": "Apresentação",
+        "description": "Onde aparece o planeador? Como página própria na barra lateral, como vista «Essen» num painel existente ou em lado nenhum (adicionas o cartão tu). O cartão também pode ser adicionado a qualquer painel. Ao guardar aplica-se exatamente esta definição: se mudares, desaparece a página anterior ou a vista criada pelo planeador. Os cartões que adicionaste tu ficam intactos.",
+        "data": {
+          "display": "Apresentação",
+          "display_dashboard": "Painel (só para «vista em painel existente»)",
+          "display_style": "Cores"
+        },
+        "data_description": {
+          "display": "A página própria é o mais simples. «Vista em painel existente» adiciona um novo separador, p. ex. em Visão geral.",
+          "display_dashboard": "Só para «Vista em painel existente»: qual painel. «lovelace» é a Visão geral.",
+          "display_style": "«Como o meu Home Assistant» segue o teu tema (incl. modo escuro). «Quente» é o estilo próprio do planeador."
+        }
+      },
+      "import_legacy": {
+        "title": "Versão anterior encontrada",
+        "description": "A integração anterior «Essensplaner» ainda está configurada. As definições podem ser adotadas; receitas, avaliações, desejos e a lista própria são copiados automaticamente ao arrancar. Depois apaga a integração antiga «Essensplaner» para não correrem dois planeadores.",
+        "data": {
+          "import_settings": "Adotar definições"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Já está configurado."
+    },
+    "error": {
+      "agent_failed": "Não foi possível criar o agente de pesquisa. Guarda sem a opção ou adiciona tu o agente na integração de IA."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Essensplaner",
+        "menu_options": {
+          "schedule": "Horário e notificações",
+          "trips": "Compras",
+          "calendar": "Calendários",
+          "rules": "Regras e gosto",
+          "diet_count": "Dieta e propostas por semana",
+          "shopping_list": "Lista de compras",
+          "sources": "Fontes de receitas",
+          "devices": "Eletrodomésticos",
+          "ai": "IA",
+          "display": "Apresentação",
+          "habits": "Hábitos alimentares",
+          "region": "Idioma e região"
+        },
+        "description": "Configura como funciona o planeador. Toca numa secção, muda valores e guarda. Em resumo:\n**Idioma e região** – país das receitas, sites de receitas e idioma das propostas.\n**Horário** – quando chegam as propostas e quando fecha a escolha.\n**Compras** – com que frequência fazes compras e quando os ingredientes vão para a lista.\n**Calendário** – eventos que influenciam as refeições (p. ex. convidados).\n**Regras e gosto** – doses, tempo de preparação, calorias, preferências.\n**Hábitos alimentares** – regras fixas como «sopa no máximo uma vez por semana».\n**Dieta** – propostas por semana e quantas, p. ex., vegetarianas.\n**Lista de compras** – para onde vão os ingredientes e o que nunca vai.\n**Fontes de receitas** – que sites são pesquisados.\n**Eletrodomésticos** – o que tens (p. ex. Thermomix) e com que frequência usar.\n**IA** – que IA planeia e pesquisa.\n**Apresentação** – onde aparece o planeador."
+      },
+      "shopping_list": {
+        "title": "Lista de compras",
+        "description": "Para onde vão os ingredientes? Para uma lista de tarefas existente (p. ex. Bring!) ou para a lista própria do planeador. Os artigos seguem o modelo do Bring!: artigo como entrada, quantidade e prato na descrição.",
+        "data": {
+          "shopping_list": "Lista de compras",
+          "staples": "Básicos nunca adicionados (separados por vírgulas)",
+          "skip_spices": "Ignorar especiarias",
+          "catalog": "Nomes fixos de catálogo (um por linha: receita = nome na lista)"
+        },
+        "data_description": {
+          "shopping_list": "«Lista própria» cria «Essensplaner Einkaufsliste», prática para testar.",
+          "staples": "O que tens sempre nunca vai para a lista. Separado por vírgulas; compostos são reconhecidos (sal → sal marinho).",
+          "skip_spices": "Ligado: as especiarias secas ficam de fora.",
+          "catalog": "Um por linha, «nome na receita = nome na lista», p. ex. «polpa de tomate = tomate em lata»."
+        }
+      },
+      "sources": {
+        "title": "Fontes de receitas",
+        "description": "Que sites são pesquisados. Só são usados os sites ativados; cada receita é descarregada e verificada antes de ser proposta. Cookidoo, Rezeptwelt e Zaubertopf são sites Thermomix. Sites próprios: {custom}. {thermomix_note} {error}",
+        "data": {
+          "site_chefkoch_de": "chefkoch.de",
+          "site_rezeptwelt_de": "rezeptwelt.de",
+          "site_zaubertopf_de": "zaubertopf.de",
+          "site_lecker_de": "lecker.de",
+          "site_eatsmarter_de": "eatsmarter.de",
+          "site_kitchenstories_com": "kitchenstories.com",
+          "site_emmikochteinfach_de": "emmikochteinfach.de",
+          "site_springlane_de": "springlane.de",
+          "site_kochbar_de": "kochbar.de",
+          "site_rewe_de": "rewe.de",
+          "site_hellofresh_de": "hellofresh.de",
+          "site_sallys_blog_de": "sallys-blog.de",
+          "remove_custom": "Remover sites próprios",
+          "new_source_url": "Novo site: link de uma receita de exemplo",
+          "site_cookidoo_de": "cookidoo.de",
+          "site_einfachkochen_de": "einfachkochen.de",
+          "site_essen_und_trinken_de": "essen-und-trinken.de",
+          "site_kuechengoetter_de": "kuechengoetter.de",
+          "site_allrecipes_com": "allrecipes.com",
+          "site_bbcgoodfood_com": "bbcgoodfood.com",
+          "site_seriouseats_com": "seriouseats.com",
+          "site_simplyrecipes_com": "simplyrecipes.com",
+          "site_recipetineats_com": "recipetineats.com",
+          "site_budgetbytes_com": "budgetbytes.com",
+          "site_jamieoliver_com": "jamieoliver.com",
+          "site_eatingwell_com": "eatingwell.com",
+          "site_food_com": "food.com",
+          "site_cookidoo_co_uk": "cookidoo.co.uk",
+          "site_directoalpaladar_com": "directoalpaladar.com",
+          "site_recetasgratis_net": "recetasgratis.net",
+          "site_hellofresh_es": "hellofresh.es",
+          "site_cookidoo_es": "cookidoo.es",
+          "site_tudogostoso_com_br": "tudogostoso.com.br",
+          "site_panelinha_com_br": "panelinha.com.br",
+          "site_receitas_globo_com": "receitas.globo.com",
+          "site_receitasnestle_com_br": "receitasnestle.com.br",
+          "site_pingodoce_pt": "pingodoce.pt",
+          "site_cookidoo_pt": "cookidoo.pt",
+          "site_marmiton_org": "marmiton.org",
+          "site_cuisineaz_com": "cuisineaz.com",
+          "site_750g_com": "750g.com",
+          "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
+          "site_jow_fr": "jow.fr",
+          "site_hellofresh_fr": "hellofresh.fr",
+          "site_cookidoo_fr": "cookidoo.fr"
+        },
+        "data_description": {
+          "new_source_url": "Adicionar um site: cola o link de uma receita qualquer desse site. A integração testa a leitura e depois ativa o site.",
+          "remove_custom": "Sites próprios a remover."
+        }
+      },
+      "diet_count": {
+        "title": "Propostas por semana",
+        "description": "Quantos pratos devem ser propostos por semana? Não tens de aceitar todos. A seguir defines quantos, p. ex., vegetarianos.",
+        "data": {
+          "recipes_per_week": "Propostas por semana"
+        },
+        "data_description": {
+          "recipes_per_week": "Propostas por semana, p. ex. 10 para 7 dias com alguma escolha."
+        }
+      },
+      "diet": {
+        "title": "Dieta",
+        "description": "Por dieta: **Desligado** = tanto faz, **Sempre** = todos os pratos, **Quantidade** = tantos dos {recipes} pratos. Um prato pode contar várias vezes (vegano conta como vegetariano). Os ingredientes decidem vegetariano/vegano/sem lactose/sem glúten; pobre em colesterol é avaliado pela IA. As calorias estão em «Regras e gosto». {clamped}",
+        "data": {
+          "vegetarian_mode": "Vegetariano",
+          "vegetarian_count": "Vegetariano: por semana",
+          "vegan_mode": "Vegano",
+          "vegan_count": "Vegano: por semana",
+          "lactose_free_mode": "Sem lactose",
+          "lactose_free_count": "Sem lactose: por semana",
+          "gluten_free_mode": "Sem glúten",
+          "gluten_free_count": "Sem glúten: por semana",
+          "low_cholesterol_mode": "Pobre em colesterol",
+          "low_cholesterol_count": "Pobre em colesterol: por semana"
+        },
+        "data_description": {
+          "vegetarian_mode": "Desligado, Sempre ou Quantidade.",
+          "vegetarian_count": "Só para «Quantidade»: pelo menos tantos por semana.",
+          "vegan_mode": "Desligado, Sempre ou Quantidade.",
+          "vegan_count": "Só para «Quantidade»: pelo menos tantos por semana.",
+          "lactose_free_mode": "Desligado, Sempre ou Quantidade.",
+          "lactose_free_count": "Só para «Quantidade»: pelo menos tantos por semana.",
+          "gluten_free_mode": "Desligado, Sempre ou Quantidade.",
+          "gluten_free_count": "Só para «Quantidade»: pelo menos tantos por semana.",
+          "low_cholesterol_mode": "Desligado, Sempre ou Quantidade.",
+          "low_cholesterol_count": "Só para «Quantidade»: pelo menos tantos por semana."
+        }
+      },
+      "diet_overlap": {
+        "title": "Nota: são precisas sobreposições",
+        "description": "Estas quantidades só batem certo se pelo menos {overlap} de {recipes} pratos cumprirem várias opções ao mesmo tempo. Guardar mesmo assim?"
+      },
+      "devices": {
+        "title": "Eletrodomésticos",
+        "data": {
+          "devices": "Aparelhos disponíveis",
+          "custom_devices": "Aparelhos próprios (separados por vírgulas)"
+        },
+        "description": "Que aparelhos tens? Só são propostos pratos que consegues cozinhar. As receitas Thermomix exigem a Thermomix selecionada.",
+        "data_description": {
+          "devices": "Desmarca o que não tens.",
+          "custom_devices": "Mais aparelhos, separados por vírgulas, p. ex. «panela de cozedura lenta, grelhador»."
+        }
+      },
+      "device_counts": {
+        "title": "Aparelhos por semana (opcional)",
+        "description": "Opcional: quantos dos {recipes} pratos devem usar um aparelho? 0 = tanto faz. Exemplo: Thermomix 2 → pelo menos dois pratos Thermomix por semana.",
+        "data": {
+          "count_stove_oven": "Fogão e forno: pratos por semana",
+          "count_thermomix": "Thermomix: pratos por semana",
+          "count_airfryer": "Air fryer: pratos por semana"
+        },
+        "data_description": {
+          "count_stove_oven": "Pelo menos tantos pratos por semana com este aparelho. 0 = tanto faz.",
+          "count_thermomix": "Pelo menos tantos pratos por semana com este aparelho. 0 = tanto faz.",
+          "count_airfryer": "Pelo menos tantos pratos por semana com este aparelho. 0 = tanto faz."
+        }
+      },
+      "ai": {
+        "title": "IA",
+        "description": "O planeador usa a IA do teu Home Assistant. Propõe pratos, avalia «pobre em colesterol» e adapta os nomes dos artigos para as compras. Cada link é verificado; se a IA não tiver um link válido, a integração pesquisa ela própria nos sites de receitas.\n\n**Como configurar uma IA** (uma vez, em Definições → Dispositivos e serviços → Adicionar integração):\n**Claude (Anthropic)** – a mais fiável a pesquisar receitas, também no Cookidoo. Entra em console.anthropic.com, adiciona saldo em «Billing» (5 $ duram muito), cria uma chave em «API Keys» e adiciona a integração «Anthropic» com essa chave. Custo: pesquisa web cerca de 1 cêntimo por pesquisa, uma execução semanal cerca de 10–50 cêntimos (estimativa).\n**Gemini (Google)** – utilizável gratuitamente. Cria uma chave API em aistudio.google.com e adiciona «Google Generative AI». A pesquisa Google é limitada no plano gratuito e o Gemini devolve mais vezes links partidos; nesse caso a integração pesquisa sozinha.\n**ChatGPT (OpenAI)** – adiciona saldo e cria uma chave API em platform.openai.com, depois adiciona «OpenAI Conversation».\nDepois volta a abrir esta secção e escolhe um fornecedor em «Criar agente de pesquisa em». Dica: Gemini como IA principal (grátis) e Claude só para pesquisar receitas é uma boa combinação. Nunca partilhes chaves API.\n\n**IA externa com a tua subscrição (sem chave API):** Em vez de uma IA no Home Assistant, pode ser uma IA externa a encontrar as receitas, por exemplo a tua subscrição Claude ou ChatGPT. Funciona assim: crias uma vez uma tarefa agendada na tua IA. À hora definida ela arranca, pergunta ao planeador se é altura de planear, vai buscar o pedido com as tuas regras, desejos e compromissos atuais, pesquisa receitas na web e devolve-as. O planeador verifica cada prato tal como com a IA integrada e indica o que ainda falta; a IA entrega então mais.\nPrecisas de: 1. uma subscrição de IA com tarefas agendadas e pesquisa web, 2. uma ligação dessa IA ao teu Home Assistant por MCP (p. ex. a integração «Model Context Protocol Server» com o conjunto de ferramentas «Meal Planner AI»), 3. acesso remoto ao Home Assistant a partir de fora (p. ex. Home Assistant Cloud ou Cloudflare).\nSe escolheres «IA externa» abaixo, o separador Definições do cartão mostra o texto e o horário da tarefa prontos a copiar. Se 5 horas depois da hora de planeamento nada tiver chegado, entra a IA do Home Assistant, se houver uma escolhida.",
+        "data": {
+          "proposals_from": "As propostas vêm de",
+          "ai_task": "IA (entidade AI Task)",
+          "ai_shopping_names": "A IA adapta os nomes dos artigos",
+          "ai_search": "Pesquisa de receitas: IA com pesquisa web (agente de conversação)",
+          "create_search_agent": "Criar agente de pesquisa com pesquisa web em"
+        },
+        "data_description": {
+          "proposals_from": "«IA no Home Assistant»: a IA escolhida abaixo cria as propostas segundo o horário. «IA externa»: uma IA de fora (p. ex. uma tarefa agendada no Claude, Gemini ou ChatGPT) entrega-as através das ações; a IA abaixo fica só como reserva.",
+          "ai_search": "Opcional, para melhores resultados: um agente com pesquisa web. Necessário p. ex. para o Cookidoo. «Nenhum» = a IA dá ideias e a integração pesquisa. Dica: com o Google Gemini a pesquisa de receitas funciona sem assinatura nem IA externa: obtém uma chave API gratuita no Google AI Studio e configura a integração «Google Gemini». Escolhe o Gemini abaixo em «Criar agente de pesquisa com pesquisa web em» e o planeador configura-o com o Google Search (gemini-2.5-flash; modelos mais recentes por vezes recusam a pesquisa no nível gratuito).",
+          "create_search_agent": "Adiciona um agente «Essensplaner Rezeptsuche» com pesquisa web no fornecedor escolhido e seleciona-o acima. Os agentes existentes e o controlo por voz não mudam. «Não» = não criar nada.",
+          "ai_task": "A IA principal, normalmente chamada «… AI Task».",
+          "ai_shopping_names": "Ligado: a IA transforma «1 pimento vermelho, em cubos» em «Pimento». Útil para o Bring!."
+        }
+      },
+      "schedule": {
+        "title": "Horário",
+        "description": "Uma vez por semana o planeador propõe pratos para a semana seguinte. Até ao fecho escolhes o que cozinhar; depois os pratos não escolhidos saem e começa a nova semana. Exemplo: propostas sexta às 18:00, fecho sábado às 12:00.",
+        "data": {
+          "plan_weekday": "Propostas: dia",
+          "plan_time": "Propostas: hora",
+          "deadline_weekday": "Fecho: dia",
+          "deadline_time": "Fecho: hora",
+          "notify": "Notificações push para",
+          "dashboard_path": "Caminho do painel aberto pela notificação (p. ex. /essensplaner)"
+        },
+        "data_description": {
+          "plan_weekday": "Neste dia a IA cria automaticamente as propostas da semana seguinte.",
+          "plan_time": "Hora das propostas automáticas. A pesquisa demora alguns minutos e depois chega a notificação.",
+          "deadline_weekday": "Escolhem-se pratos até este dia. Aqui começa a nova semana de refeições.",
+          "deadline_time": "Hora a que fecha a escolha. Depois só ficam os pratos escolhidos.",
+          "notify": "Quem recebe um aviso de novas propostas, compras libertadas ou erros? Vazio = sem avisos.",
+          "dashboard_path": "Página aberta pela notificação, p. ex. /essensplaner. Vazio = a notificação só abre a app."
+        }
+      },
+      "rules": {
+        "title": "Regras e gosto",
+        "description": "Regras básicas para cada prato proposto. Os limites rígidos (tempo, kcal) são verificados pela integração na receita real; os flexíveis, como o gosto, pela IA. Com base em {recipes} propostas por semana.",
+        "data": {
+          "portions": "Doses",
+          "time_max": "Tempo máximo",
+          "time_quick": "Pratos rápidos: máximo",
+          "quick_share": "Pratos rápidos por semana",
+          "profile": "Regras básicas e gosto (texto livre para a IA)",
+          "kcal_aware": "Planeamento atento às calorias",
+          "max_same_main": "Variedade: no máximo tantos pratos com o mesmo ingrediente principal"
+        },
+        "data_description": {
+          "kcal_aware": "Ligado: no passo seguinte defines limites de kcal por dose. Desligado: as calorias não importam.",
+          "portions": "Doses para as quais se compra; as quantidades da lista são ajustadas.",
+          "time_max": "Nenhum prato ultrapassa este tempo total por receita.",
+          "time_quick": "Até este tempo um prato conta como «rápido».",
+          "quick_share": "Pelo menos tantos pratos rápidos por semana.",
+          "profile": "Texto livre para a IA: gostos e rejeições, p. ex. «mediterrânico, sem miudezas, as crianças não gostam de picante».",
+          "max_same_main": "P. ex. 3: não mais de três pratos com frango, vaca, porco, carne picada ou salmão por semana (detetado pelo nome do prato; os desejos não contam). 0 = tanto faz."
+        }
+      },
+      "trips": {
+        "title": "Compras",
+        "description": "Quantas vezes fazes compras para os pratos por semana? Cada prato é atribuído a uma compra e os ingredientes vão para a lista em conformidade. Exemplo com 2 compras: sábado para sáb–ter, terça para qua–sex.",
+        "data": {
+          "count": "Compras por semana"
+        },
+        "data_description": {
+          "count": "A seguir defines nome, dias de cozinha e momento de cada compra."
+        }
+      },
+      "trip_details": {
+        "title": "Compras",
+        "description": "O **nome** aparece como botão em cada cartão. Os **dias de cozinha** dizem à IA para que dias é uma compra. **Quando para a lista**: «Imediatamente» = os ingredientes vão para a lista ao tocar. «Hora fixa» = só no dia e hora escolhidos; pratos escolhidos depois vão logo.",
+        "data": {
+          "name_1": "Compra 1: nome (p. ex. Compra semanal, Mercado)",
+          "days_1": "Compra 1: dias de cozinha (opcional)",
+          "release_1": "Compra 1: quando vai para a lista",
+          "weekday_1": "Compra 1: dia (se for a hora fixa)",
+          "time_1": "Compra 1: hora (se for a hora fixa)",
+          "name_2": "Compra 2: nome (p. ex. Compra semanal, Mercado)",
+          "days_2": "Compra 2: dias de cozinha (opcional)",
+          "release_2": "Compra 2: quando vai para a lista",
+          "weekday_2": "Compra 2: dia (se for a hora fixa)",
+          "time_2": "Compra 2: hora (se for a hora fixa)",
+          "name_3": "Compra 3: nome (p. ex. Compra semanal, Mercado)",
+          "days_3": "Compra 3: dias de cozinha (opcional)",
+          "release_3": "Compra 3: quando vai para a lista",
+          "weekday_3": "Compra 3: dia (se for a hora fixa)",
+          "time_3": "Compra 3: hora (se for a hora fixa)",
+          "name_4": "Compra 4: nome (p. ex. Compra semanal, Mercado)",
+          "days_4": "Compra 4: dias de cozinha (opcional)",
+          "release_4": "Compra 4: quando vai para a lista",
+          "weekday_4": "Compra 4: dia (se for a hora fixa)",
+          "time_4": "Compra 4: hora (se for a hora fixa)",
+          "name_5": "Compra 5: nome (p. ex. Compra semanal, Mercado)",
+          "days_5": "Compra 5: dias de cozinha (opcional)",
+          "release_5": "Compra 5: quando vai para a lista",
+          "weekday_5": "Compra 5: dia (se for a hora fixa)",
+          "time_5": "Compra 5: hora (se for a hora fixa)",
+          "name_6": "Compra 6: nome (p. ex. Compra semanal, Mercado)",
+          "days_6": "Compra 6: dias de cozinha (opcional)",
+          "release_6": "Compra 6: quando vai para a lista",
+          "weekday_6": "Compra 6: dia (se for a hora fixa)",
+          "time_6": "Compra 6: hora (se for a hora fixa)",
+          "name_7": "Compra 7: nome (p. ex. Compra semanal, Mercado)",
+          "days_7": "Compra 7: dias de cozinha (opcional)",
+          "release_7": "Compra 7: quando vai para a lista",
+          "weekday_7": "Compra 7: dia (se for a hora fixa)",
+          "time_7": "Compra 7: hora (se for a hora fixa)"
+        },
+        "data_description": {
+          "name_1": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_1": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_1": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_1": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_1": "Só para «Hora fixa»: a esta hora.",
+          "name_2": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_2": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_2": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_2": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_2": "Só para «Hora fixa»: a esta hora.",
+          "name_3": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_3": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_3": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_3": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_3": "Só para «Hora fixa»: a esta hora.",
+          "name_4": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_4": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_4": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_4": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_4": "Só para «Hora fixa»: a esta hora.",
+          "name_5": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_5": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_5": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_5": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_5": "Só para «Hora fixa»: a esta hora.",
+          "name_6": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_6": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_6": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_6": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_6": "Só para «Hora fixa»: a esta hora.",
+          "name_7": "Nome curto, p. ex. «Compra semanal», «Mercado».",
+          "days_7": "Opcional: dias em que cozinhas os pratos desta compra.",
+          "release_7": "«Imediatamente» ou «Hora fixa» (ver acima).",
+          "weekday_7": "Só para «Hora fixa»: dia em que os ingredientes vão para a lista.",
+          "time_7": "Só para «Hora fixa»: a esta hora."
+        }
+      },
+      "display": {
+        "title": "Apresentação",
+        "description": "Onde aparece o planeador? Como página própria na barra lateral, como vista «Essen» num painel existente ou em lado nenhum (adicionas o cartão tu). O cartão também pode ser adicionado a qualquer painel. Ao guardar aplica-se exatamente esta definição: se mudares, desaparece a página anterior ou a vista criada pelo planeador. Os cartões que adicionaste tu ficam intactos.",
+        "data": {
+          "display": "Apresentação",
+          "display_dashboard": "Painel (só para «vista em painel existente»)",
+          "display_style": "Cores"
+        },
+        "data_description": {
+          "display": "A página própria é o mais simples. «Vista em painel existente» adiciona um novo separador, p. ex. em Visão geral.",
+          "display_dashboard": "Só para «Vista em painel existente»: qual painel. «lovelace» é a Visão geral.",
+          "display_style": "«Como o meu Home Assistant» segue o teu tema (incl. modo escuro). «Quente» é o estilo próprio do planeador."
+        }
+      },
+      "calendar": {
+        "title": "Calendários",
+        "description": "Até três regras para os eventos influenciarem o planeamento. Escolhe calendários, opcionalmente uma palavra-chave, e descreve o que esses dias significam. A IA tem isso em conta e os pratos adequados recebem uma etiqueta no cartão. Exemplos: «Convidados» (indicação «algo especial»), «Turno da tarde» (indicação «só pratos rápidos»). Regra sem calendário = desligada.",
+        "data": {
+          "label_1": "Regra 1: etiqueta no cartão (p. ex. Convidados, Turno da tarde)",
+          "calendars_1": "Regra 1: calendários",
+          "keyword_1": "Regra 1: só eventos que contenham (vazio = todos)",
+          "hint_1": "Regra 1: o que estes dias significam para o planeamento",
+          "label_2": "Regra 2: etiqueta no cartão (p. ex. Convidados, Turno da tarde)",
+          "calendars_2": "Regra 2: calendários",
+          "keyword_2": "Regra 2: só eventos que contenham (vazio = todos)",
+          "hint_2": "Regra 2: o que estes dias significam para o planeamento",
+          "label_3": "Regra 3: etiqueta no cartão (p. ex. Convidados, Turno da tarde)",
+          "calendars_3": "Regra 3: calendários",
+          "keyword_3": "Regra 3: só eventos que contenham (vazio = todos)",
+          "hint_3": "Regra 3: o que estes dias significam para o planeamento"
+        },
+        "data_description": {
+          "label_1": "Etiqueta curta nos cartões adequados, p. ex. «Convidados».",
+          "calendars_1": "Calendários a verificar. Nenhum = regra desligada.",
+          "keyword_1": "Só eventos cujo título contenha esta palavra. Vazio = todos os eventos.",
+          "hint_1": "O que a IA deve ter em conta nestes dias, p. ex. «uma pessoa a mais».",
+          "label_2": "Etiqueta curta nos cartões adequados, p. ex. «Convidados».",
+          "calendars_2": "Calendários a verificar. Nenhum = regra desligada.",
+          "keyword_2": "Só eventos cujo título contenha esta palavra. Vazio = todos os eventos.",
+          "hint_2": "O que a IA deve ter em conta nestes dias, p. ex. «uma pessoa a mais».",
+          "label_3": "Etiqueta curta nos cartões adequados, p. ex. «Convidados».",
+          "calendars_3": "Calendários a verificar. Nenhum = regra desligada.",
+          "keyword_3": "Só eventos cujo título contenha esta palavra. Vazio = todos os eventos.",
+          "hint_3": "O que a IA deve ter em conta nestes dias, p. ex. «uma pessoa a mais»."
+        }
+      },
+      "rules_kcal": {
+        "title": "Atento às calorias",
+        "description": "Limites por dose, verificados na receita. Se a receita não indicar o valor, a IA estima com uma margem de 100 kcal. Vazio = sem limite.",
+        "data": {
+          "kcal_max": "Máx. kcal por dose incl. acompanhamento",
+          "kcal_max_without_side": "Máx. kcal por dose se o acompanhamento não estiver incluído"
+        },
+        "data_description": {
+          "kcal_max_without_side": "Se a receita não incluir o acompanhamento, este valor mais baixo vale só para o prato, p. ex. 650. Vazio = valor acima.",
+          "kcal_max": "Para a refeição completa incl. o acompanhamento habitual, p. ex. 800."
+        }
+      },
+      "habits": {
+        "title": "Hábitos alimentares",
+        "description": "Regras fixas para escolher receitas, até cinco, por palavras tuas. A IA segue-as. Com «máx. …x» a integração também conta pelos nomes dos pratos. Vazio = sem regra.",
+        "data": {
+          "habit_1": "Regra 1",
+          "habit_2": "Regra 2",
+          "habit_3": "Regra 3",
+          "habit_4": "Regra 4",
+          "habit_5": "Regra 5"
+        },
+        "data_description": {
+          "habit_1": "p. ex. «Sopas/guisados máx. 1x por semana»",
+          "habit_2": "p. ex. «pelo menos 1x peixe»",
+          "habit_3": "p. ex. «sem porco»",
+          "habit_4": "p. ex. «gratinados máx. 2x por semana»",
+          "habit_5": "p. ex. «à sexta algo especial»"
+        }
+      },
+      "region": {
+        "title": "Idioma e região",
+        "description": "Idioma e país das receitas. Define os sites de receitas sugeridos (p. ex. TudoGostoso para português, Marmiton para francês), o idioma dos nomes dos pratos e dos artigos, e o país do Cookidoo. O idioma da interface segue o teu perfil do Home Assistant. Ao mudar, são ativados os sites de receitas do novo país.",
+        "data": {
+          "region": "Idioma / região"
+        },
+        "data_description": {
+          "region": "O alemão está testado em uso real. Os outros idiomas usam sites de receitas compatíveis cuja pesquisa ainda não foi testada a fundo; aí o que mais ajuda é um agente com pesquisa web."
+        }
+      }
+    },
+    "error": {
+      "test_failed": "A leitura de teste falhou: {error}",
+      "count_zero": "Escolhe um número maior que 0.",
+      "agent_failed": "Não foi possível criar o agente de pesquisa. Guarda sem a opção ou adiciona tu o agente na integração de IA."
+    }
+  },
+  "selector": {
+    "device": {
+      "options": {
+        "stove_oven": "Fogão e forno",
+        "thermomix": "Thermomix",
+        "airfryer": "Air fryer"
+      }
+    },
+    "diet_mode": {
+      "options": {
+        "off": "Desligado",
+        "always": "Sempre",
+        "count": "Alguns por semana"
+      }
+    },
+    "status": {
+      "options": {
+        "new": "Novo",
+        "bought": "Comprado, ainda por cozinhar",
+        "cooked": "Cozinhado"
+      }
+    },
+    "diet": {
+      "options": {
+        "vegetarian": "Vegetariano",
+        "vegan": "Vegano",
+        "lactose_free": "Sem lactose",
+        "gluten_free": "Sem glúten",
+        "low_cholesterol": "Pobre em colesterol"
+      }
+    },
+    "weekday": {
+      "options": {
+        "mon": "Segunda-feira",
+        "tue": "Terça-feira",
+        "wed": "Quarta-feira",
+        "thu": "Quinta-feira",
+        "fri": "Sexta-feira",
+        "sat": "Sábado",
+        "sun": "Domingo"
+      }
+    },
+    "choice": {
+      "options": {
+        "none": "Não escolhido",
+        "declined": "Recusado",
+        "trip1": "Compra 1",
+        "trip2": "Compra 2",
+        "trip3": "Compra 3",
+        "trip4": "Compra 4",
+        "trip5": "Compra 5",
+        "trip6": "Compra 6",
+        "trip7": "Compra 7"
+      }
+    },
+    "release": {
+      "options": {
+        "immediate": "Imediatamente",
+        "timed": "A hora fixa"
+      }
+    },
+    "display": {
+      "options": {
+        "panel": "Página própria na barra lateral",
+        "view": "Vista «Essen» num painel existente",
+        "none": "Nenhuma, adiciona tu o cartão"
+      }
+    },
+    "style": {
+      "options": {
+        "system": "Como o meu Home Assistant (tema)",
+        "warm": "Quente"
+      }
+    },
+    "region": {
+      "options": {
+        "de": "Deutsch (Deutschland)",
+        "en": "English (UK/US)",
+        "es": "Español (España)",
+        "pt": "Português (Portugal/Brasil)",
+        "fr": "Français (France)"
+      }
+    },
+    "proposals_from": {
+      "options": {
+        "ha": "IA no Home Assistant",
+        "external": "IA externa através de ações (p. ex. a tua subscrição Claude, Gemini ou ChatGPT)"
+      }
+    }
+  },
+  "entity": {
+    "todo": {
+      "shopping_list": {
+        "name": "Lista de compras"
+      },
+      "wishes": {
+        "name": "Desejos"
+      }
+    },
+    "sensor": {
+      "proposals": {
+        "name": "Propostas"
+      },
+      "week": {
+        "name": "Semana"
+      }
+    }
+  },
+  "services": {
+    "import_recipe": {
+      "name": "Importar receita",
+      "description": "Descarrega e guarda uma receita.",
+      "fields": {
+        "url": {
+          "name": "Link",
+          "description": "Endereço da receita; links curtos são resolvidos."
+        },
+        "save": {
+          "name": "Guardar",
+          "description": "Guardar a receita."
+        }
+      }
+    },
+    "get_recipe": {
+      "name": "Obter receita",
+      "description": "Receita guardada com histórico.",
+      "fields": {
+        "recipe_id": {
+          "name": "ID da receita",
+          "description": "ID de import_recipe ou list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Endereço da receita; links curtos são resolvidos."
+        },
+        "title": {
+          "name": "Título",
+          "description": "Título exato da receita."
+        }
+      }
+    },
+    "list_recipes": {
+      "name": "Listar receitas",
+      "description": "Visão geral das receitas guardadas.",
+      "fields": {
+        "query": {
+          "name": "Pesquisar",
+          "description": "Texto no título ou nos ingredientes."
+        },
+        "status": {
+          "name": "Estado",
+          "description": "Só este estado."
+        },
+        "min_rating": {
+          "name": "Avaliação mínima",
+          "description": "1–5"
+        },
+        "limit": {
+          "name": "Limite",
+          "description": "Máximo de entradas."
+        }
+      }
+    },
+    "delete_recipe": {
+      "name": "Apagar receita",
+      "description": "Remove uma receita e o seu histórico.",
+      "fields": {
+        "recipe_id": {
+          "name": "ID da receita",
+          "description": "ID de import_recipe ou list_recipes."
+        }
+      }
+    },
+    "add_to_shopping_list": {
+      "name": "Adicionar à lista de compras",
+      "description": "Adiciona os ingredientes à lista escolhida.",
+      "fields": {
+        "recipe_id": {
+          "name": "ID da receita",
+          "description": "ID de import_recipe ou list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Endereço da receita; links curtos são resolvidos."
+        },
+        "title": {
+          "name": "Título",
+          "description": "Título exato da receita."
+        },
+        "servings": {
+          "name": "Doses",
+          "description": "Ajustar quantidades."
+        },
+        "force": {
+          "name": "Forçar",
+          "description": "Mesmo que já tenha sido comprado."
+        }
+      }
+    },
+    "update_history": {
+      "name": "Atualizar histórico",
+      "description": "Definir avaliação, data cozinhada, estado ou nota.",
+      "fields": {
+        "recipe_id": {
+          "name": "ID da receita",
+          "description": "ID de import_recipe ou list_recipes."
+        },
+        "url": {
+          "name": "Link",
+          "description": "Endereço da receita; links curtos são resolvidos."
+        },
+        "title": {
+          "name": "Título",
+          "description": "Título exato da receita."
+        },
+        "rating": {
+          "name": "Avaliação",
+          "description": "Avaliação 1–5, 0 remove a avaliação."
+        },
+        "cooked_on": {
+          "name": "Cozinhado em",
+          "description": "Data; define o estado como cozinhado."
+        },
+        "status": {
+          "name": "Estado",
+          "description": "Novo, comprado ou cozinhado."
+        },
+        "note": {
+          "name": "Nota",
+          "description": "Texto livre."
+        },
+        "remove_cooked_on": {
+          "name": "Remover dia cozinhado",
+          "description": "Apaga este dia de «cozinhado em»."
+        }
+      }
+    },
+    "import_history": {
+      "name": "Importar histórico",
+      "description": "Importa avaliações e datas cozinhadas.",
+      "fields": {
+        "entries": {
+          "name": "Entradas",
+          "description": "Lista de entradas."
+        },
+        "fetch_recipes": {
+          "name": "Descarregar receitas",
+          "description": "Importar receitas com link."
+        }
+      }
+    },
+    "validate_plan": {
+      "name": "Validar plano",
+      "description": "Verifica uma seleção com todas as regras.",
+      "fields": {
+        "recipe_ids": {
+          "name": "IDs das receitas",
+          "description": "Lista de IDs das receitas."
+        },
+        "urls": {
+          "name": "Links",
+          "description": "Lista de links de receitas."
+        }
+      }
+    },
+    "get_settings": {
+      "name": "Obter definições",
+      "description": "Definições do planeador."
+    },
+    "assess_recipes": {
+      "name": "Avaliar receitas com IA",
+      "description": "A IA avalia critérios incertos e guarda o resultado.",
+      "fields": {
+        "recipe_ids": {
+          "name": "IDs das receitas",
+          "description": "Vazio = todas as receitas."
+        },
+        "keys": {
+          "name": "Critérios",
+          "description": "Vazio = todos os incertos."
+        },
+        "force": {
+          "name": "Reavaliar",
+          "description": "Ignorar avaliações de IA existentes."
+        }
+      }
+    },
+    "generate_proposals": {
+      "name": "Criar propostas",
+      "description": "A IA cria as propostas da semana seguinte.",
+      "fields": {
+        "notes": {
+          "name": "Indicações",
+          "description": "Texto livre para esta execução."
+        },
+        "force": {
+          "name": "Criar de novo",
+          "description": "Substituir propostas existentes."
+        }
+      }
+    },
+    "choose_dish": {
+      "name": "Escolher prato",
+      "description": "Atribuir a uma compra; a lista é atualizada.",
+      "fields": {
+        "dish_id": {
+          "name": "Prato",
+          "description": "id do sensor de propostas/semana (ou o seu número)."
+        },
+        "choice": {
+          "name": "Escolha",
+          "description": "Compra para este prato."
+        }
+      }
+    },
+    "set_ingredients_ready": {
+      "name": "Ingredientes em casa",
+      "description": "Os ingredientes não são adicionados; se não for cozinhado, passa para a semana seguinte.",
+      "fields": {
+        "dish_id": {
+          "name": "Prato",
+          "description": "id do sensor de propostas/semana (ou o seu número)."
+        },
+        "ready": {
+          "name": "Em casa",
+          "description": "Desligado = comprar normalmente."
+        }
+      }
+    },
+    "mark_cooked": {
+      "name": "Cozinhado",
+      "description": "Marcar como cozinhado e avaliar.",
+      "fields": {
+        "dish_id": {
+          "name": "Prato",
+          "description": "id do sensor de propostas/semana (ou o seu número)."
+        },
+        "cooked": {
+          "name": "Cozinhado",
+          "description": "Desligado = desfazer."
+        },
+        "rating": {
+          "name": "Avaliação",
+          "description": "1–5"
+        },
+        "note": {
+          "name": "Nota",
+          "description": "Texto livre."
+        }
+      }
+    },
+    "finalize_week": {
+      "name": "Fechar a semana",
+      "description": "Fecho agora."
+    },
+    "sync_shopping_list": {
+      "name": "Sincronizar lista de compras",
+      "description": "Sincroniza a lista com a seleção."
+    },
+    "release_shopping": {
+      "name": "Libertar compra",
+      "description": "Adicionar agora uma compra a hora fixa.",
+      "fields": {
+        "trip": {
+          "name": "Compra",
+          "description": "Vazio = todas."
+        }
+      }
+    },
+    "dish_items": {
+      "name": "Ingredientes do prato",
+      "description": "Linhas de compra de um prato.",
+      "fields": {
+        "dish_id": {
+          "name": "Prato",
+          "description": "id do sensor de propostas/semana (ou o seu número)."
+        }
+      }
+    },
+    "set_items_at_home": {
+      "name": "Artigos em casa",
+      "description": "Estes artigos já estão em casa.",
+      "fields": {
+        "dish_id": {
+          "name": "Prato",
+          "description": "id do sensor de propostas/semana (ou o seu número)."
+        },
+        "items": {
+          "name": "Artigos",
+          "description": "Nomes como na lista; vazio = comprar tudo."
+        }
+      }
+    },
+    "search_recipes": {
+      "name": "Pesquisar receitas",
+      "description": "Pesquisa nos sites de receitas ativados e lista os links encontrados por site.",
+      "fields": {
+        "query": {
+          "name": "Pesquisa",
+          "description": "P. ex. «gnocchi de abóbora»."
+        },
+        "sites": {
+          "name": "Sites",
+          "description": "Opcional, p. ex. [\"tudogostoso.com.br\"]. Vazio = todos os ativados."
+        }
+      }
+    },
+    "planning_brief": {
+      "name": "Pedido para IA externa",
+      "description": "Devolve o pedido de planeamento da semana seguinte (regras, desejos, compromissos, formato de resposta) para que uma IA externa pesquise as receitas.",
+      "fields": {
+        "notes": {
+          "name": "Indicações",
+          "description": "Texto livre só para esta semana."
+        },
+        "restart": {
+          "name": "Recomeçar",
+          "description": "Ignorar as propostas existentes da semana."
+        }
+      }
+    },
+    "submit_proposals": {
+      "name": "Enviar propostas",
+      "description": "Verifica os pratos de uma IA externa (link, regras, pesquisa) e adiciona-os às propostas da semana seguinte. A resposta indica o que falta.",
+      "fields": {
+        "dishes": {
+          "name": "Pratos",
+          "description": "Lista no formato do pedido (title, url, query, site, tip, wish, …)."
+        },
+        "final": {
+          "name": "Última chamada",
+          "description": "Enviar depois a notificação mesmo que falte algo."
+        },
+        "restart": {
+          "name": "Recomeçar",
+          "description": "Substituir as propostas existentes da semana."
+        }
+      }
+    },
+    "memory_overview": {
+      "name": "Mostrar o que está guardado",
+      "description": "Perfil de gosto (gostámos, não gostámos, cozinhado recentemente), regras básicas e todas as receitas guardadas com avaliação."
+    },
+    "set_profile": {
+      "name": "Mudar regras básicas e gosto",
+      "description": "Texto livre que a IA recebe em cada planeamento.",
+      "fields": {
+        "text": {
+          "name": "Texto",
+          "description": "Vazio = sem regras básicas."
+        }
+      }
+    },
+    "external_setup": {
+      "name": "Configuração da IA externa",
+      "description": "Para IAs com acesso ao Home Assistant (MCP): chama quando o utilizador disser «Configura o meu planeador de refeições». Devolve as instruções (instructions_for_ai), o horário das definições e o texto da tarefa agendada na IA.",
+      "fields": {
+        "activate": {
+          "name": "Mudar para IA externa",
+          "description": "Define «As propostas vêm de» como «IA externa»."
+        },
+        "view": {
+          "name": "Só ver",
+          "description": "Para o cartão: não guardar o horário como configurado."
+        }
+      }
+    },
+    "import_week": {
+      "name": "Importar semana",
+      "description": "Adota os pratos de uma semana em curso (mudança de outro planeador) ou descarta as sugestões com uma lista vazia.",
+      "fields": {
+        "dishes": {
+          "name": "Pratos",
+          "description": "Lista com title, url, choice (compra), on_list, ingredients_ready, own_recipe, skip_items, cooked_on, rating."
+        },
+        "board": {
+          "name": "Quadro",
+          "description": "current = semana em curso, next = sugestões da próxima semana."
+        }
+      }
+    }
+  }
+}
