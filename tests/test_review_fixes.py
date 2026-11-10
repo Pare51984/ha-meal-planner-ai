@@ -53,3 +53,11 @@ def test_release_not_before_deadline():
     assert meta["deadline"].startswith("2026-11-15T12:00")
     assert meta["release_at"]["trip1"].startswith("2026-11-21T10:00")
     assert meta["release_at"]["trip2"].startswith("2026-11-15T12:00")  # genau zum Auswahlschluss bleibt
+
+
+async def test_llm_api_has_requires_admin(hass: HomeAssistant):
+    """Neuere HA-Versionen lesen api.requires_admin in llm/list_apis; fehlt es, bricht die ganze Liste."""
+    from custom_components.meal_planner_ai.llm_api import EssensplanerAPI
+
+    api = EssensplanerAPI(hass)
+    assert api.requires_admin is False

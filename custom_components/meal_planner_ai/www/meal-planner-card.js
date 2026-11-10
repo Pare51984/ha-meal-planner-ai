@@ -25,7 +25,7 @@ const I18N = {
     no_items: "Keine Zutatenliste verfügbar.", ready: "Zutaten schon da", part_n: "{n} schon da", partly: "Teilweise da …",
     not_on_list: "kommt nicht auf die Einkaufsliste", tip: "Tipp", declined: "abgewählt", declined_hint: ", Zutaten kommen von der Liste",
     undo: "Rückgängig", stars: "{n} Sterne", cooked: "gekocht", not_cooked: "noch nicht gekocht", how: "Wie war's?", note: "+ Notiz",
-    decline: "Doch nicht", removed: "„{title}“ entfernt", note_ph: "z. B. nächstes Mal weniger scharf", save: "Speichern", release: "{trip} kommt {at} auf die Liste",
+    decline: "Doch nicht", drop: "Entfernen", drop_all: "Übrige Vorschläge entfernen", drop_all_sure: "Nochmal tippen: alle entfernen", removed: "„{title}“ entfernt", note_ph: "z. B. nächstes Mal weniger scharf", save: "Speichern", release: "{trip} kommt {at} auf die Liste",
     proposals: "Vorschläge KW {kw}", proposals_hint: "Pro Gericht einen Einkauf antippen, nochmal tippen = abwählen. Auswahlschluss {at}",
     open: "Offen: ", week: "Diese Woche · {c}/{n} gekocht",
     week_hint: "Kreis antippen = gekocht. Sterne sind freiwillig und fließen in die nächsten Vorschläge ein",
@@ -65,7 +65,7 @@ const I18N = {
     no_items: "No ingredient list available.", ready: "Have everything", part_n: "{n} at home", partly: "Partly at home …",
     not_on_list: "not added to the shopping list", tip: "Tip", declined: "removed", declined_hint: ", ingredients come off the list",
     undo: "Undo", stars: "{n} stars", cooked: "cooked", not_cooked: "not cooked yet", how: "How was it?", note: "+ Note",
-    decline: "Not after all", removed: "“{title}” removed", note_ph: "e.g. less spicy next time", save: "Save", release: "{trip} goes on the list {at}",
+    decline: "Not after all", drop: "Remove", drop_all: "Remove remaining suggestions", drop_all_sure: "Tap again: remove all", removed: "“{title}” removed", note_ph: "e.g. less spicy next time", save: "Save", release: "{trip} goes on the list {at}",
     proposals: "Proposals week {kw}", proposals_hint: "Tap a shopping trip per dish, tap again to remove. Choice closes {at}",
     open: "Open: ", week: "This week · {c}/{n} cooked",
     week_hint: "Tap the circle = cooked. Stars are optional and shape the next proposals",
@@ -115,7 +115,7 @@ const I18N = {
     no_items: "No hay lista de ingredientes.", ready: "Lo tengo todo", part_n: "{n} en casa", partly: "Parte en casa …",
     not_on_list: "no va a la lista de la compra", tip: "Consejo", declined: "descartado", declined_hint: ", los ingredientes salen de la lista",
     undo: "Deshacer", stars: "{n} estrellas", cooked: "cocinado", not_cooked: "aún sin cocinar", how: "¿Qué tal?", note: "+ Nota",
-    decline: "Mejor no", removed: "«{title}» quitado", note_ph: "p. ej. la próxima vez menos picante", save: "Guardar", release: "{trip} pasa a la lista {at}",
+    decline: "Mejor no", drop: "Quitar", drop_all: "Quitar las demás propuestas", drop_all_sure: "Toca otra vez: quitar todas", removed: "«{title}» quitado", note_ph: "p. ej. la próxima vez menos picante", save: "Guardar", release: "{trip} pasa a la lista {at}",
     proposals: "Propuestas semana {kw}", proposals_hint: "Toca una compra por plato, otra vez para quitar. Cierre {at}",
     open: "Pendiente: ", week: "Esta semana · {c}/{n} cocinados",
     week_hint: "Toca el círculo = cocinado. Las estrellas son opcionales e influyen en las próximas propuestas",
@@ -155,7 +155,7 @@ const I18N = {
     no_items: "Sem lista de ingredientes.", ready: "Tenho tudo", part_n: "{n} em casa", partly: "Parte em casa …",
     not_on_list: "não vai para a lista de compras", tip: "Dica", declined: "removido", declined_hint: ", os ingredientes saem da lista",
     undo: "Desfazer", stars: "{n} estrelas", cooked: "cozinhado", not_cooked: "ainda não cozinhado", how: "Que tal?", note: "+ Nota",
-    decline: "Afinal não", removed: "«{title}» removido", note_ph: "p. ex. menos picante da próxima vez", save: "Guardar", release: "{trip} vai para a lista {at}",
+    decline: "Afinal não", drop: "Remover", drop_all: "Remover as restantes sugestões", drop_all_sure: "Toca outra vez: remover todas", removed: "«{title}» removido", note_ph: "p. ex. menos picante da próxima vez", save: "Guardar", release: "{trip} vai para a lista {at}",
     proposals: "Propostas semana {kw}", proposals_hint: "Toca numa compra por prato, de novo para retirar. Fecho {at}",
     open: "Em falta: ", week: "Esta semana · {c}/{n} cozinhados",
     week_hint: "Toca no círculo = cozinhado. As estrelas são opcionais e contam para as próximas propostas",
@@ -195,7 +195,7 @@ const I18N = {
     no_items: "Pas de liste d'ingrédients.", ready: "J'ai tout", part_n: "{n} à la maison", partly: "En partie …",
     not_on_list: "ne va pas sur la liste de courses", tip: "Conseil", declined: "retiré", declined_hint: ", les ingrédients sortent de la liste",
     undo: "Annuler", stars: "{n} étoiles", cooked: "cuisiné", not_cooked: "pas encore cuisiné", how: "C'était comment ?", note: "+ Note",
-    decline: "Finalement non", removed: "« {title} » retiré", note_ph: "p. ex. moins épicé la prochaine fois", save: "Enregistrer", release: "{trip} va sur la liste {at}",
+    decline: "Finalement non", drop: "Retirer", drop_all: "Retirer les autres propositions", drop_all_sure: "Touchez encore : tout retirer", removed: "« {title} » retiré", note_ph: "p. ex. moins épicé la prochaine fois", save: "Enregistrer", release: "{trip} va sur la liste {at}",
     proposals: "Propositions semaine {kw}", proposals_hint: "Touche une course par plat, encore une fois pour retirer. Clôture {at}",
     open: "Manquant : ", week: "Cette semaine · {c}/{n} cuisinés",
     week_hint: "Touche le cercle = cuisiné. Les étoiles sont facultatives et guident les prochaines propositions",
@@ -499,7 +499,7 @@ class EssensplanerCard extends HTMLElement {
       return `<div class="tile ${sel ? "sel" : ""}">
         <div class="head"><div class="ico">${sel ? "✓" : d.nr}</div>
           <div class="txt"><div class="name">${esc(d.title)}</div>${info(d)}</div></div>
-        ${tripBtns(d)}${ready(d)}</div>`;
+        ${tripBtns(d)}${ready(d)}${sel ? "" : `<div class="darow"><button class="small" data-act="drop" data-id="${esc(d.id)}">✕ ${t("drop")}</button></div>`}</div>`;
     };
     const weekTile = (d) => {
       const done = !!d.cooked_on;
@@ -524,7 +524,8 @@ class EssensplanerCard extends HTMLElement {
       </div>`;
     };
 
-    const props = prop.dishes || [];
+    const propsAll = prop.dishes || [];
+    const props = propsAll.filter((d) => d.choice !== "declined");  // entfernte Vorschläge ausblenden
     const plan = week.dishes || [];
     let body = this._err ? `<div class="empty err">${esc(this._err)}</div>` : "";
     if (props.length) {
@@ -545,7 +546,8 @@ class EssensplanerCard extends HTMLElement {
     }
     if (cands.length) {
       body += `<div class="sec">${esc(t("cand"))}<span>${esc(t("cand_hint"))}</span></div>
-        <div class="grid">${cands.map(propTile).join("")}</div>`;
+        <div class="grid">${cands.map(propTile).join("")}</div>
+        <div class="darow"><button class="small ${this._sure === "dropall" ? "on" : ""}" data-act="dropall">✕ ${t(this._sure === "dropall" ? "drop_all_sure" : "drop_all")}</button></div>`;
     }
     // Früher einkaufen: Einkäufe mit festem Termin, die noch nicht auf der Liste sind, sofort freigeben
     const waiting = trips.filter((x) => [[prop, props], [week, plan]].some(([b, ds]) =>
@@ -559,7 +561,7 @@ class EssensplanerCard extends HTMLElement {
     body += `<div class="darow shop">${this._busy === "more" || (serverBusy && !this._busy)
       ? `<button class="small on" disabled>⏳ ${t("busy")}</button>`
       : `<button class="small ${this._sure === "more" ? "on" : ""}" data-act="more" data-kind="${rk}"${this._busy || serverBusy ? " disabled" : ""}>${rk === "more" ? "➕" : "✨"} ${t(this._sure === "more" ? "plan_now_sure" : rk)}</button>`}<span class="hint">${t(rk + "_hint")}</span></div>`;
-    const undo = this._undo && plan.find((d) => d.id === this._undo.id && d.choice === "declined");
+    const undo = this._undo && [...propsAll, ...plan].find((d) => d.id === this._undo.id && d.choice === "declined");
     if (undo) {
       body += `<div class="undobar"><span>${esc(t("removed", { title: undo.title }))}</span><button class="small on" data-act="restore" data-id="${esc(undo.id)}">${t("undo")}</button></div>`;
     }
@@ -591,7 +593,7 @@ class EssensplanerCard extends HTMLElement {
       : tabs + body;
     this._paint(main, false);
 
-    const all = [...props, ...plan];
+    const all = [...propsAll, ...plan];
     const find = (id) => all.find((d) => d.id === id);
     const win = this.shadowRoot.getElementById("wish-in");
     if (win) {
@@ -620,12 +622,19 @@ class EssensplanerCard extends HTMLElement {
         this._shopSure = null;
         return this._svc("release_shopping", { trip: el.dataset.trip });
       }
+      if (act === "dropall") {
+        // zweimal tippen: alle noch nicht gewählten Kandidaten der Woche entfernen
+        if (this._sure !== "dropall") { this._sure = "dropall"; return this._render(); }
+        this._sure = null;
+        const ids = cands.map((x) => x.id);
+        return ids.reduce((p, id) => p.then(() => this._svc("choose_dish", { dish_id: id, choice: "declined" })), Promise.resolve());
+      }
       const d = find(el.dataset.id); if (!d) return;
       if (act === "pick") this._svc("choose_dish", { dish_id: d.id, choice: d.choice === el.dataset.trip ? "none" : el.dataset.trip });
       else if (act === "ready") this._svc("set_ingredients_ready", { dish_id: d.id, ready: !d.ingredients_ready });
       else if (act === "cooked") this._svc("mark_cooked", { dish_id: d.id, cooked: !d.cooked_on });
       else if (act === "star") this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: +el.dataset.n });
-      else if (act === "decline") {
+      else if (act === "decline" || act === "drop") {
         this._prev = { ...(this._prev || {}), [d.id]: d.choice };
         clearTimeout(this._undoTimer);
         this._undo = { id: d.id };

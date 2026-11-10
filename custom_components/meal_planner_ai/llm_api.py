@@ -95,6 +95,9 @@ class EssensplanerAPI(llm.API):
         self.hass = hass
         self.id = API_ID
         self.name = API_NAME
+        # neueres Feld von llm.API; der eigene __init__ übergeht den Standardwert der Basisklasse,
+        # ohne das Attribut scheitert die Liste der LLM-APIs (llm/list_apis) für alle Integrationen
+        self.requires_admin = False
 
     async def async_get_api_instance(self, llm_context: llm.LLMContext) -> llm.APIInstance:
         return llm.APIInstance(api=self, api_prompt=API_PROMPT, llm_context=llm_context,
