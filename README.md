@@ -22,8 +22,8 @@ No extra app and no cloud service of its own: recipes are read straight from the
 * Dashboard card with tiles per dish: choose a shopping trip, mark "ingredients at home", tick off cooked
   dishes, rate them with stars, add wishes. A timeline built from your settings shows when what happens.
 * Shopping trips with a fixed time (e.g. Saturday 12:00) get a **Shop now** button for when you go earlier.
-* **More suggestions** adds 5 more dishes to pick from at any time (also during the week, when you need one dish more),
-  **Swap** replaces a single dish with another one.
+* **More suggestions** adds 5 more dishes to pick from at any time (also during the week, when you need one dish more).
+  Don't want a dish? **Remove** it (a picked dish: **Not after all**, its ingredients come off the list) and pick a new one.
 * Rules the integration checks itself: time limit, quick dishes per week, kcal per serving, vegetarian, vegan,
   lactose free, gluten free and low cholesterol counts, max dishes with the same main ingredient, habits in your own
   words, kitchen devices, calendar rules (e.g. "guest eats with us").
@@ -56,7 +56,7 @@ For MCP you can use the official **Model Context Protocol Server** integration w
 
 **Limits of the external AI path.** The external AI only delivers the weekly suggestions at the scheduled time. Everything
 that needs new dishes in between runs on the AI *inside* Home Assistant. Without an AI task selected under
-**Configure → AI**, these do not work: **More suggestions**, **Swap**, **Plan suggestions now** (`generate_proposals`),
+**Configure → AI**, these do not work: **More suggestions**, **Plan suggestions now** (`generate_proposals`),
 `assess_recipes`, AI shopping names, and the fallback when the external AI delivers nothing. Tip: also select a free
 Gemini AI task, then these work too and the external AI still does the weekly plan.
 
@@ -67,7 +67,7 @@ All actions return response data. Most useful ones:
 |---|---|
 | `meal_planner_ai.import_recipe` | Load a recipe by link and store it |
 | `meal_planner_ai.generate_proposals` | Create this week's suggestions now |
-| `meal_planner_ai.more_proposals` / `swap_dish` | Add more dishes to choose from / replace one dish |
+| `meal_planner_ai.more_proposals` | Add more dishes to choose from |
 | `meal_planner_ai.planning_brief` / `submit_proposals` | Brief for an external AI and its answer |
 | `meal_planner_ai.external_setup` | Schedule and task text for the external AI |
 | `meal_planner_ai.choose_dish` / `set_ingredients_ready` / `mark_cooked` | What the card does |

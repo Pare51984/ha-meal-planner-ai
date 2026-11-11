@@ -36,7 +36,7 @@ im Reiter **Einstellungen** (nur für Administratoren sichtbar; mit `settings: f
 | `meal_planner_ai.get_settings` | Vorgaben für einen (KI-)Planer |
 | `meal_planner_ai.delete_recipe` | Rezept löschen |
 | `meal_planner_ai.generate_proposals` | KI erstellt die Wochenvorschläge (sonst automatisch nach Zeitplan) |
-| `meal_planner_ai.more_proposals` / `swap_dish` | Weitere Gerichte zur Auswahl dazuholen / ein Gericht tauschen |
+| `meal_planner_ai.more_proposals` | Weitere Gerichte zur Auswahl dazuholen |
 | `meal_planner_ai.planning_brief` | Planungsauftrag für eine externe KI: Regeln, Wünsche, Termine, Antwortformat |
 | `meal_planner_ai.submit_proposals` | Gerichte einer externen KI prüfen und in die Vorschläge übernehmen; Antwort nennt, was fehlt |
 | `meal_planner_ai.external_setup` | Zeitplan und Aufgabentext für die geplante Aufgabe der externen KI |
@@ -73,7 +73,7 @@ den Einstellungen, wann was passiert.
 **„Mehr Vorschläge“** holt jederzeit 5 weitere Gerichte zur Auswahl dazu, Vorhandenes bleibt. Typischer Ablauf: ein Gericht
 auf „doch nicht“ stellen, „Mehr Vorschläge“ tippen, eines der neuen wählen. Läuft die Woche schon, erscheinen die neuen
 Gerichte unter „Zur Auswahl für diese Woche“ und kommen erst auf die Einkaufsliste, wenn ihr einen Einkauf wählt. So geht auch
-„wir brauchen diese Woche ein Gericht mehr“. **„Tauschen“** ersetzt ein einzelnes, noch nicht gekochtes Gericht.
+„wir brauchen diese Woche ein Gericht mehr“. Nicht gewählte Vorschläge lassen sich mit **„Entfernen“** wegräumen.
 
 Alles ist einstellbar: Wann die Vorschläge kommen, wann Auswahlschluss ist und wie oft eingekauft wird
 (1 bis 7 Einkäufe pro Woche, je mit Namen, Kochtagen und Freigabe „sofort“ oder „Wochentag + Uhrzeit“,
@@ -156,7 +156,7 @@ Planungszeitpunkt, muss nur die Uhrzeit der Aufgabe angepasst werden; der Einric
 
 **Was über den externen Weg nicht geht:** Die externe KI liefert nur die Wochenvorschläge zum geplanten Zeitpunkt. Alles,
 was zwischendurch neue Gerichte braucht, läuft über die KI *in* Home Assistant. Ist unter **Konfigurieren → KI** keine
-AI-Task-Entität gewählt, funktionieren nicht: **Mehr Vorschläge**, **Tauschen**, **Jetzt Vorschläge planen**
+AI-Task-Entität gewählt, funktionieren nicht: **Mehr Vorschläge**, **Jetzt Vorschläge planen**
 (`generate_proposals`), die KI-Bewertung der Ernährungsform (`assess_recipes`), die KI-Einkaufsnamen und die
 Rückfallebene, wenn die externe KI nichts liefert. Tipp: zusätzlich eine kostenlose Gemini-KI auswählen. Dann geht all
 das, und den Wochenplan macht trotzdem die externe KI.
