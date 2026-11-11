@@ -173,12 +173,15 @@ Je ein Testlauf mit KI-Task und Such-Agent anderer Anbieter (11/2026, sonst Stan
 | OpenAI `gpt-6.1-terra` | bester Lauf: 10 Gerichte, die meisten Links von der KI selbst, ca. 1,5 Minuten |
 | OpenAI `gpt-6.1-sol` | 10 Gerichte, weniger eigene Links, ca. 5 Minuten |
 | Claude Sonnet 5.5 | 7 Gerichte, keine eigenen Links (alle über die eigene Suche) |
-| Claude Haiku 5.5 | gescheitert: Die Standard-„Maximale Tokens“ (3000) gingen fürs Nachdenken drauf, leere Antwort |
+| Claude Haiku 5.5 | mit Standard-„Maximale Tokens“ (3000) gescheitert, das Nachdenken hat sie aufgebraucht. Mit dem Such-Agenten, den die Integration anlegt (16000): 10 Gerichte, wenige eigene Links, ca. 8 Minuten |
 
-**Noch nicht getestet, Tester willkommen:** die offizielle Integration *Model Context Protocol Server* als MCP-Weg,
-Claude mit höheren „Maximale Tokens“, ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,
-Portugiesisch oder Französisch und außerhalb Deutschlands, andere Einkaufslisten als Bring! und die eigene Liste,
-Installation über HACS.
+Die offizielle Integration *Model Context Protocol Server* funktioniert als MCP-Weg: in Claude als eigener Connector
+(`https://<deine-ha-adresse>/api/mcp`) hinzugefügt, mit dem Home-Assistant-Konto angemeldet, Auftrag abgeholt (11/2026).
+Tipp: In dieser Integration nur die Werkzeug-Sammlung „Meal Planner AI“ freigeben statt aller, sonst kann der Connector
+auch dein Haus steuern.
+
+**Noch nicht getestet, Tester willkommen:** ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,
+Portugiesisch oder Französisch und außerhalb Deutschlands, andere Einkaufslisten als Bring! und die eigene Liste.
 
 ## Hinweise
 Die Einordnung (vegetarisch, vegan, laktose-/glutenfrei, Geräte) beruht auf Stichworten

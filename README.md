@@ -97,15 +97,16 @@ One test week each with the AI task and search agent of other providers (11/2026
 | OpenAI `gpt-6.1-terra` | best run: 10 dishes, most links found by the AI itself, about 1.5 minutes |
 | OpenAI `gpt-6.1-sol` | 10 dishes, fewer own links, about 5 minutes |
 | Claude Sonnet 5.5 | 7 dishes, no own links (all found by the integration's search) |
-| Claude Haiku 5.5 | failed: the default *maximum tokens* (3000) were used up by thinking, empty answer. Raise *maximum tokens* in the Anthropic integration when thinking is on. |
+| Claude Haiku 5.5 | with the default *maximum tokens* (3000): failed, thinking used them up. With the search agent the integration creates (16000): 10 dishes, few own links, about 8 minutes. |
+
+The official *Model Context Protocol Server* integration works as the MCP path: added as a custom connector in Claude
+(`https://<your-ha>/api/mcp`), sign-in with the Home Assistant account, brief fetched (11/2026). Tip: in that integration
+expose only the tool set "Meal Planner AI" instead of all LLM APIs, otherwise the connector can also control your home.
 
 **Not tested yet, testers welcome:**
-* the official *Model Context Protocol Server* integration as the MCP path
-* Claude with a higher *maximum tokens* setting
 * ChatGPT and Gemini scheduled tasks as external AI
 * daily use in English, Spanish, Portuguese or French, and regions other than Germany
 * shopping lists other than Bring! and the built-in list (Todoist, Google Tasks, local To-do, …)
-* installation through HACS
 
 ## Notes
 Diet classification (vegetarian, vegan, lactose/gluten free, devices) is based on keywords in ingredients and is not
