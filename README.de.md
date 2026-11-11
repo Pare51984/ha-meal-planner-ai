@@ -114,7 +114,7 @@ Einmalig unter **Einstellungen → Geräte & Dienste → Integration hinzufügen
 
 | KI | Einrichtung | Kosten |
 |---|---|---|
-| **Claude (Anthropic)** – bei Denkmodus „Maximale Tokens“ deutlich erhöhen (Standard 3000 reicht nicht) | console.anthropic.com → „Billing“ Guthaben aufladen → „API Keys“ Schlüssel erstellen → Integration „Anthropic“ hinzufügen | Websuche ca. 1 Cent pro Suche; ein Wochenlauf grob 10–50 Cent (Schätzung) |
+| **Claude (Anthropic)** – bei Denkmodus „Maximale Tokens“ deutlich erhöhen (Standard 3000 reicht nicht) | console.anthropic.com → „Billing“ Guthaben aufladen → „API Keys“ Schlüssel erstellen → Integration „Anthropic“ hinzufügen | pro Nutzung beim Anbieter |
 | **Gemini (Google)** | aistudio.google.com → API-Schlüssel → Integration „Google Generative AI“ | kostenlos nutzbar (im Test mit Gemini 3.8 Flash); Google-Suche im Gratis-Tarif begrenzt |
 | **ChatGPT (OpenAI)** | platform.openai.com → Guthaben + API-Schlüssel → Integration „OpenAI Conversation“ | pro Nutzung |
 

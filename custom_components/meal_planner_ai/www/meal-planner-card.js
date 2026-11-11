@@ -303,6 +303,9 @@ const cardCss = (config) => `
       .tile.sel .ico{background:var(--_accent);color:var(--_accent-text)}
       .ck{flex:0 0 34px;height:34px;border-radius:50%;border:2px solid var(--_check);background:transparent;color:var(--_accent-text);font:inherit;font-size:16px;font-weight:700;cursor:pointer;padding:0}
       .ck.on{background:var(--_accent);border-color:var(--_accent)}
+      .ckw{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px}
+      .ckw .ck{flex:none;width:34px}
+      .ckl{font-size:10px;line-height:1;color:var(--_muted)}
       .txt{flex:1;min-width:0}
       .name{font-size:14px;font-weight:600;line-height:1.25}
       .l1{font-size:12px;color:var(--_heading);margin-top:3px;line-height:1.35}
@@ -508,7 +511,7 @@ class EssensplanerCard extends HTMLElement {
       const stars = [1, 2, 3, 4, 5].map((n) => `<button class="star ${n <= (d.rating || 0) ? "on" : ""}" data-act="star" data-n="${n}" data-id="${esc(d.id)}" aria-label="${t("stars", { n })}">★</button>`).join("");
       const open = this._open === d.id;
       return `<div class="tile ${done ? "rated" : ""}">
-        <div class="head"><button class="ck ${done ? "on" : ""}" data-act="cooked" data-id="${esc(d.id)}" aria-label="${t("cooked")}">${done ? "✓" : ""}</button>
+        <div class="head"><div class="ckw"><button class="ck ${done ? "on" : ""}" data-act="cooked" data-id="${esc(d.id)}" aria-label="${t("cooked")}">${done ? "✓" : ""}</button><span class="ckl">${t("cooked")}</span></div>
           <div class="txt"><div class="name">${esc(d.title)}</div>
             <div class="l2"><b>${done ? t("cooked") : t("not_cooked")}</b> · ${esc(tripName(d.choice))}</div>${info(d)}
             ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div></div>
@@ -1010,7 +1013,8 @@ class EssensplanerMemoryCard extends HTMLElement {
 
   _recipesHtml(d) {
     const q = this._q.toLowerCase();
-    let list = (d.recipes || []).filter((r) => !q || (r.title || "").toLowerCase().includes(q) || (r.note || "").toLowerCase().includes(q));
+    // nur bewertete Rezepte; alles andere ist Zwischenspeicher aus Vorschlägen
+    let list = (d.recipes || []).filter((r) => r.rating).filter((r) => !q || (r.title || "").toLowerCase().includes(q) || (r.note || "").toLowerCase().includes(q));
     const by = {
       name: (a, b) => (a.title || "").localeCompare(b.title || ""),
       rating: (a, b) => (b.rating || 0) - (a.rating || 0) || (a.title || "").localeCompare(b.title || ""),
