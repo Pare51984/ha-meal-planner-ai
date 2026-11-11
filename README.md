@@ -51,8 +51,13 @@ The integration does the checking, importing and storing itself; the AI only pro
 | **Search agent with web search** (optional, recommended) | Pick a provider under *Create search agent with web search at* | Finds real recipe links, also Cookidoo. Gemini: a free API key from Google AI Studio works; in our test (11/2026) `gemini-3.8-flash` searched fine on the free tier at no cost (older test: `gemini-3.1-flash-lite` refused search there). The free tier has rate limits; if Google answers 429, the integration falls back to its own search. Google returns redirect links, the integration resolves them. |
 | **External AI** (subscription, no API key) | An AI with scheduled tasks and web search (e.g. Claude), connected to HA via MCP, plus remote access to HA | Tell the AI *"Set up my meal planner from Home Assistant."* It calls `meal_planner_ai.external_setup` and creates the task. If nothing arrives within 5 hours, the AI in HA takes over. |
 
-For MCP you can use the official **Model Context Protocol Server** integration with the tool set **"Meal Planner AI"**
-(it only allows fetching the brief and submitting proposals) or any MCP server that can call actions.
+For MCP you can use the official **Model Context Protocol Server** integration or any MCP server that can call actions.
+Setup with the official integration:
+1. Settings → Devices & services → Add integration → **Model Context Protocol Server**.
+2. Under **Configure**, switch **off** "all LLM APIs" and tick only **Meal Planner AI**. Then the AI can only fetch the
+   brief and submit proposals. With all LLM APIs it could also control your home.
+3. In your AI (e.g. Claude → Settings → Connectors) add a custom connector with `https://<your-ha-address>/api/mcp`
+   and sign in with your Home Assistant account. Your HA must be reachable from the internet.
 
 **Limits of the external AI path.** The external AI only delivers the weekly suggestions at the scheduled time. Everything
 that needs new dishes in between runs on the AI *inside* Home Assistant. Without an AI task selected under
@@ -100,8 +105,7 @@ One test week each with the AI task and search agent of other providers (11/2026
 | Claude Haiku 5.5 | with the default *maximum tokens* (3000): failed, thinking used them up. With the search agent the integration creates (16000): 10 dishes, few own links, about 8 minutes. |
 
 The official *Model Context Protocol Server* integration works as the MCP path: added as a custom connector in Claude
-(`https://<your-ha>/api/mcp`), sign-in with the Home Assistant account, brief fetched (11/2026). Tip: in that integration
-expose only the tool set "Meal Planner AI" instead of all LLM APIs, otherwise the connector can also control your home.
+(`https://<your-ha>/api/mcp`), sign-in with the Home Assistant account, brief fetched (11/2026).
 
 **Not tested yet, testers welcome:**
 * ChatGPT and Gemini scheduled tasks as external AI

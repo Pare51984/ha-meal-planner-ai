@@ -132,9 +132,12 @@ sucht die Rezepte im Web und gibt sie zurück. Der Essensplaner prüft jedes Ger
 1. Ein KI-Abo mit geplanten Aufgaben und Websuche. Getestet mit Claude. ChatGPT-Aufgaben können laut OpenAI seit 06/2026
    auch Connectors nutzen (eigene MCP-Connectors nur in bezahlten Tarifen), ungetestet. Ob geplante Aktionen in Gemini
    MCP-Verbindungen nutzen können, ist offen.
-2. Eine Verbindung dieser KI zu Home Assistant über MCP. Am einfachsten: die offizielle Integration **Model Context
-   Protocol Server** hinzufügen und dort die Werkzeug-Sammlung **„Meal Planner AI“** auswählen. Die KI darf damit nur den
-   Auftrag holen und Vorschläge einreichen, sonst nichts. Alternativ geht jeder MCP-Server, der Aktionen aufrufen kann.
+2. Eine Verbindung dieser KI zu Home Assistant über MCP. Am einfachsten mit der offiziellen Integration **Model Context
+   Protocol Server**: unter Einstellungen → Geräte & Dienste hinzufügen, dann unter **Konfigurieren** „Alle LLM-APIs“
+   **ausschalten** und nur **„Meal Planner AI“** ankreuzen. Die KI darf damit nur den Auftrag holen und Vorschläge
+   einreichen, sonst nichts. Mit „Alle LLM-APIs“ könnte sie auch dein Haus steuern. In der KI (z. B. Claude →
+   Einstellungen → Connectors) einen eigenen Connector mit `https://<deine-ha-adresse>/api/mcp` anlegen und mit dem
+   Home-Assistant-Konto anmelden. Alternativ geht jeder MCP-Server, der Aktionen aufrufen kann.
 3. Fernzugriff auf Home Assistant von außen (z. B. Home Assistant Cloud oder Cloudflare), weil die KI im Internet läuft.
 
 **Einrichten**
@@ -177,8 +180,6 @@ Je ein Testlauf mit KI-Task und Such-Agent anderer Anbieter (11/2026, sonst Stan
 
 Die offizielle Integration *Model Context Protocol Server* funktioniert als MCP-Weg: in Claude als eigener Connector
 (`https://<deine-ha-adresse>/api/mcp`) hinzugefügt, mit dem Home-Assistant-Konto angemeldet, Auftrag abgeholt (11/2026).
-Tipp: In dieser Integration nur die Werkzeug-Sammlung „Meal Planner AI“ freigeben statt aller, sonst kann der Connector
-auch dein Haus steuern.
 
 **Noch nicht getestet, Tester willkommen:** ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,
 Portugiesisch oder Französisch und außerhalb Deutschlands, andere Einkaufslisten als Bring! und die eigene Liste.
