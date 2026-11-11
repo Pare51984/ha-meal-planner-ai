@@ -210,3 +210,28 @@ async def test_create_agent_default_is_neutral(hass: HomeAssistant):
         # mit einer Haupt-KI, die zu keinem Anbieter gehört, ebenfalls keine Vorauswahl
         field = _create_agent_field(hass, "ai_task.irgendwas", "none")
         assert next(iter(field)).default() == "no"
+
+
+async def test_builtin_sources_removable_and_restorable(hass: HomeAssistant):
+    """Mitgelieferte Rezeptseiten lassen sich entfernen (verschwinden aus der Liste) und wiederherstellen."""
+    from homeassistant.data_entry_flow import FlowResultType
+
+    from .test_integration import call, setup_entry
+
+    entry = await setup_entry(hass)
+    flow = await hass.config_entries.options.async_init(entry.entry_id)
+    flow = await hass.config_entries.options.async_configure(flow["flow_id"], {"next_step_id": "sources"})
+    assert "site_chefkoch_de" in [str(k) for k in flow["data_schema"].schema]
+    flow = await hass.config_entries.options.async_configure(flow["flow_id"], {"remove_custom": ["chefkoch.de"]})
+    assert flow["type"] is FlowResultType.CREATE_ENTRY, flow
+    await hass.async_block_till_done()
+    assert "chefkoch.de" not in (await call(hass, "get_settings"))["planner"]["enabled_sources"]
+
+    flow = await hass.config_entries.options.async_init(entry.entry_id)
+    flow = await hass.config_entries.options.async_configure(flow["flow_id"], {"next_step_id": "sources"})
+    keys = [str(k) for k in flow["data_schema"].schema]
+    assert "site_chefkoch_de" not in keys and "restore_sources" in keys
+    flow = await hass.config_entries.options.async_configure(flow["flow_id"], {"restore_sources": ["chefkoch.de"]})
+    assert flow["type"] is FlowResultType.CREATE_ENTRY, flow
+    await hass.async_block_till_done()
+    assert "chefkoch.de" in (await call(hass, "get_settings"))["planner"]["enabled_sources"]

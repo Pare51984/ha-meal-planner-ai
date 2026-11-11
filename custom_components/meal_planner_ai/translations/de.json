@@ -90,7 +90,7 @@
           "habits": "Essgewohnheiten",
           "region": "Sprache und Region"
         },
-        "description": "Hier stellst du ein, wie der Essensplaner arbeitet. Tipp einen Bereich an, ändere die Werte und speichere. Kurz erklärt:\n**Sprache und Region** – Land der Rezepte, Rezeptseiten und Sprache der Vorschläge.\n**Zeitplan** – wann Vorschläge kommen und wann Auswahlschluss ist.\n**Einkäufe** – wie oft ihr einkauft und wann Zutaten auf die Liste kommen.\n**Kalender** – Termine, die das Essen beeinflussen (z. B. Gäste, Spätschicht).\n**Regeln und Geschmack** – Portionen, Kochzeit, Kalorien, Vorlieben.\n**Essgewohnheiten** – feste Regeln wie „höchstens 1x Suppe pro Woche“.\n**Ernährung** – wie viele Vorschläge pro Woche und wie viele davon z. B. vegetarisch.\n**Einkaufsliste** – wohin die Zutaten kommen und was nie draufkommt.\n**Rezeptquellen** – auf welchen Seiten gesucht wird.\n**Küchengeräte** – was ihr habt (z. B. Thermomix) und wie oft es genutzt werden soll.\n**KI** – welche KI plant und Rezepte sucht.\n**Anzeige** – wo und wie der Essensplaner im Dashboard erscheint."
+        "description": "Hier stellst du ein, wie der Essensplaner arbeitet. Tipp einen Bereich an, ändere die Werte und speichere. Kurz erklärt:\n**Sprache und Region** – Land der Rezepte, Rezeptseiten und Sprache der Vorschläge.\n**Zeitplan** – wann Vorschläge kommen und wann Auswahlschluss ist.\n**Einkäufe** – wie oft ihr einkauft und wann Zutaten auf die Liste kommen.\n**Kalender** – Termine, die das Essen beeinflussen (z. B. Gäste, Spätschicht).\n**Regeln und Geschmack** – Portionen, Kochzeit, Kalorien, Vorlieben.\n**Essgewohnheiten** – feste Regeln wie „höchstens 1x Suppe pro Woche“.\n**Ernährung** – wie viele Vorschläge pro Woche und wie viele davon z. B. vegetarisch.\n**Einkaufsliste** – wohin die Zutaten kommen und was nie draufkommt.\n**Rezeptquellen** – auf welchen Seiten gesucht wird.\n**Küchengeräte** – was ihr habt (z. B. Thermomix) und wie oft es genutzt werden soll.\n**KI** – welche KI plant und Rezepte sucht.\n**Anzeige** – wo und wie der Essensplaner im Dashboard erscheint.\n\n📖 [Ausführliche Anleitung](https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/anleitung.md)"
       },
       "shopping_list": {
         "title": "Einkaufsliste",
@@ -124,7 +124,7 @@
           "site_rewe_de": "rewe.de",
           "site_hellofresh_de": "hellofresh.de",
           "site_sallys_blog_de": "sallys-blog.de",
-          "remove_custom": "Eigene Seiten entfernen",
+          "remove_custom": "Seiten entfernen",
           "new_source_url": "Neue Seite: Beispiel-Rezeptlink",
           "site_cookidoo_de": "cookidoo.de",
           "site_einfachkochen_de": "einfachkochen.de",
@@ -156,11 +156,13 @@
           "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
           "site_jow_fr": "jow.fr",
           "site_hellofresh_fr": "hellofresh.fr",
-          "site_cookidoo_fr": "cookidoo.fr"
+          "site_cookidoo_fr": "cookidoo.fr",
+          "restore_sources": "Entfernte Seiten wiederherstellen"
         },
         "data_description": {
           "new_source_url": "Neue Seite hinzufügen: Link zu irgendeinem Rezept dieser Seite eintragen. Die Integration testet, ob sie es lesen kann, und schaltet die Seite dann frei.",
-          "remove_custom": "Eigene Seiten, die wieder entfernt werden sollen."
+          "remove_custom": "Mitgelieferte oder eigene Seiten, die aus der Liste verschwinden sollen. Mitgelieferte lassen sich unten wiederherstellen.",
+          "restore_sources": "Diese mitgelieferten Seiten kommen wieder in die Liste und werden eingeschaltet."
         }
       },
       "diet_count": {

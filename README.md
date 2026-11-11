@@ -2,7 +2,7 @@
 
 *Meal planner · weekly plan · recipes · shopping list · AI · Essensplaner · Wochenplan · Rezepte · Einkaufsliste*
 
-[Deutsche Anleitung → README.de.md](README.de.md)
+[Deutsche Anleitung → README.de.md](README.de.md) · 📖 [Detailed guide: how it works](docs/guide.md)
 
 Meal Planner AI plans your week's dinners inside Home Assistant. Once a week an AI suggests dishes from real recipe
 websites, your household picks what it wants on a dashboard card, and the ingredients land on the shopping list of

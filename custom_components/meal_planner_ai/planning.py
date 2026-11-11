@@ -24,6 +24,7 @@ from .const import (
     TRIP_KEYS,
     CONF_CUSTOM_DEVICES,
     CONF_CUSTOM_SOURCES,
+    CONF_HIDDEN_SOURCES,
     CONF_DEVICE_COUNTS,
     CONF_DEVICES,
     CONF_DIET,
@@ -168,7 +169,10 @@ def settings_from_options(options: dict[str, Any]) -> dict[str, Any]:
     stored_sources = options.get(CONF_SOURCES, {})
     region = options.get(CONF_REGION) or "de"  # ältere Einrichtungen waren deutsch
     sources: dict[str, bool] = {}
+    hidden = set(options.get(CONF_HIDDEN_SOURCES, []))
     for domain, (default, needs_tm) in REGION_SOURCES.get(region, REGION_SOURCES["de"]).items():
+        if domain in hidden:
+            continue  # vom Nutzer entfernt: weder angeboten noch genutzt (wiederherstellbar)
         enabled = stored_sources.get(domain, default)
         if needs_tm and DEVICE_THERMOMIX not in devices:
             enabled = False
@@ -188,6 +192,8 @@ def settings_from_options(options: dict[str, Any]) -> dict[str, Any]:
         CONF_KCAL_MAX: options.get(CONF_KCAL_MAX) if _kcal_aware(options) else None,
         CONF_SOURCES: sources,
         CONF_CUSTOM_SOURCES: list(options.get(CONF_CUSTOM_SOURCES, [])),
+        CONF_HIDDEN_SOURCES: [d for d in options.get(CONF_HIDDEN_SOURCES, [])
+                              if d in REGION_SOURCES.get(region, REGION_SOURCES["de"])],
         CONF_DEVICES: devices,
         CONF_CUSTOM_DEVICES: custom_devices,
         CONF_DEVICE_COUNTS: {k: int(v) for k, v in options.get(CONF_DEVICE_COUNTS, {}).items() if int(v) > 0},

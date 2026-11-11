@@ -90,7 +90,7 @@
           "habits": "Eating habits",
           "region": "Language and region"
         },
-        "description": "Configure how the meal planner works. Tap a section, change values and save. In short:\n**Language and region** – country of recipes, recipe sites and language of proposals.\n**Schedule** – when proposals arrive and when the choice closes.\n**Shopping trips** – how often you shop and when ingredients go on the list.\n**Calendar** – events that affect meals (e.g. guests).\n**Rules and taste** – servings, cooking time, calories, preferences.\n**Eating habits** – fixed rules like “soup at most once a week”.\n**Diet** – proposals per week and how many e.g. vegetarian.\n**Shopping list** – where ingredients go and what never goes on it.\n**Recipe sources** – which sites are searched.\n**Kitchen devices** – what you own (e.g. Thermomix) and how often to use it.\n**AI** – which AI plans and searches.\n**Display** – where the planner appears."
+        "description": "Configure how the meal planner works. Tap a section, change values and save. In short:\n**Language and region** – country of recipes, recipe sites and language of proposals.\n**Schedule** – when proposals arrive and when the choice closes.\n**Shopping trips** – how often you shop and when ingredients go on the list.\n**Calendar** – events that affect meals (e.g. guests).\n**Rules and taste** – servings, cooking time, calories, preferences.\n**Eating habits** – fixed rules like “soup at most once a week”.\n**Diet** – proposals per week and how many e.g. vegetarian.\n**Shopping list** – where ingredients go and what never goes on it.\n**Recipe sources** – which sites are searched.\n**Kitchen devices** – what you own (e.g. Thermomix) and how often to use it.\n**AI** – which AI plans and searches.\n**Display** – where the planner appears.\n\n📖 [Detailed guide](https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/guide.md)"
       },
       "shopping_list": {
         "title": "Shopping list",
@@ -124,7 +124,7 @@
           "site_rewe_de": "rewe.de",
           "site_hellofresh_de": "hellofresh.de",
           "site_sallys_blog_de": "sallys-blog.de",
-          "remove_custom": "Remove custom sites",
+          "remove_custom": "Remove sites",
           "new_source_url": "New site: example recipe link",
           "site_cookidoo_de": "cookidoo.de",
           "site_einfachkochen_de": "einfachkochen.de",
@@ -156,11 +156,13 @@
           "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
           "site_jow_fr": "jow.fr",
           "site_hellofresh_fr": "hellofresh.fr",
-          "site_cookidoo_fr": "cookidoo.fr"
+          "site_cookidoo_fr": "cookidoo.fr",
+          "restore_sources": "Restore removed sites"
         },
         "data_description": {
           "new_source_url": "Add a site: paste a link to any recipe of it. The integration tests reading it, then enables the site.",
-          "remove_custom": "Own sites to remove."
+          "remove_custom": "Built-in or own sites to remove from the list. Built-in sites can be restored below.",
+          "restore_sources": "These built-in sites come back to the list and are switched on."
         }
       },
       "diet_count": {

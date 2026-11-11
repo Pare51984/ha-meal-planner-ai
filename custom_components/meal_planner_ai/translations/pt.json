@@ -90,7 +90,7 @@
           "habits": "Hábitos alimentares",
           "region": "Idioma e região"
         },
-        "description": "Configura como funciona o planeador. Toca numa secção, muda valores e guarda. Em resumo:\n**Idioma e região** – país das receitas, sites de receitas e idioma das propostas.\n**Horário** – quando chegam as propostas e quando fecha a escolha.\n**Compras** – com que frequência fazes compras e quando os ingredientes vão para a lista.\n**Calendário** – eventos que influenciam as refeições (p. ex. convidados).\n**Regras e gosto** – doses, tempo de preparação, calorias, preferências.\n**Hábitos alimentares** – regras fixas como «sopa no máximo uma vez por semana».\n**Dieta** – propostas por semana e quantas, p. ex., vegetarianas.\n**Lista de compras** – para onde vão os ingredientes e o que nunca vai.\n**Fontes de receitas** – que sites são pesquisados.\n**Eletrodomésticos** – o que tens (p. ex. Thermomix) e com que frequência usar.\n**IA** – que IA planeia e pesquisa.\n**Apresentação** – onde aparece o planeador."
+        "description": "Configura como funciona o planeador. Toca numa secção, muda valores e guarda. Em resumo:\n**Idioma e região** – país das receitas, sites de receitas e idioma das propostas.\n**Horário** – quando chegam as propostas e quando fecha a escolha.\n**Compras** – com que frequência fazes compras e quando os ingredientes vão para a lista.\n**Calendário** – eventos que influenciam as refeições (p. ex. convidados).\n**Regras e gosto** – doses, tempo de preparação, calorias, preferências.\n**Hábitos alimentares** – regras fixas como «sopa no máximo uma vez por semana».\n**Dieta** – propostas por semana e quantas, p. ex., vegetarianas.\n**Lista de compras** – para onde vão os ingredientes e o que nunca vai.\n**Fontes de receitas** – que sites são pesquisados.\n**Eletrodomésticos** – o que tens (p. ex. Thermomix) e com que frequência usar.\n**IA** – que IA planeia e pesquisa.\n**Apresentação** – onde aparece o planeador.\n\n📖 [Guia detalhado (em inglês)](https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/guide.md)"
       },
       "shopping_list": {
         "title": "Lista de compras",
@@ -124,7 +124,7 @@
           "site_rewe_de": "rewe.de",
           "site_hellofresh_de": "hellofresh.de",
           "site_sallys_blog_de": "sallys-blog.de",
-          "remove_custom": "Remover sites próprios",
+          "remove_custom": "Remover sites",
           "new_source_url": "Novo site: link de uma receita de exemplo",
           "site_cookidoo_de": "cookidoo.de",
           "site_einfachkochen_de": "einfachkochen.de",
@@ -156,11 +156,13 @@
           "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
           "site_jow_fr": "jow.fr",
           "site_hellofresh_fr": "hellofresh.fr",
-          "site_cookidoo_fr": "cookidoo.fr"
+          "site_cookidoo_fr": "cookidoo.fr",
+          "restore_sources": "Repor sites removidos"
         },
         "data_description": {
           "new_source_url": "Adicionar um site: cola o link de uma receita qualquer desse site. A integração testa a leitura e depois ativa o site.",
-          "remove_custom": "Sites próprios a remover."
+          "remove_custom": "Sites incluídos ou próprios a remover da lista. Os incluídos podem ser repostos abaixo.",
+          "restore_sources": "Estes sites incluídos voltam à lista e são ativados."
         }
       },
       "diet_count": {

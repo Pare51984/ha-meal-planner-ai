@@ -59,6 +59,7 @@ from .const import (
     default_region,
     CONF_CUSTOM_DEVICES,
     CONF_CUSTOM_SOURCES,
+    CONF_HIDDEN_SOURCES,
     CONF_DEVICE_COUNTS,
     CONF_DEVICES,
     CONF_DIET,
@@ -522,6 +523,7 @@ class EssensplanerOptionsFlow(OptionsFlow):
         # nur die Seiten der eingestellten Region
         visible = [d for d in settings[CONF_SOURCES] if has_tm or not PRESET_SOURCES[d][1]]
         custom: list[str] = list(settings[CONF_CUSTOM_SOURCES])
+        hidden: list[str] = list(settings[CONF_HIDDEN_SOURCES])
         errors: dict[str, str] = {}
         placeholders = {"error": "", "thermomix_note": "" if has_tm else
                         "Thermomix-Seiten sind ausgeblendet, weil kein Thermomix angehakt ist."}
@@ -532,6 +534,14 @@ class EssensplanerOptionsFlow(OptionsFlow):
                 stored[domain] = bool(user_input.get(_site_key(domain)))
             remove = set(user_input.get("remove_custom") or [])
             custom = [c for c in custom if c not in remove]
+            # mitgelieferte Seiten werden nur ausgeblendet, damit man sie wiederherstellen kann
+            restore = set(user_input.get("restore_sources") or [])
+            hidden = [h for h in hidden if h not in restore] + sorted(
+                d for d in remove if d in PRESET_SOURCES and d not in hidden)
+            for domain in remove & set(PRESET_SOURCES):
+                stored.pop(domain, None)
+            for domain in restore:
+                stored[domain] = True
             new_url = (user_input.get("new_source_url") or "").strip()
             if new_url:
                 from .services import fetch_recipe
@@ -547,18 +557,25 @@ class EssensplanerOptionsFlow(OptionsFlow):
                         custom.append(domain)
                     elif domain in PRESET_SOURCES:
                         stored[domain] = True
+                        hidden = [h for h in hidden if h != domain]
                     placeholders["error"] = f"Test ok: {recipe.get('title')}"
             if not errors:
                 self._new[CONF_SOURCES] = stored
                 self._new[CONF_CUSTOM_SOURCES] = custom
+                self._new[CONF_HIDDEN_SOURCES] = hidden
                 return self._save()
 
         schema: dict[Any, Any] = {}
         for domain in visible:
             schema[vol.Optional(_site_key(domain), default=settings[CONF_SOURCES][domain])] = sel.BooleanSelector()
-        if custom:
+        removable = visible + custom  # mitgelieferte und eigene Seiten lassen sich entfernen
+        if removable:
             schema[vol.Optional("remove_custom", default=[])] = sel.SelectSelector(
-                sel.SelectSelectorConfig(options=custom, multiple=True, mode=sel.SelectSelectorMode.LIST)
+                sel.SelectSelectorConfig(options=removable, multiple=True, mode=sel.SelectSelectorMode.LIST)
+            )
+        if hidden:
+            schema[vol.Optional("restore_sources", default=[])] = sel.SelectSelector(
+                sel.SelectSelectorConfig(options=hidden, multiple=True, mode=sel.SelectSelectorMode.LIST)
             )
         schema[vol.Optional("new_source_url")] = sel.TextSelector(
             sel.TextSelectorConfig(type=sel.TextSelectorType.URL)

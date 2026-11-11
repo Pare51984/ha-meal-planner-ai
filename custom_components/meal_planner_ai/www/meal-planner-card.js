@@ -25,7 +25,7 @@ const I18N = {
     no_items: "Keine Zutatenliste verfügbar.", ready: "Zutaten schon da", part_n: "{n} schon da", partly: "Teilweise da …",
     not_on_list: "kommt nicht auf die Einkaufsliste", tip: "Tipp", declined: "abgewählt", declined_hint: ", Zutaten kommen von der Liste",
     undo: "Rückgängig", stars: "{n} Sterne", cooked: "gekocht", not_cooked: "noch nicht gekocht", how: "Wie war's?", note: "+ Notiz",
-    decline: "Doch nicht", drop: "Entfernen", drop_all: "Übrige Vorschläge entfernen", drop_all_sure: "Nochmal tippen: alle entfernen", removed: "„{title}“ entfernt", note_ph: "z. B. nächstes Mal weniger scharf", save: "Speichern", release: "{trip} kommt {at} auf die Liste",
+    decline: "Doch nicht", docs: "Ausführliche Anleitung: so funktioniert der Essensplaner", drop: "Entfernen", drop_all: "Übrige Vorschläge entfernen", drop_all_sure: "Nochmal tippen: alle entfernen", removed: "„{title}“ entfernt", note_ph: "z. B. nächstes Mal weniger scharf", save: "Speichern", release: "{trip} kommt {at} auf die Liste",
     proposals: "Vorschläge KW {kw}", proposals_hint: "Pro Gericht einen Einkauf antippen, nochmal tippen = abwählen. Auswahlschluss {at}",
     open: "Offen: ", week: "Diese Woche · {c}/{n} gekocht",
     week_hint: "Kreis antippen = gekocht. Sterne sind freiwillig und fließen in die nächsten Vorschläge ein",
@@ -65,7 +65,7 @@ const I18N = {
     no_items: "No ingredient list available.", ready: "Have everything", part_n: "{n} at home", partly: "Partly at home …",
     not_on_list: "not added to the shopping list", tip: "Tip", declined: "removed", declined_hint: ", ingredients come off the list",
     undo: "Undo", stars: "{n} stars", cooked: "cooked", not_cooked: "not cooked yet", how: "How was it?", note: "+ Note",
-    decline: "Not after all", drop: "Remove", drop_all: "Remove remaining suggestions", drop_all_sure: "Tap again: remove all", removed: "“{title}” removed", note_ph: "e.g. less spicy next time", save: "Save", release: "{trip} goes on the list {at}",
+    decline: "Not after all", docs: "Detailed guide: how the meal planner works", drop: "Remove", drop_all: "Remove remaining suggestions", drop_all_sure: "Tap again: remove all", removed: "“{title}” removed", note_ph: "e.g. less spicy next time", save: "Save", release: "{trip} goes on the list {at}",
     proposals: "Proposals week {kw}", proposals_hint: "Tap a shopping trip per dish, tap again to remove. Choice closes {at}",
     open: "Open: ", week: "This week · {c}/{n} cooked",
     week_hint: "Tap the circle = cooked. Stars are optional and shape the next proposals",
@@ -115,7 +115,7 @@ const I18N = {
     no_items: "No hay lista de ingredientes.", ready: "Lo tengo todo", part_n: "{n} en casa", partly: "Parte en casa …",
     not_on_list: "no va a la lista de la compra", tip: "Consejo", declined: "descartado", declined_hint: ", los ingredientes salen de la lista",
     undo: "Deshacer", stars: "{n} estrellas", cooked: "cocinado", not_cooked: "aún sin cocinar", how: "¿Qué tal?", note: "+ Nota",
-    decline: "Mejor no", drop: "Quitar", drop_all: "Quitar las demás propuestas", drop_all_sure: "Toca otra vez: quitar todas", removed: "«{title}» quitado", note_ph: "p. ej. la próxima vez menos picante", save: "Guardar", release: "{trip} pasa a la lista {at}",
+    decline: "Mejor no", docs: "Guía detallada (en inglés): cómo funciona el planificador", drop: "Quitar", drop_all: "Quitar las demás propuestas", drop_all_sure: "Toca otra vez: quitar todas", removed: "«{title}» quitado", note_ph: "p. ej. la próxima vez menos picante", save: "Guardar", release: "{trip} pasa a la lista {at}",
     proposals: "Propuestas semana {kw}", proposals_hint: "Toca una compra por plato, otra vez para quitar. Cierre {at}",
     open: "Pendiente: ", week: "Esta semana · {c}/{n} cocinados",
     week_hint: "Toca el círculo = cocinado. Las estrellas son opcionales e influyen en las próximas propuestas",
@@ -155,7 +155,7 @@ const I18N = {
     no_items: "Sem lista de ingredientes.", ready: "Tenho tudo", part_n: "{n} em casa", partly: "Parte em casa …",
     not_on_list: "não vai para a lista de compras", tip: "Dica", declined: "removido", declined_hint: ", os ingredientes saem da lista",
     undo: "Desfazer", stars: "{n} estrelas", cooked: "cozinhado", not_cooked: "ainda não cozinhado", how: "Que tal?", note: "+ Nota",
-    decline: "Afinal não", drop: "Remover", drop_all: "Remover as restantes sugestões", drop_all_sure: "Toca outra vez: remover todas", removed: "«{title}» removido", note_ph: "p. ex. menos picante da próxima vez", save: "Guardar", release: "{trip} vai para a lista {at}",
+    decline: "Afinal não", docs: "Guia detalhado (em inglês): como funciona o planeador", drop: "Remover", drop_all: "Remover as restantes sugestões", drop_all_sure: "Toca outra vez: remover todas", removed: "«{title}» removido", note_ph: "p. ex. menos picante da próxima vez", save: "Guardar", release: "{trip} vai para a lista {at}",
     proposals: "Propostas semana {kw}", proposals_hint: "Toca numa compra por prato, de novo para retirar. Fecho {at}",
     open: "Em falta: ", week: "Esta semana · {c}/{n} cozinhados",
     week_hint: "Toca no círculo = cozinhado. As estrelas são opcionais e contam para as próximas propostas",
@@ -195,7 +195,7 @@ const I18N = {
     no_items: "Pas de liste d'ingrédients.", ready: "J'ai tout", part_n: "{n} à la maison", partly: "En partie …",
     not_on_list: "ne va pas sur la liste de courses", tip: "Conseil", declined: "retiré", declined_hint: ", les ingrédients sortent de la liste",
     undo: "Annuler", stars: "{n} étoiles", cooked: "cuisiné", not_cooked: "pas encore cuisiné", how: "C'était comment ?", note: "+ Note",
-    decline: "Finalement non", drop: "Retirer", drop_all: "Retirer les autres propositions", drop_all_sure: "Touchez encore : tout retirer", removed: "« {title} » retiré", note_ph: "p. ex. moins épicé la prochaine fois", save: "Enregistrer", release: "{trip} va sur la liste {at}",
+    decline: "Finalement non", docs: "Guide détaillé (en anglais) : comment fonctionne le planificateur", drop: "Retirer", drop_all: "Retirer les autres propositions", drop_all_sure: "Touchez encore : tout retirer", removed: "« {title} » retiré", note_ph: "p. ex. moins épicé la prochaine fois", save: "Enregistrer", release: "{trip} va sur la liste {at}",
     proposals: "Propositions semaine {kw}", proposals_hint: "Touche une course par plat, encore une fois pour retirer. Clôture {at}",
     open: "Manquant : ", week: "Cette semaine · {c}/{n} cuisinés",
     week_hint: "Touche le cercle = cuisiné. Les étoiles sont facultatives et guident les prochaines propositions",
@@ -253,6 +253,7 @@ const themeCss = (config) => {
   return css ? `:host{${css}}` : "";
 };
 
+const DOCS_URL = "https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/";
 const MEM_TABS = ["profile", "recipes"];
 const cardCss = (config) => `
       :host{display:block;
@@ -789,9 +790,10 @@ class EssensplanerCard extends HTMLElement {
     if (st.menu) {
       const items = (this._menu || []).map((m) => `<button class="mbtn" data-step="${esc(m)}">${esc(this._t(`options.step.init.menu_options.${m}`) || m)}</button>`).join("");
       return `${st.msg ? `<div class="ok">${esc(st.msg)}</div>` : ""}${st.error ? `<div class="empty err">${esc(st.error)}</div>` : ""}
-        <div class="sec">${t("tab_settings")}<span>${md(this._t("options.step.init.description") || t("settings_hint"))}</span></div>
+        <div class="sec">${t("tab_settings")}<span>${md((this._t("options.step.init.description") || t("settings_hint")).replace(/\s*📖 \[[^\]]*\]\([^)]*\)/, ""))}</span></div>
         ${this._extHtml()}<div class="menu">${items}</div>
-        <div class="ext">${t("ext")} <a href="/config/integrations/integration/meal_planner_ai">${esc(t("ext_path"))}</a>.</div>`;
+        <div class="ext">${t("ext")} <a href="/config/integrations/integration/meal_planner_ai">${esc(t("ext_path"))}</a>.</div>
+        <div class="ext">📖 <a href="${DOCS_URL}${LANG === "de" ? "anleitung.md" : "guide.md"}" target="_blank" rel="noopener noreferrer">${esc(t("docs"))}</a></div>`;
     }
     const title = this._t(`options.step.${st.step}.title`, st.ph) || this._t(`options.step.init.menu_options.${this._section}`) || st.step;
     const desc = this._t(`options.step.${st.step}.description`, st.ph);

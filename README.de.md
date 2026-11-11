@@ -1,6 +1,6 @@
 # Meal Planner AI für Home Assistant (Essensplaner)
 
-[English → README.md](README.md)
+[English → README.md](README.md) · 📖 [Ausführliche Anleitung: so funktioniert's](docs/anleitung.md)
 
 *Essensplaner · Wochenplan · Rezepte · Einkaufsliste · KI · meal planner · recipes · shopping list*
 

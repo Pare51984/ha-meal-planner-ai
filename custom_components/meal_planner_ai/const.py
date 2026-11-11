@@ -26,6 +26,7 @@ CONF_DIET = "diet"  # {diet_key: {"mode": ..., "count": int}}
 CONF_KCAL_MAX = "kcal_max"
 CONF_SOURCES = "sources"  # {domain: bool}
 CONF_CUSTOM_SOURCES = "custom_sources"  # [domain]
+CONF_HIDDEN_SOURCES = "hidden_sources"  # [domain] mitgelieferte Seiten, die der Nutzer entfernt hat
 CONF_DEVICES = "devices"  # [device_key]
 CONF_CUSTOM_DEVICES = "custom_devices"  # [name]
 CONF_DEVICE_COUNTS = "device_counts"  # {device: int}

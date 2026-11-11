@@ -90,7 +90,7 @@
           "habits": "Habitudes alimentaires",
           "region": "Langue et région"
         },
-        "description": "Configure le fonctionnement du planificateur. Touche une section, modifie les valeurs et enregistre. En bref :\n**Langue et région** – pays des recettes, sites de recettes et langue des propositions.\n**Horaire** – quand arrivent les propositions et quand le choix se termine.\n**Courses** – à quelle fréquence tu fais les courses et quand les ingrédients vont sur la liste.\n**Calendrier** – événements qui influencent les repas (p. ex. invités).\n**Règles et goûts** – portions, temps de préparation, calories, préférences.\n**Habitudes alimentaires** – règles fixes comme « soupe au plus une fois par semaine ».\n**Régime** – propositions par semaine et combien, p. ex., végétariennes.\n**Liste de courses** – où vont les ingrédients et ce qui n'y va jamais.\n**Sources de recettes** – quels sites sont parcourus.\n**Appareils de cuisine** – ce que tu possèdes (p. ex. Thermomix) et à quelle fréquence l'utiliser.\n**IA** – quelle IA planifie et cherche.\n**Affichage** – où apparaît le planificateur."
+        "description": "Configure le fonctionnement du planificateur. Touche une section, modifie les valeurs et enregistre. En bref :\n**Langue et région** – pays des recettes, sites de recettes et langue des propositions.\n**Horaire** – quand arrivent les propositions et quand le choix se termine.\n**Courses** – à quelle fréquence tu fais les courses et quand les ingrédients vont sur la liste.\n**Calendrier** – événements qui influencent les repas (p. ex. invités).\n**Règles et goûts** – portions, temps de préparation, calories, préférences.\n**Habitudes alimentaires** – règles fixes comme « soupe au plus une fois par semaine ».\n**Régime** – propositions par semaine et combien, p. ex., végétariennes.\n**Liste de courses** – où vont les ingrédients et ce qui n'y va jamais.\n**Sources de recettes** – quels sites sont parcourus.\n**Appareils de cuisine** – ce que tu possèdes (p. ex. Thermomix) et à quelle fréquence l'utiliser.\n**IA** – quelle IA planifie et cherche.\n**Affichage** – où apparaît le planificateur.\n\n📖 [Guide détaillé (en anglais)](https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/guide.md)"
       },
       "shopping_list": {
         "title": "Liste de courses",
@@ -124,7 +124,7 @@
           "site_rewe_de": "rewe.de",
           "site_hellofresh_de": "hellofresh.de",
           "site_sallys_blog_de": "sallys-blog.de",
-          "remove_custom": "Retirer des sites personnels",
+          "remove_custom": "Retirer des sites",
           "new_source_url": "Nouveau site : lien d'une recette d'exemple",
           "site_cookidoo_de": "cookidoo.de",
           "site_einfachkochen_de": "einfachkochen.de",
@@ -156,11 +156,13 @@
           "site_cuisine_journaldesfemmes_fr": "cuisine.journaldesfemmes.fr",
           "site_jow_fr": "jow.fr",
           "site_hellofresh_fr": "hellofresh.fr",
-          "site_cookidoo_fr": "cookidoo.fr"
+          "site_cookidoo_fr": "cookidoo.fr",
+          "restore_sources": "Rétablir des sites retirés"
         },
         "data_description": {
           "new_source_url": "Ajouter un site : colle le lien d'une recette quelconque de ce site. L'intégration teste la lecture puis active le site.",
-          "remove_custom": "Sites personnels à retirer."
+          "remove_custom": "Sites fournis ou personnels à retirer de la liste. Les sites fournis peuvent être rétablis plus bas.",
+          "restore_sources": "Ces sites fournis reviennent dans la liste et sont activés."
         }
       },
       "diet_count": {
