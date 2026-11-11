@@ -253,6 +253,9 @@ const themeCss = (config) => {
   return css ? `:host{${css}}` : "";
 };
 
+// Bewertung: 10 Sterne (bis 0.40 waren es 5; die Texte in I18N.rating gelten je zwei Sterne)
+const STAR_MAX = 10;
+const STARS = Array.from({ length: STAR_MAX }, (_, i) => i + 1);
 const DOCS_URL = "https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/";
 const MEM_TABS = ["profile", "recipes"];
 const cardCss = (config) => `
@@ -321,7 +324,7 @@ const cardCss = (config) => `
       .lnk{font-size:12px;color:var(--_chip-text);background:var(--_chip);border-radius:calc(var(--_radius) * .7);padding:7px 12px;font-weight:600;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center}
       .foot{display:flex;align-items:center;margin-top:8px;gap:8px;flex-wrap:wrap}
       .stars{display:flex;gap:2px}
-      .star{font:inherit;border:none;background:none;cursor:pointer;font-size:24px;line-height:1;padding:0 2px;color:var(--_star-off)}
+      .star{font:inherit;border:none;background:none;cursor:pointer;font-size:22px;line-height:1;padding:2px 1px;color:var(--_star-off)}
       .star.on{color:var(--_star)}
       .hint{flex:1;font-size:12px;color:var(--_muted)}
       .small{font:inherit;border:none;cursor:pointer;border-radius:calc(var(--_radius) * .6);background:var(--_chip);color:var(--_chip-text);font-size:12px;padding:5px 10px}
@@ -373,7 +376,7 @@ const cardCss = (config) => `
       .mrow .txt a{color:var(--_text);text-decoration:none}
       .mrow .txt a:hover{text-decoration:underline}
       .mtools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
-      .mstars .star{font-size:18px}
+      .mstars .star{font-size:17px;padding:2px 0}
       .x{font:inherit;border:none;background:var(--_chip);color:var(--_chip-text);border-radius:50%;width:26px;height:26px;font-size:12px;cursor:pointer;padding:0;flex:0 0 26px}
       .x.warn{background:var(--_error);color:#fff;width:auto;border-radius:13px;padding:0 10px}
       .mbar{display:flex;gap:6px;margin:0 0 10px;flex-wrap:wrap}
@@ -509,7 +512,7 @@ class EssensplanerCard extends HTMLElement {
         <div class="head"><div class="ico">✕</div><div class="txt"><div class="name">${esc(d.title)}</div>
           <div class="l2"><b>${t("declined")}</b>${t("declined_hint")}</div></div></div>
         <div class="foot"><span class="hint"></span><button class="small on" data-act="restore" data-id="${esc(d.id)}">${t("undo")}</button></div></div>`;
-      const stars = [1, 2, 3, 4, 5].map((n) => `<button class="star ${n <= (d.rating || 0) ? "on" : ""}" data-act="star" data-n="${n}" data-id="${esc(d.id)}" aria-label="${t("stars", { n })}">★</button>`).join("");
+      const stars = STARS.map((n) => `<button class="star ${n <= (d.rating || 0) ? "on" : ""}" data-act="star" data-n="${n}" data-id="${esc(d.id)}" aria-label="${t("stars", { n })}">★</button>`).join("");
       const open = this._open === d.id;
       return `<div class="tile ${done ? "rated" : ""}">
         <div class="head"><div class="ckw"><button class="ck ${done ? "on" : ""}" data-act="cooked" data-id="${esc(d.id)}" aria-label="${t("cooked")}">${done ? "✓" : ""}</button><span class="ckl">${t("cooked")}</span></div>
@@ -517,7 +520,7 @@ class EssensplanerCard extends HTMLElement {
             <div class="l2"><b>${done ? t("cooked") : t("not_cooked")}</b> · ${esc(tripName(d.choice))}</div>${info(d)}
             ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div></div>
         <div class="foot"><div class="stars">${stars}</div>
-          <span class="hint">${d.rating ? t("rating")[d.rating] : t("how")}</span>
+          <span class="hint">${d.rating ? `${d.rating}/${STAR_MAX} · ${t("rating")[Math.ceil(d.rating / 2)]}` : t("how")}</span>
           ${d.rating ? `<button class="small" data-act="note" data-id="${esc(d.id)}">${t("note")}</button>` : ""}
           ${!done && !d.rating ? `<button class="small" data-act="decline" data-id="${esc(d.id)}">${t("decline")}</button>` : ""}${link(d)}</div>
         ${!done ? ready(d) : ""}
@@ -652,7 +655,7 @@ class EssensplanerCard extends HTMLElement {
       else if (act === "save") {
         const i = this.shadowRoot.getElementById("r-" + d.id);
         this._open = null;
-        this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: d.rating || 3, note: i ? i.value : "" });
+        this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: d.rating || 6, note: i ? i.value : "" });
       }
     }));
   }
@@ -989,7 +992,7 @@ class EssensplanerMemoryCard extends HTMLElement {
   }
 
   _stars(r, act) {
-    return `<span class="stars mstars">${[1, 2, 3, 4, 5].map((n) => `<button class="star ${n <= (r.rating || 0) ? "on" : ""}" data-act="${act}" data-n="${n}" data-id="${esc(r.id)}" aria-label="${t("stars", { n })}">★</button>`).join("")}</span>`;
+    return `<span class="stars mstars">${STARS.map((n) => `<button class="star ${n <= (r.rating || 0) ? "on" : ""}" data-act="${act}" data-n="${n}" data-id="${esc(r.id)}" aria-label="${t("stars", { n })}">★</button>`).join("")}</span>`;
   }
   _title(r) {
     return safeUrl(r.url) ? `<a href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title);

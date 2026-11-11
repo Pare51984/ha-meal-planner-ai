@@ -28,6 +28,9 @@ from .messages import msg
 from .ai import AIError, async_ask, board_prompt, shopping_prompt
 from .classify import classify_diet
 from .const import (
+    RATING_DISLIKED,
+    RATING_LIKED,
+    RATING_MAX,
     DOMAIN,
     CHOICE_DECLINED,
     CHOICE_NONE,
@@ -638,7 +641,7 @@ class WeekPlanner:
         return out
 
     def profile_data(self, today: date | None = None) -> dict[str, list[dict[str, Any]]]:
-        """Geschmacksprofil, wie es die KI bekommt: gemocht (4–5), nicht gemocht (1–2), kürzlich gekocht."""
+        """Geschmacksprofil, wie es die KI bekommt: gemocht (7–10), nicht gemocht (1–4), kürzlich gekocht."""
         today = today or dt_util.now().date()
         liked, disliked, recent = [], [], []
         for rec in self.store.recipes.values():
@@ -646,9 +649,9 @@ class WeekPlanner:
             rating = hist.get("rating")
             item = {"id": rec["id"], "title": rec.get("title"), "url": rec.get("source_url"),
                     "rating": rating, "note": hist.get("note")}
-            if rating and rating >= 4:
+            if rating and rating >= RATING_LIKED:
                 liked.append(item)
-            elif rating and rating <= 2:
+            elif rating and rating <= RATING_DISLIKED:
                 disliked.append(item)
             cooked = hist.get("cooked_on") or []
             if cooked and date.fromisoformat(cooked[-1]) > today - timedelta(days=28):
@@ -660,8 +663,8 @@ class WeekPlanner:
         data = self.profile_data(today)
         note = lambda r: f" – {r['note']}" if r["note"] else ""  # noqa: E731
         return {
-            "liked": [f"{r['title']} ({r['rating']}/5){note(r)} {r['url'] or ''}".strip() for r in data["liked"]],
-            "disliked": [f"{r['title']} ({r['rating']}/5){note(r)}" for r in data["disliked"]],
+            "liked": [f"{r['title']} ({r['rating']}/{RATING_MAX}){note(r)} {r['url'] or ''}".strip() for r in data["liked"]],
+            "disliked": [f"{r['title']} ({r['rating']}/{RATING_MAX}){note(r)}" for r in data["disliked"]],
             "recent": [f"{r['title']} (zuletzt {r['last']})" for r in data["recent"]],
         }
 
@@ -679,7 +682,7 @@ class WeekPlanner:
     def _disliked(self, recipe: dict[str, Any] | None, title: str) -> bool:
         for rec in filter(None, [recipe, self.store.find(title=title)]):
             rating = (rec.get("history") or {}).get("rating")
-            if rating is not None and rating <= 2:
+            if rating is not None and rating <= RATING_DISLIKED:
                 return True
         return False
 

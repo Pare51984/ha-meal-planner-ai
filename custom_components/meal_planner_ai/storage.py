@@ -13,6 +13,7 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     RATING_MAX,
+    RATING_SCALE_KEY,
     RATING_MIN,
     STATUS_BOUGHT,
     STATUS_COOKED,
@@ -67,6 +68,35 @@ class RecipeStore:
         data = await async_load_with_legacy(self._hass, self._store, STORAGE_KEY_RECIPES) or {}
         self.recipes = data.get("recipes", {})
         self.meta = data.get("meta", {})
+        if self.meta.get(RATING_SCALE_KEY) != RATING_MAX:
+            self._migrate_ratings()
+
+    def _migrate_ratings(self) -> None:
+        """Einmalig: Bewertungen von 5 auf 10 Sterne umrechnen (mal 2), damit „gut“ gut bleibt.
+
+        Betrifft den Verlauf jedes Rezepts und die Gerichte der gespeicherten Wochen samt
+        Rückgängig-Stand. Der Merker verhindert eine zweite Umrechnung.
+        """
+        def double(value: Any) -> Any:
+            return min(RATING_MAX, int(value) * 2) if isinstance(value, (int, float)) and value else value
+
+        for rec in self.recipes.values():
+            hist = rec.get("history")
+            if hist:
+                hist["rating"] = double(hist.get("rating"))
+        boards = self.meta.get("board")
+        for board in (boards.values() if isinstance(boards, dict) else []):
+            dishes = board.get("dishes") if isinstance(board, dict) else None
+            for dish in dishes or []:
+                if not isinstance(dish, dict):
+                    continue
+                dish["rating"] = double(dish.get("rating"))
+                before = dish.get("before_cooked")
+                if isinstance(before, dict):
+                    before["rating"] = double(before.get("rating"))
+                    before["dish_rating"] = double(before.get("dish_rating"))
+        self.meta[RATING_SCALE_KEY] = RATING_MAX
+        self._save()
 
     def _data(self) -> dict[str, Any]:
         return {"recipes": self.recipes, "meta": self.meta}

@@ -629,7 +629,7 @@
         },
         "min_rating": {
           "name": "Valoración mínima",
-          "description": "1–5"
+          "description": "1–10"
         },
         "limit": {
           "name": "Límite",
@@ -691,7 +691,7 @@
         },
         "rating": {
           "name": "Valoración",
-          "description": "Valoración 1–5, 0 quita la valoración."
+          "description": "Valoración 1–10, 0 quita la valoración."
         },
         "cooked_on": {
           "name": "Cocinado el",
@@ -817,7 +817,7 @@
         },
         "rating": {
           "name": "Valoración",
-          "description": "1–5"
+          "description": "1–10"
         },
         "note": {
           "name": "Nota",

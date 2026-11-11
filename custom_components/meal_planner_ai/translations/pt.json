@@ -629,7 +629,7 @@
         },
         "min_rating": {
           "name": "Avaliação mínima",
-          "description": "1–5"
+          "description": "1–10"
         },
         "limit": {
           "name": "Limite",
@@ -691,7 +691,7 @@
         },
         "rating": {
           "name": "Avaliação",
-          "description": "Avaliação 1–5, 0 remove a avaliação."
+          "description": "Avaliação 1–10, 0 remove a avaliação."
         },
         "cooked_on": {
           "name": "Cozinhado em",
@@ -817,7 +817,7 @@
         },
         "rating": {
           "name": "Avaliação",
-          "description": "1–5"
+          "description": "1–10"
         },
         "note": {
           "name": "Nota",

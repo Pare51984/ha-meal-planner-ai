@@ -203,9 +203,9 @@ async def test_week(hass: HomeAssistant, freezer):
         assert "Linsen" not in items and items["Zwiebel"] == "1 (Nudeln mit Spinat-Hackfleisch-Soße)"
 
         # Gekocht und bewertet
-        await call(hass, "mark_cooked", {"dish_id": dish["Nudeln mit Spinat-Hackfleisch-Soße"]["id"], "rating": 5})
+        await call(hass, "mark_cooked", {"dish_id": dish["Nudeln mit Spinat-Hackfleisch-Soße"]["id"], "rating": 10})
         rec = await call(hass, "get_recipe", {"url": URL1})
-        assert rec["history"]["rating"] == 5 and rec["history"]["status"] == "cooked"
+        assert rec["history"]["rating"] == 10 and rec["history"]["status"] == "cooked"
 
         # Nächster Freitag: Linsencurry (Zutaten da, nicht gekocht) wird übernommen,
         # Nudeln sind frisch gekocht und gut bewertet -> im Prompt als gemocht + zuletzt gekocht
@@ -216,7 +216,7 @@ async def test_week(hass: HomeAssistant, freezer):
         first = st.attributes["dishes"][0]
         assert first["title"] == "Linsencurry" and first["carried"] and first["choice"] == "trip1"
         plan_prompt = [p for p in PROMPTS if p.startswith("Du bist der Essensplaner")][-1]
-        assert "Nudeln mit Spinat-Hackfleisch-Soße (5/5)" in plan_prompt
+        assert "Nudeln mit Spinat-Hackfleisch-Soße (10/10)" in plan_prompt
         assert "In den letzten 4 Wochen gekocht" in plan_prompt
         assert "Nudeln mit Spinat-Hackfleisch-Soße" not in [d["title"] for d in st.attributes["dishes"]]
         # übernommenes Gericht kommt nicht auf die Liste (Zutaten da)

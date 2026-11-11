@@ -113,7 +113,7 @@ async def test_partial_external_board_is_finished_by_fallback(hass: HomeAssistan
 async def test_memory_overview_and_edits(hass: HomeAssistant, freezer):
     freezer.move_to("2026-11-13 18:30:00+01:00")
     await _external(hass)
-    await call(hass, "update_history", {"title": "Linsencurry", "url": URL2, "rating": 5, "note": "super",
+    await call(hass, "update_history", {"title": "Linsencurry", "url": URL2, "rating": 9, "note": "super",
                                         "cooked_on": "2026-11-10"}, response=False)
     await call(hass, "update_history", {"title": "Leber", "rating": 1}, response=False)
     mem = await call(hass, "memory_overview")

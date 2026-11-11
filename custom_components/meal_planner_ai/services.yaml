@@ -38,7 +38,7 @@ list_recipes:
       selector:
         number:
           min: 1
-          max: 5
+          max: 10
     limit:
       default: 100
       selector:
@@ -94,7 +94,7 @@ update_history:
       selector:
         number:
           min: 0
-          max: 5
+          max: 10
     cooked_on:
       selector:
         date:
@@ -114,7 +114,7 @@ import_history:
   fields:
     entries:
       required: true
-      example: '[{"title": "Gnocchi-Pfanne", "url": "https://www.chefkoch.de/rezepte/...", "rating": 4, "cooked_on": ["2026-10-12"]}]'
+      example: '[{"title": "Gnocchi-Pfanne", "url": "https://www.chefkoch.de/rezepte/...", "rating": 8, "cooked_on": ["2026-10-12"]}]'
       selector:
         object:
     fetch_recipes:
@@ -259,7 +259,7 @@ mark_cooked:
       selector:
         number:
           min: 1
-          max: 5
+          max: 10
     note:
       selector:
         text:

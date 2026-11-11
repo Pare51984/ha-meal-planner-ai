@@ -9,6 +9,8 @@ from typing import Any
 
 from .classify import classify_diet, detect_devices, feasible
 from .const import (
+    RATING_DISLIKED,
+    RATING_MAX,
     AI_NONE,
     CONF_AI_SHOPPING,
     CONF_AI_TASK,
@@ -336,8 +338,8 @@ def validate_plan(
             )
         if ev["source_enabled"] is False:
             warnings.append(f"'{r.get('title')}' stammt von einer abgeschalteten Quelle ({r.get('host')}).")
-        if ev["rating"] is not None and ev["rating"] <= 2:
-            warnings.append(f"'{r.get('title')}' ist schlecht bewertet ({ev['rating']}/5).")
+        if ev["rating"] is not None and ev["rating"] <= RATING_DISLIKED:
+            warnings.append(f"'{r.get('title')}' ist schlecht bewertet ({ev['rating']}/{RATING_MAX}).")
         if ev["status"] == STATUS_BOUGHT:
             warnings.append(f"'{r.get('title')}' wurde schon eingekauft, aber noch nicht gemacht.")
         if ev["last_cooked"]:

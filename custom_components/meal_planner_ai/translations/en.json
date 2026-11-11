@@ -629,7 +629,7 @@
         },
         "min_rating": {
           "name": "Min rating",
-          "description": "1–5"
+          "description": "1–10"
         },
         "limit": {
           "name": "Limit",
@@ -691,7 +691,7 @@
         },
         "rating": {
           "name": "Rating",
-          "description": "Rating 1–5, 0 removes the rating."
+          "description": "Rating 1–10, 0 removes the rating."
         },
         "cooked_on": {
           "name": "Cooked on",
@@ -817,7 +817,7 @@
         },
         "rating": {
           "name": "Rating",
-          "description": "1–5"
+          "description": "1–10"
         },
         "note": {
           "name": "Note",

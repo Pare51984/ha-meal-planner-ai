@@ -135,7 +135,7 @@ the external AI within five hours after the planning time, it steps in.
 
 ## 8. Taste, ratings and memory
 * **Taste (free text):** sent with every planning, e.g. "like Mediterranean, no offal".
-* **Liked (4–5 stars)** is named to the AI as an example, **disliked (1–2 stars)** is not suggested again.
+* Ratings go from **1 to 10 stars**. **Liked (7–10 stars)** is named to the AI as an example, **disliked (1–4 stars)** is not suggested again. Ratings from the 5-star days were doubled once by the update to 0.41.0 (4 of 5 is now 8 of 10).
 * **Cooked in the last 4 weeks** is not suggested again. This is based on the "cooked" circle only.
 * **"Taste profile" tab:** free text, liked, disliked, recently cooked. ✕ removes an entry.
 * **"Recipes" tab:** all rated recipes with search, sorting, note and delete.
