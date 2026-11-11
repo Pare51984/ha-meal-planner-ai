@@ -21,6 +21,13 @@ from .const import AI_NONE
 _LOGGER = logging.getLogger(__name__)
 
 AGENT_TITLE = "Essensplaner Rezeptsuche"
+# Anzeigename je Anbieter, damit in der Auswahl erkennbar ist, welcher Agent welcher ist
+PROVIDER_NAMES = {"google_generative_ai_conversation": "Gemini", "anthropic": "Claude", "openai_conversation": "ChatGPT"}
+
+
+def agent_title(domain: str) -> str:
+    name = PROVIDER_NAMES.get(domain)
+    return f"{AGENT_TITLE} ({name})" if name else AGENT_TITLE
 AGENT_PROMPT = (
     "Du recherchierst Rezepte mit der Websuche. Nutze nur Links, die du in den Suchergebnissen gefunden hast, "
     "und antworte ausschließlich im verlangten JSON-Format."
@@ -34,9 +41,9 @@ PROVIDERS: dict[str, dict[str, Any]] = {
         # Gemini 2.5 denkt vor der Antwort; das zählt mit zum Limit (8000 brach am 08.11.2026 ab)
         "max_tokens": 30000,
         "thinking_budget": 4096,
-        # am 08.11.2026 geprüft: mit 3.1 Flash Lite lehnte Google die Suche im kostenlosen Tarif ab (429),
-        # mit 2.5 Flash funktionierte sie
-        "chat_model": "models/gemini-2.5-flash",
+        # 08.11.2026: mit 3.1 Flash Lite lehnte Google die Suche im kostenlosen Tarif ab (429), 2.5 Flash ging;
+        # 11.11.2026: 3.8 Flash sucht im kostenlosen Tarif problemlos (Live-Betrieb)
+        "chat_model": "models/gemini-3.8-flash",
     },
     "anthropic": {
         "recommended": False,
@@ -66,7 +73,8 @@ def provider_entries(hass: HomeAssistant) -> list[Any]:
 
 def _existing(entry: Any) -> str | None:
     for sub in entry.subentries.values():
-        if sub.subentry_type == "conversation" and sub.title == AGENT_TITLE:
+        # auch der alte Name ohne Anbieter gilt, damit bestehende Agenten nicht doppelt angelegt werden
+        if sub.subentry_type == "conversation" and sub.title in (AGENT_TITLE, agent_title(entry.domain)):
             return sub.subentry_id
     return None
 
@@ -91,7 +99,7 @@ async def async_create_agent(hass: HomeAssistant, entry: Any) -> str:
     sub_id = _existing(entry)
     if sub_id:
         return f"{AUTO_PREFIX}{entry.entry_id}:{sub_id}"
-    data = {"name": AGENT_TITLE, "prompt": AGENT_PROMPT, **PROVIDERS[entry.domain]}
+    data = {"name": agent_title(entry.domain), "prompt": AGENT_PROMPT, **PROVIDERS[entry.domain]}
     manager = hass.config_entries.subentries
     try:
         result = await manager.async_init((entry.entry_id, "conversation"), context={"source": SOURCE_USER})
@@ -111,7 +119,7 @@ async def async_create_agent(hass: HomeAssistant, entry: Any) -> str:
     sub_id = _existing(hass.config_entries.async_get_entry(entry.entry_id) or entry)
     if not sub_id:
         raise HomeAssistantError("Agent nicht angelegt: nicht gefunden")
-    _LOGGER.info("Such-Agent %s in %s angelegt", AGENT_TITLE, entry.title)
+    _LOGGER.info("Such-Agent %s in %s angelegt", agent_title(entry.domain), entry.title)
     return f"{AUTO_PREFIX}{entry.entry_id}:{sub_id}"
 
 

@@ -172,3 +172,21 @@ async def test_busy_is_validation_error_and_kochbar_not_searched(hass: HomeAssis
     with pytest.raises(ServiceValidationError):
         await planner.async_more()
     planner.busy = False
+
+
+async def test_search_agent_named_by_provider(hass: HomeAssistant):
+    """Zwei Agenten „Essensplaner Rezeptsuche“ (Gemini, Claude) waren in der Auswahl nicht zu unterscheiden."""
+    from homeassistant.config_entries import ConfigSubentryData
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+    from custom_components.meal_planner_ai.agent import AGENT_TITLE, PROVIDERS, _existing, agent_title
+
+    assert agent_title("anthropic") == "Essensplaner Rezeptsuche (Claude)"
+    assert agent_title("google_generative_ai_conversation") == "Essensplaner Rezeptsuche (Gemini)"
+    assert PROVIDERS["google_generative_ai_conversation"]["chat_model"] == "models/gemini-3.8-flash"
+    # alter Name ohne Anbieter wird weiter erkannt, damit kein zweiter Agent entsteht
+    for title in (AGENT_TITLE, agent_title("anthropic")):
+        entry = MockConfigEntry(domain="anthropic", subentries_data=[
+            ConfigSubentryData(data={}, subentry_type="conversation", title=title, unique_id=None)])
+        entry.add_to_hass(hass)
+        assert _existing(entry)

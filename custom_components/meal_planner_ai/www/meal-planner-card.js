@@ -960,7 +960,11 @@ class EssensplanerMemoryCard extends HTMLElement {
     LANG = I18N[lang] ? lang : "en";
     // neu laden, wenn sich die Woche ändert (gekocht, bewertet)
     const id = this._config.week;
-    if (!(hass.user && hass.user.is_admin)) { this._render(); return; }
+    // Nicht-Admins sehen nur einen Hinweis: einmal zeichnen, nicht bei jeder Zustandsänderung im Haus
+    if (!(hass.user && hass.user.is_admin)) { if (!old) this._render(); return; }
+    // Integration noch nicht geladen (z. B. kurz nach dem Neustart): nicht anfragen, sonst Fehler im Log.
+    // Sobald der Sensor da ist, ändert er sich und das Laden startet von selbst.
+    if (!hass.states[id]) { if (!old) this._render(); return; }
     if (!old || !this._data || (old.states[id] !== hass.states[id] && !this._editing)) this._load();
   }
 

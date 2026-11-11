@@ -104,7 +104,7 @@ Websuche an – bei Google Gemini mit „Google Search tool“, bei Claude (Anth
 getrennt von einem Chat-Abo). Bestehende Agenten und die Sprachsteuerung bleiben unverändert. Die Google-Suche ist im kostenlosen
 Gemini-Tarif begrenzt (Fehler 429 = Kontingent erschöpft); dann greift automatisch die eigene Suche.
 Tipp: Im kostenlosen Tarif von Google AI Studio lief im Test (11/2026) **Gemini 3.8 Flash** mit Google-Suche
-problemlos und ohne Kosten (Modell in der Gemini-Integration beim Agenten einstellen). Mit Gemini 3.1 Flash Lite lehnte
+problemlos und ohne Kosten; der Essensplaner legt seinen Gemini-Such-Agenten mit diesem Modell an. Mit Gemini 3.1 Flash Lite lehnte
 Google die Suche im kostenlosen Tarif in einem früheren Test ab. Google liefert Links als Weiterleitung (vertexaisearch…); die Integration löst sie selbst auf.
 Andere Anbieter: einen Gesprächsagenten mit Websuche und ohne KI-Werkzeuge selbst anlegen und unter
 „Rezeptsuche“ auswählen.

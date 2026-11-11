@@ -38,7 +38,7 @@
         "data_description": {
           "proposals_from": "Lo normal: IA en Home Assistant. IA externa solo si una tarea programada de una suscripción entrega; si no llega nada en 5 horas tras la hora de planificación, actúa la IA principal.",
           "ai_search": "Un agente con búsqueda web encuentra enlaces reales, también en Cookidoo. Los agentes con búsqueda web activa llevan la marca «búsqueda web activa». «Ninguno»: la IA principal solo nombra platos y el planificador busca en las webs de recetas (no en Cookidoo).",
-          "create_search_agent": "Crea en el proveedor elegido el agente «Essensplaner Rezeptsuche» con búsqueda web y lo selecciona arriba. Con Gemini usa Google Search y el modelo gemini-2.5-flash, que en la prueba pudo buscar en el nivel gratuito. Tus otros agentes y el control por voz no cambian. «No» = no crear nada.",
+          "create_search_agent": "Crea en el proveedor elegido el agente «Essensplaner Rezeptsuche» con búsqueda web y lo selecciona arriba. Con Gemini usa Google Search y el modelo gemini-3.8-flash, que en la prueba pudo buscar en el nivel gratuito. Tus otros agentes y el control por voz no cambian. «No» = no crear nada.",
           "ai_task": "Propone los platos y valora «bajo en colesterol». Suele llamarse «… AI Task», p. ej. «Google AI Task».",
           "ai_shopping_names": "«1 pimiento rojo, en dados» pasa a «Pimiento». Útil para Bring!, que conoce artículos fijos."
         }
@@ -244,7 +244,7 @@
         "data_description": {
           "proposals_from": "Lo normal: IA en Home Assistant. IA externa solo si una tarea programada de una suscripción entrega; si no llega nada en 5 horas tras la hora de planificación, actúa la IA principal.",
           "ai_search": "Un agente con búsqueda web encuentra enlaces reales, también en Cookidoo. Los agentes con búsqueda web activa llevan la marca «búsqueda web activa». «Ninguno»: la IA principal solo nombra platos y el planificador busca en las webs de recetas (no en Cookidoo).",
-          "create_search_agent": "Crea en el proveedor elegido el agente «Essensplaner Rezeptsuche» con búsqueda web y lo selecciona arriba. Con Gemini usa Google Search y el modelo gemini-2.5-flash, que en la prueba pudo buscar en el nivel gratuito. Tus otros agentes y el control por voz no cambian. «No» = no crear nada.",
+          "create_search_agent": "Crea en el proveedor elegido el agente «Essensplaner Rezeptsuche» con búsqueda web y lo selecciona arriba. Con Gemini usa Google Search y el modelo gemini-3.8-flash, que en la prueba pudo buscar en el nivel gratuito. Tus otros agentes y el control por voz no cambian. «No» = no crear nada.",
           "ai_task": "Propone los platos y valora «bajo en colesterol». Suele llamarse «… AI Task», p. ej. «Google AI Task».",
           "ai_shopping_names": "«1 pimiento rojo, en dados» pasa a «Pimiento». Útil para Bring!, que conoce artículos fijos."
         }

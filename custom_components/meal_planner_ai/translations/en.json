@@ -38,7 +38,7 @@
         "data_description": {
           "proposals_from": "Usually: AI in Home Assistant. External AI only if a scheduled task in an AI subscription delivers; if nothing arrives within 5 hours after the planning time, the main AI steps in.",
           "ai_search": "An agent with web search finds real recipe links, also on Cookidoo. Agents with web search switched on are marked “web search on”. “None”: the main AI only names dishes and the meal planner searches the recipe sites itself (not Cookidoo).",
-          "create_search_agent": "Creates the agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. For Gemini with Google Search and the model gemini-2.5-flash, which was allowed to search on the free tier in our test. Your other agents and voice control stay unchanged. “No” = create nothing.",
+          "create_search_agent": "Creates the agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. For Gemini with Google Search and the model gemini-3.8-flash, which was allowed to search on the free tier in our test. Your other agents and voice control stay unchanged. “No” = create nothing.",
           "ai_task": "Suggests the dishes and judges “low cholesterol”. Usually called “… AI Task”, e.g. “Google AI Task”.",
           "ai_shopping_names": "“1 red pepper, diced” becomes “Pepper”. Good for Bring!, which knows fixed items."
         }
@@ -244,7 +244,7 @@
         "data_description": {
           "proposals_from": "Usually: AI in Home Assistant. External AI only if a scheduled task in an AI subscription delivers; if nothing arrives within 5 hours after the planning time, the main AI steps in.",
           "ai_search": "An agent with web search finds real recipe links, also on Cookidoo. Agents with web search switched on are marked “web search on”. “None”: the main AI only names dishes and the meal planner searches the recipe sites itself (not Cookidoo).",
-          "create_search_agent": "Creates the agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. For Gemini with Google Search and the model gemini-2.5-flash, which was allowed to search on the free tier in our test. Your other agents and voice control stay unchanged. “No” = create nothing.",
+          "create_search_agent": "Creates the agent “Essensplaner Rezeptsuche” with web search at the chosen provider and selects it above. For Gemini with Google Search and the model gemini-3.8-flash, which was allowed to search on the free tier in our test. Your other agents and voice control stay unchanged. “No” = create nothing.",
           "ai_task": "Suggests the dishes and judges “low cholesterol”. Usually called “… AI Task”, e.g. “Google AI Task”.",
           "ai_shopping_names": "“1 red pepper, diced” becomes “Pepper”. Good for Bring!, which knows fixed items."
         }

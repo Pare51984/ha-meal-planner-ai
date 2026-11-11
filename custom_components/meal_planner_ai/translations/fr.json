@@ -38,7 +38,7 @@
         "data_description": {
           "proposals_from": "En général : IA dans Home Assistant. IA externe seulement si une tâche planifiée d'un abonnement fournit ; si rien n'arrive dans les 5 heures après l'heure de planification, l'IA principale prend le relais.",
           "ai_search": "Un agent avec recherche web trouve de vrais liens de recettes, aussi sur Cookidoo. Les agents avec recherche web activée sont marqués « recherche web activée ». « Aucun » : l'IA principale nomme seulement des plats et le planificateur cherche lui-même sur les sites de recettes (pas sur Cookidoo).",
-          "create_search_agent": "Crée chez le fournisseur choisi l'agent « Essensplaner Rezeptsuche » avec recherche web et le sélectionne ci-dessus. Avec Gemini : Google Search et le modèle gemini-2.5-flash, qui a pu chercher en offre gratuite lors du test. Vos autres agents et la commande vocale ne changent pas. « Non » = ne rien créer.",
+          "create_search_agent": "Crée chez le fournisseur choisi l'agent « Essensplaner Rezeptsuche » avec recherche web et le sélectionne ci-dessus. Avec Gemini : Google Search et le modèle gemini-3.8-flash, qui a pu chercher en offre gratuite lors du test. Vos autres agents et la commande vocale ne changent pas. « Non » = ne rien créer.",
           "ai_task": "Propose les plats et juge « pauvre en cholestérol ». S'appelle souvent « … AI Task », p. ex. « Google AI Task ».",
           "ai_shopping_names": "« 1 poivron rouge, en dés » devient « Poivron ». Pratique pour Bring!, qui connaît des articles fixes."
         }
@@ -244,7 +244,7 @@
         "data_description": {
           "proposals_from": "En général : IA dans Home Assistant. IA externe seulement si une tâche planifiée d'un abonnement fournit ; si rien n'arrive dans les 5 heures après l'heure de planification, l'IA principale prend le relais.",
           "ai_search": "Un agent avec recherche web trouve de vrais liens de recettes, aussi sur Cookidoo. Les agents avec recherche web activée sont marqués « recherche web activée ». « Aucun » : l'IA principale nomme seulement des plats et le planificateur cherche lui-même sur les sites de recettes (pas sur Cookidoo).",
-          "create_search_agent": "Crée chez le fournisseur choisi l'agent « Essensplaner Rezeptsuche » avec recherche web et le sélectionne ci-dessus. Avec Gemini : Google Search et le modèle gemini-2.5-flash, qui a pu chercher en offre gratuite lors du test. Vos autres agents et la commande vocale ne changent pas. « Non » = ne rien créer.",
+          "create_search_agent": "Crée chez le fournisseur choisi l'agent « Essensplaner Rezeptsuche » avec recherche web et le sélectionne ci-dessus. Avec Gemini : Google Search et le modèle gemini-3.8-flash, qui a pu chercher en offre gratuite lors du test. Vos autres agents et la commande vocale ne changent pas. « Non » = ne rien créer.",
           "ai_task": "Propose les plats et juge « pauvre en cholestérol ». S'appelle souvent « … AI Task », p. ex. « Google AI Task ».",
           "ai_shopping_names": "« 1 poivron rouge, en dés » devient « Poivron ». Pratique pour Bring!, qui connaît des articles fixes."
         }
