@@ -137,7 +137,7 @@ the external AI within five hours after the planning time, it steps in.
 * **Taste (free text):** sent with every planning, e.g. "like Mediterranean, no offal".
 * Ratings go from **1 to 10 stars**. **Liked (7–10 stars)** is named to the AI as an example, **neutral (5–6 stars)** is no example but may come back now and then, **disliked (1–4 stars)** is not suggested again. Ratings from the 5-star days were doubled once by the update to 0.41.0 (4 of 5 is now 8 of 10).
 * **Cooked in the last 4 weeks** is not suggested again. This is based on the "cooked" circle only.
-* **"Taste profile" tab:** free text, liked, neutral, disliked, recently cooked. ✕ removes an entry.
+* **"Taste profile" tab:** free text, liked, neutral, disliked, recently cooked. The "Recipes" tab explains the star groups right above the list. ✕ removes an entry.
 * **"Recipes" tab:** all rated recipes with search, sorting, note and delete.
 
 All data stays local in Home Assistant. It is removed when you delete the integration.

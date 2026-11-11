@@ -38,7 +38,7 @@ const I18N = {
     ext: "Dieselben Einstellungen findest du auch unter", ext_path: "Einstellungen → Geräte & Dienste → Essensplaner",
     saved: "„{s}“ gespeichert. Der Essensplaner übernimmt die Änderung sofort.", saving: "Speichert …", next: "Weiter",
     cancel: "Abbrechen", back: "Zurück", all_settings: "Alle Einstellungen", no_choice: "Keine Auswahl verfügbar.",
-    m_title: "Gemerkt", m_profile: "Geschmacksprofil", m_recipes: "Rezepte",
+    m_title: "Gemerkt", m_profile: "Geschmacksprofil", m_recipes: "Rezepte", m_scale: "Sterne steuern die nächsten Vorschläge: 7–10 gemocht, die KI nimmt das Gericht als Vorbild. 5–6 neutral, kein Vorbild, kommt aber ab und zu wieder. 1–4 nicht gemocht, wird nicht mehr vorgeschlagen.",
     m_profile_hint: "Das bekommt die KI bei jeder Planung mit. Sterne ändern oder ✕ entfernt den Eintrag aus dem Profil, das Rezept bleibt gespeichert.",
     m_rules: "Grundregeln und Geschmack", m_rules_hint: "Freitext für alle Planungen, z. B. Vorlieben, Abneigungen, Allergien.",
     m_rules_ph: "z. B. Wir essen gern scharf, keine Pilze, Fisch höchstens einmal pro Woche",
@@ -78,7 +78,7 @@ const I18N = {
     ext: "The same settings are also under", ext_path: "Settings → Devices & services → Essensplaner",
     saved: "“{s}” saved. The meal planner applies the change right away.", saving: "Saving …", next: "Next",
     cancel: "Cancel", back: "Back", all_settings: "All settings", no_choice: "Nothing to choose.",
-    m_title: "Remembered", m_profile: "Taste profile", m_recipes: "Recipes",
+    m_title: "Remembered", m_profile: "Taste profile", m_recipes: "Recipes", m_scale: "Stars shape the next suggestions: 7–10 liked, the AI takes the dish as an example. 5–6 neutral, no example, but may come back now and then. 1–4 disliked, no longer suggested.",
     m_profile_hint: "The AI gets this with every planning run. Change the stars or ✕ to remove the entry from the profile; the recipe stays stored.",
     m_rules: "Basic rules and taste", m_rules_hint: "Free text for all planning runs, e.g. likes, dislikes, allergies.",
     m_rules_ph: "e.g. We like it spicy, no mushrooms, fish at most once a week",
@@ -98,7 +98,7 @@ const I18N = {
     x_changed: "El horario ha cambiado: tu IA está configurada para «{old}», ahora es «{now}». Envía de nuevo a tu IA la frase del paso 3 para que actualice la tarea.",
     x_copy_phrase: "Copiar frase", x_manual: "¿No funciona? Crear la tarea a mano", x_manual_hint: "Pega el mensaje completo (con horario y texto) o crea tú mismo en la IA una tarea programada con el horario de arriba y este texto.",
     x_how: "Cómo crear la tarea en tu IA (Home Assistant no puede hacerlo por ti)", x_copy_chat: "Copiar mensaje para el chat", x_copy: "Copiar solo el texto de la tarea",
-    m_title: "Guardado", m_profile: "Perfil de gustos", m_recipes: "Recetas",
+    m_title: "Guardado", m_profile: "Perfil de gustos", m_recipes: "Recetas", m_scale: "Las estrellas guían las próximas propuestas: 7–10 gustó, la IA lo toma como ejemplo. 5–6 neutral, no es ejemplo, pero puede volver de vez en cuando. 1–4 no gustó, ya no se propone.",
     m_profile_hint: "Esto recibe la IA en cada planificación. Cambia las estrellas o ✕ quita la entrada del perfil; la receta se queda guardada.",
     m_rules: "Reglas básicas y gustos", m_rules_hint: "Texto libre para todas las planificaciones, p. ej. preferencias, rechazos, alergias.",
     m_rules_ph: "p. ej. Nos gusta el picante, sin setas, pescado como mucho una vez por semana",
@@ -138,7 +138,7 @@ const I18N = {
     x_changed: "O horário mudou: a tua IA está configurada para «{old}», agora é «{now}». Envia de novo à tua IA a frase do passo 3 para atualizar a tarefa.",
     x_copy_phrase: "Copiar frase", x_manual: "Não funciona? Criar a tarefa à mão", x_manual_hint: "Cola a mensagem completa (com horário e texto) ou cria tu mesmo na IA uma tarefa agendada com o horário acima e este texto.",
     x_how: "Como criar a tarefa na tua IA (o Home Assistant não o faz por ti)", x_copy_chat: "Copiar mensagem para o chat", x_copy: "Copiar só o texto da tarefa",
-    m_title: "Guardado", m_profile: "Perfil de gosto", m_recipes: "Receitas",
+    m_title: "Guardado", m_profile: "Perfil de gosto", m_recipes: "Receitas", m_scale: "As estrelas orientam as próximas sugestões: 7–10 gostámos, a IA usa o prato como exemplo. 5–6 neutro, não é exemplo, mas pode voltar de vez em quando. 1–4 não gostámos, deixa de ser sugerido.",
     m_profile_hint: "É isto que a IA recebe em cada planeamento. Muda as estrelas ou ✕ remove a entrada do perfil; a receita continua guardada.",
     m_rules: "Regras básicas e gosto", m_rules_hint: "Texto livre para todos os planeamentos, p. ex. preferências, rejeições, alergias.",
     m_rules_ph: "p. ex. Gostamos de picante, sem cogumelos, peixe no máximo uma vez por semana",
@@ -178,7 +178,7 @@ const I18N = {
     x_changed: "L'horaire a changé : ton IA est configurée pour « {old} », maintenant c'est « {now} ». Renvoie à ton IA la phrase de l'étape 3 pour qu'elle mette la tâche à jour.",
     x_copy_phrase: "Copier la phrase", x_manual: "Ça ne marche pas ? Créer la tâche à la main", x_manual_hint: "Colle le message complet (avec horaire et texte) ou crée toi-même dans l'IA une tâche planifiée avec l'horaire ci-dessus et ce texte.",
     x_how: "Créer la tâche dans ton IA (Home Assistant ne peut pas le faire à ta place)", x_copy_chat: "Copier le message", x_copy: "Copier seulement le texte de la tâche",
-    m_title: "Mémorisé", m_profile: "Profil de goût", m_recipes: "Recettes",
+    m_title: "Mémorisé", m_profile: "Profil de goût", m_recipes: "Recettes", m_scale: "Les étoiles guident les prochaines propositions : 7–10 aimé, l'IA prend le plat comme exemple. 5–6 neutre, pas un exemple, mais peut revenir de temps en temps. 1–4 pas aimé, n'est plus proposé.",
     m_profile_hint: "C'est ce que l'IA reçoit à chaque planification. Change les étoiles ou ✕ retire l'entrée du profil ; la recette reste enregistrée.",
     m_rules: "Règles de base et goûts", m_rules_hint: "Texte libre pour toutes les planifications, p. ex. préférences, aversions, allergies.",
     m_rules_ph: "p. ex. On aime épicé, pas de champignons, poisson au plus une fois par semaine",
@@ -1051,6 +1051,7 @@ class EssensplanerMemoryCard extends HTMLElement {
     return `<div class="mbar"><input id="mq" placeholder="${esc(t("m_search"))}" value="${esc(this._q)}">
         <select id="msort">${["name", "rating", "last", "times"].map((k) => `<option value="${k}" ${this._sort === k ? "selected" : ""}>${t("m_sort_" + k)}</option>`).join("")}</select></div>
       <div class="form"><h3>${t("m_recipes")} <span class="count">${esc(t("m_count", { n: list.length }))}</span></h3>
+        <div class="desc">${esc(t("m_scale"))}</div>
         ${shown.length ? shown.map(row).join("") : `<div class="l2">${t("m_none")}</div>`}
         ${list.length > shown.length ? `<div class="actions"><button class="small" data-act="more">${esc(t("m_more", { n: list.length - shown.length }))}</button></div>` : ""}</div>`;
   }
