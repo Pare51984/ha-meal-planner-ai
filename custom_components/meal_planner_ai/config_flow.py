@@ -225,6 +225,9 @@ def _devices_schema(devices: list[str], custom: list[str]) -> vol.Schema:
     })
 
 
+DOCS_URL = "https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/"
+
+
 class EssensplanerConfigFlow(ConfigFlow, domain=DOMAIN):
     """Ersteinrichtung: Einkaufsliste und Küchengeräte."""
 
@@ -320,7 +323,9 @@ class EssensplanerOptionsFlow(OptionsFlow):
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         return self.async_show_menu(
-            step_id="init", menu_options=["region", "schedule", "trips", "calendar", "rules", "habits", "diet_count", "shopping_list", "sources", "devices", "ai", "display"]
+            step_id="init", menu_options=["region", "schedule", "trips", "calendar", "rules", "habits", "diet_count", "shopping_list", "sources", "devices", "ai", "display"],
+            # Link zur ausführlichen Anleitung (Adressen dürfen laut hassfest nicht im Übersetzungstext stehen)
+            description_placeholders={"docs_url": DOCS_URL + ("anleitung.md" if self.hass.config.language == "de" else "guide.md")},
         )
 
     # --------------------------------------------------------- Einkaufsliste ---
