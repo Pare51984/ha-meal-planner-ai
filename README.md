@@ -48,11 +48,17 @@ The integration does the checking, importing and storing itself; the AI only pro
 | Option | What you need | Notes |
 |---|---|---|
 | **AI in Home Assistant** | An *AI Task* entity: Google Gemini, Anthropic (Claude) or OpenAI (ChatGPT) integration with an API key | Runs on schedule inside HA. |
-| **Search agent with web search** (optional, recommended) | Pick a provider under *Create search agent with web search at* | Finds real recipe links, also Cookidoo. Gemini: free API key from Google AI Studio worked with `gemini-2.5-flash` in our test; newer models refused search on the free tier. Google returns redirect links, the integration resolves them. |
+| **Search agent with web search** (optional, recommended) | Pick a provider under *Create search agent with web search at* | Finds real recipe links, also Cookidoo. Gemini: a free API key from Google AI Studio works; in our test (11/2026) `gemini-3.8-flash` searched fine on the free tier at no cost (older test: `gemini-3.1-flash-lite` refused search there). The free tier has rate limits; if Google answers 429, the integration falls back to its own search. Google returns redirect links, the integration resolves them. |
 | **External AI** (subscription, no API key) | An AI with scheduled tasks and web search (e.g. Claude), connected to HA via MCP, plus remote access to HA | Tell the AI *"Set up my meal planner from Home Assistant."* It calls `meal_planner_ai.external_setup` and creates the task. If nothing arrives within 5 hours, the AI in HA takes over. |
 
 For MCP you can use the official **Model Context Protocol Server** integration with the tool set **"Meal Planner AI"**
 (it only allows fetching the brief and submitting proposals) or any MCP server that can call actions.
+
+**Limits of the external AI path.** The external AI only delivers the weekly suggestions at the scheduled time. Everything
+that needs new dishes in between runs on the AI *inside* Home Assistant. Without an AI task selected under
+**Configure → AI**, these do not work: **More suggestions**, **Swap**, **Plan suggestions now** (`generate_proposals`),
+`assess_recipes`, AI shopping names, and the fallback when the external AI delivers nothing. Tip: also select a free
+Gemini AI task, then these work too and the external AI still does the weekly plan.
 
 ## Actions
 All actions return response data. Most useful ones:
@@ -82,11 +88,20 @@ on their own.
 ## What is tested
 Tested live: Home Assistant 2026.11 on a Raspberry Pi 4, German, Bring! via the Bring! integration, Gemini as AI task and
 search agent, Claude as external AI through a scheduled task with an MCP add-on, all display modes, migration from the
-predecessor "Essensplaner". The automated tests (82) run against Home Assistant 2026.2.
+predecessor "Essensplaner". The automated tests (95) run against Home Assistant 2026.2.
+
+One test week each with the AI task and search agent of other providers (11/2026, default settings otherwise):
+
+| Model | Result |
+|---|---|
+| OpenAI `gpt-6.1-terra` | best run: 10 dishes, most links found by the AI itself, about 1.5 minutes |
+| OpenAI `gpt-6.1-sol` | 10 dishes, fewer own links, about 5 minutes |
+| Claude Sonnet 5.5 | 7 dishes, no own links (all found by the integration's search) |
+| Claude Haiku 5.5 | failed: the default *maximum tokens* (3000) were used up by thinking, empty answer. Raise *maximum tokens* in the Anthropic integration when thinking is on. |
 
 **Not tested yet, testers welcome:**
 * the official *Model Context Protocol Server* integration as the MCP path
-* Claude (Anthropic) and ChatGPT (OpenAI) as AI task inside HA
+* Claude with a higher *maximum tokens* setting
 * ChatGPT and Gemini scheduled tasks as external AI
 * daily use in English, Spanish, Portuguese or French, and regions other than Germany
 * shopping lists other than Bring! and the built-in list (Todoist, Google Tasks, local To-do, …)

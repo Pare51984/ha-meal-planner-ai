@@ -103,8 +103,9 @@ Websuche an – bei Google Gemini mit „Google Search tool“, bei Claude (Anth
 „Web search“. Für Claude und ChatGPT braucht es ein API-Konto beim Anbieter (Abrechnung pro Nutzung,
 getrennt von einem Chat-Abo). Bestehende Agenten und die Sprachsteuerung bleiben unverändert. Die Google-Suche ist im kostenlosen
 Gemini-Tarif begrenzt (Fehler 429 = Kontingent erschöpft); dann greift automatisch die eigene Suche.
-Der Agent nutzt Gemini 2.5 Flash: Mit Gemini 3.1 Flash Lite lehnte Google die Suche im kostenlosen Tarif
-im Test ab. Google liefert Links als Weiterleitung (vertexaisearch…); die Integration löst sie selbst auf.
+Tipp: Im kostenlosen Tarif von Google AI Studio lief im Test (11/2026) **Gemini 3.8 Flash** mit Google-Suche
+problemlos und ohne Kosten (Modell in der Gemini-Integration beim Agenten einstellen). Mit Gemini 3.1 Flash Lite lehnte
+Google die Suche im kostenlosen Tarif in einem früheren Test ab. Google liefert Links als Weiterleitung (vertexaisearch…); die Integration löst sie selbst auf.
 Andere Anbieter: einen Gesprächsagenten mit Websuche und ohne KI-Werkzeuge selbst anlegen und unter
 „Rezeptsuche“ auswählen.
 
@@ -113,8 +114,8 @@ Einmalig unter **Einstellungen → Geräte & Dienste → Integration hinzufügen
 
 | KI | Einrichtung | Kosten |
 |---|---|---|
-| **Claude (Anthropic)** – am zuverlässigsten bei der Rezeptsuche, auch Cookidoo | console.anthropic.com → „Billing“ Guthaben aufladen → „API Keys“ Schlüssel erstellen → Integration „Anthropic“ hinzufügen | Websuche ca. 1 Cent pro Suche; ein Wochenlauf grob 10–50 Cent (Schätzung) |
-| **Gemini (Google)** | aistudio.google.com → API-Schlüssel → Integration „Google Generative AI“ | kostenlos nutzbar; Google-Suche im Gratis-Tarif begrenzt |
+| **Claude (Anthropic)** – bei Denkmodus „Maximale Tokens“ deutlich erhöhen (Standard 3000 reicht nicht) | console.anthropic.com → „Billing“ Guthaben aufladen → „API Keys“ Schlüssel erstellen → Integration „Anthropic“ hinzufügen | Websuche ca. 1 Cent pro Suche; ein Wochenlauf grob 10–50 Cent (Schätzung) |
+| **Gemini (Google)** | aistudio.google.com → API-Schlüssel → Integration „Google Generative AI“ | kostenlos nutzbar (im Test mit Gemini 3.8 Flash); Google-Suche im Gratis-Tarif begrenzt |
 | **ChatGPT (OpenAI)** | platform.openai.com → Guthaben + API-Schlüssel → Integration „OpenAI Conversation“ | pro Nutzung |
 
 Danach im Essensplaner unter **KI** bei „Such-Agent mit Websuche anlegen bei“ den Anbieter wählen. Gute Mischung: Gemini
@@ -153,13 +154,29 @@ fünf Stunden nach dem Planungszeitpunkt nichts, springt die KI in Home Assistan
 kommt eine Meldung. Hat die externe KI nur einen Teil geliefert, wird mit dem Vorhandenen abgeschlossen. Ändert man den
 Planungszeitpunkt, muss nur die Uhrzeit der Aufgabe angepasst werden; der Einrichtungskasten zeigt die neue an.
 
+**Was über den externen Weg nicht geht:** Die externe KI liefert nur die Wochenvorschläge zum geplanten Zeitpunkt. Alles,
+was zwischendurch neue Gerichte braucht, läuft über die KI *in* Home Assistant. Ist unter **Konfigurieren → KI** keine
+AI-Task-Entität gewählt, funktionieren nicht: **Mehr Vorschläge**, **Tauschen**, **Jetzt Vorschläge planen**
+(`generate_proposals`), die KI-Bewertung der Ernährungsform (`assess_recipes`), die KI-Einkaufsnamen und die
+Rückfallebene, wenn die externe KI nichts liefert. Tipp: zusätzlich eine kostenlose Gemini-KI auswählen. Dann geht all
+das, und den Wochenplan macht trotzdem die externe KI.
+
 ## Was getestet ist
 Live getestet: Home Assistant 2026.11 auf Raspberry Pi 4, Deutsch, Bring!, Gemini als KI und Such-Agent, Claude als
 externe KI über eine geplante Aufgabe mit MCP-App, alle Anzeigearten, Übernahme vom Vorgänger „Essensplaner“.
-Die automatischen Tests (82) laufen gegen Home Assistant 2026.2.
+Die automatischen Tests (95) laufen gegen Home Assistant 2026.2.
+
+Je ein Testlauf mit KI-Task und Such-Agent anderer Anbieter (11/2026, sonst Standardeinstellungen):
+
+| Modell | Ergebnis |
+|---|---|
+| OpenAI `gpt-6.1-terra` | bester Lauf: 10 Gerichte, die meisten Links von der KI selbst, ca. 1,5 Minuten |
+| OpenAI `gpt-6.1-sol` | 10 Gerichte, weniger eigene Links, ca. 5 Minuten |
+| Claude Sonnet 5.5 | 7 Gerichte, keine eigenen Links (alle über die eigene Suche) |
+| Claude Haiku 5.5 | gescheitert: Die Standard-„Maximale Tokens“ (3000) gingen fürs Nachdenken drauf, leere Antwort |
 
 **Noch nicht getestet, Tester willkommen:** die offizielle Integration *Model Context Protocol Server* als MCP-Weg,
-Claude und ChatGPT als KI in Home Assistant, ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,
+Claude mit höheren „Maximale Tokens“, ChatGPT- und Gemini-Aufgaben als externe KI, Alltag auf Englisch, Spanisch,
 Portugiesisch oder Französisch und außerhalb Deutschlands, andere Einkaufslisten als Bring! und die eigene Liste,
 Installation über HACS.
 
