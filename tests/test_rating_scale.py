@@ -1,5 +1,6 @@
 """Bewertung mit 10 Sternen (ab 0.41.0) und einmalige Umrechnung alter 5-Sterne-Bewertungen."""
 from datetime import date
+import pathlib
 
 import pytest
 import voluptuous as vol
@@ -84,5 +85,14 @@ async def test_profile_uses_scaled_limits(hass: HomeAssistant):
     fake.profile_data = lambda today=None: data
     ctx = WeekPlanner._profile_context(fake, date(2026, 12, 31))
     assert ctx["liked"] == ["gut (7/10)"] and ctx["disliked"] == ["schlecht (4/10)"]
+    assert sorted(r["title"] for r in data["neutral"]) == ["mittel", "neutral"]
+    assert sorted(ctx["neutral"]) == ["mittel (6/10)", "neutral (5/10)"]
     assert WeekPlanner._disliked(fake, store.get("schlecht"), "schlecht")
     assert not WeekPlanner._disliked(fake, store.get("neutral"), "neutral")
+
+
+def test_prompt_lists_neutral_group():
+    from custom_components.meal_planner_ai import ai
+
+    src = pathlib.Path(ai.__file__).read_text()
+    assert 'profile.get("neutral")' in src and "Neutral (kein Vorbild" in src

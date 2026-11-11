@@ -60,7 +60,7 @@ sich in der Karte überschreiben: `accent`, `accent_text`, `tile`, `tile_selecte
 
 ### Reiter „Geschmacksprofil“ und „Rezepte“
 Die Essensplaner-Karte hat für Administratoren vier Reiter: Essensplan, Geschmacksprofil, Rezepte, Einstellungen.
-**Geschmacksprofil** zeigt, was die KI über den Haushalt bekommt: Grundregeln (direkt bearbeitbar), gemocht (7–10 Sterne),
+**Geschmacksprofil** zeigt, was die KI über den Haushalt bekommt: Grundregeln (direkt bearbeitbar), gemocht (7–10 Sterne), neutral (5–6 Sterne),
 nicht gemocht (1–4 Sterne) und die in den letzten 4 Wochen gekochten Gerichte. **Rezepte** listet alle gespeicherten
 Rezepte mit Suche und Sortierung. Sterne und Notizen lassen sich ändern, Bewertungen, Kochtage und Rezepte löschen.
 Wer beides als eigene Karte woanders haben will, nimmt `custom:meal-planner-memory-card`.

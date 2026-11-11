@@ -32,7 +32,7 @@ const I18N = {
     empty: "Gerade nichts geplant. Die nächsten Vorschläge kommen zum eingestellten Termin.", wishes: "Essenswünsche",
     wishes_hint: "Gericht, Zutat oder Rezeptlink. Fließt in die nächsten Vorschläge ein. „Eigenes Rezept“ = ohne Rezept aus dem Netz",
     wish_ph: "z. B. Lasagne, mal wieder Fisch, was mit Kürbis", add: "Hinzufügen", own_btn: "Eigenes Rezept", own_short: "(eigenes)",
-    del_wish: "Wunsch löschen", rating: ["", "nicht nochmal", "eher nicht", "okay", "gut", "super"],
+    del_wish: "Wunsch löschen", rating: ["", "nicht nochmal", "eher nicht", "neutral", "gut", "super"],
     days: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], loading_settings: "Einstellungen werden geladen …",
     not_setup: "Der Essensplaner ist noch nicht eingerichtet.", settings_hint: "Bereich antippen, ändern, speichern. Gilt sofort für den ganzen Haushalt.",
     ext: "Dieselben Einstellungen findest du auch unter", ext_path: "Einstellungen → Geräte & Dienste → Essensplaner",
@@ -42,7 +42,7 @@ const I18N = {
     m_profile_hint: "Das bekommt die KI bei jeder Planung mit. Sterne ändern oder ✕ entfernt den Eintrag aus dem Profil, das Rezept bleibt gespeichert.",
     m_rules: "Grundregeln und Geschmack", m_rules_hint: "Freitext für alle Planungen, z. B. Vorlieben, Abneigungen, Allergien.",
     m_rules_ph: "z. B. Wir essen gern scharf, keine Pilze, Fisch höchstens einmal pro Woche",
-    m_liked: "Gemocht", m_disliked: "Nicht gemocht", m_recent: "In den letzten 4 Wochen gekocht",
+    m_liked: "Gemocht", m_neutral: "Neutral", m_disliked: "Nicht gemocht", m_recent: "In den letzten 4 Wochen gekocht",
     m_recent_hint: "Wird nicht erneut vorgeschlagen. ✕ entfernt den Kochtag.", m_none: "Noch nichts.",
     m_search: "Suchen …", m_sort_name: "Name", m_sort_rating: "Bewertung", m_sort_last: "Zuletzt gekocht", m_sort_times: "Wie oft gekocht",
     m_times: "{n}× gekocht", m_last: "zuletzt {d}", m_never: "noch nie gekocht", m_stub: "nur Bewertung, kein Rezept gespeichert",
@@ -72,7 +72,7 @@ const I18N = {
     empty: "Nothing planned right now. The next proposals arrive at the scheduled time.", wishes: "Meal wishes",
     wishes_hint: "Dish, ingredient or recipe link. Goes into the next proposals. “Own recipe” = no recipe from the web",
     wish_ph: "e.g. lasagne, fish again, something with pumpkin", add: "Add", own_btn: "Own recipe", own_short: "(own)",
-    del_wish: "Delete wish", rating: ["", "never again", "rather not", "okay", "good", "great"],
+    del_wish: "Delete wish", rating: ["", "never again", "rather not", "neutral", "good", "great"],
     days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], loading_settings: "Loading settings …",
     not_setup: "The meal planner is not set up yet.", settings_hint: "Tap a section, change, save. Applies to the whole household right away.",
     ext: "The same settings are also under", ext_path: "Settings → Devices & services → Essensplaner",
@@ -82,7 +82,7 @@ const I18N = {
     m_profile_hint: "The AI gets this with every planning run. Change the stars or ✕ to remove the entry from the profile; the recipe stays stored.",
     m_rules: "Basic rules and taste", m_rules_hint: "Free text for all planning runs, e.g. likes, dislikes, allergies.",
     m_rules_ph: "e.g. We like it spicy, no mushrooms, fish at most once a week",
-    m_liked: "Liked", m_disliked: "Disliked", m_recent: "Cooked in the last 4 weeks",
+    m_liked: "Liked", m_neutral: "Neutral", m_disliked: "Disliked", m_recent: "Cooked in the last 4 weeks",
     m_recent_hint: "Won't be proposed again. ✕ removes the cooked day.", m_none: "Nothing yet.",
     m_search: "Search …", m_sort_name: "Name", m_sort_rating: "Rating", m_sort_last: "Last cooked", m_sort_times: "Times cooked",
     m_times: "cooked {n}×", m_last: "last {d}", m_never: "never cooked", m_stub: "rating only, no recipe stored",
@@ -102,7 +102,7 @@ const I18N = {
     m_profile_hint: "Esto recibe la IA en cada planificación. Cambia las estrellas o ✕ quita la entrada del perfil; la receta se queda guardada.",
     m_rules: "Reglas básicas y gustos", m_rules_hint: "Texto libre para todas las planificaciones, p. ej. preferencias, rechazos, alergias.",
     m_rules_ph: "p. ej. Nos gusta el picante, sin setas, pescado como mucho una vez por semana",
-    m_liked: "Gustó", m_disliked: "No gustó", m_recent: "Cocinado en las últimas 4 semanas",
+    m_liked: "Gustó", m_neutral: "Neutral", m_disliked: "No gustó", m_recent: "Cocinado en las últimas 4 semanas",
     m_recent_hint: "No se volverá a proponer. ✕ quita el día cocinado.", m_none: "Nada todavía.",
     m_search: "Buscar …", m_sort_name: "Nombre", m_sort_rating: "Valoración", m_sort_last: "Cocinado por última vez", m_sort_times: "Veces cocinado",
     m_times: "cocinado {n}×", m_last: "última vez {d}", m_never: "nunca cocinado", m_stub: "solo valoración, sin receta guardada",
@@ -122,7 +122,7 @@ const I18N = {
     empty: "Nada planificado. Las próximas propuestas llegan a la hora fijada.", wishes: "Deseos",
     wishes_hint: "Plato, ingrediente o enlace. Entra en las próximas propuestas. «Receta propia» = sin receta de la web",
     wish_ph: "p. ej. lasaña, otra vez pescado, algo con calabaza", add: "Añadir", own_btn: "Receta propia", own_short: "(propia)",
-    del_wish: "Borrar deseo", rating: ["", "nunca más", "mejor no", "bien", "bueno", "genial"],
+    del_wish: "Borrar deseo", rating: ["", "nunca más", "mejor no", "neutral", "bueno", "genial"],
     days: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"], loading_settings: "Cargando ajustes …",
     not_setup: "El planificador aún no está configurado.", settings_hint: "Toca una sección, cambia, guarda. Vale enseguida para toda la casa.",
     ext: "Los mismos ajustes están en", ext_path: "Ajustes → Dispositivos y servicios → Essensplaner",
@@ -142,7 +142,7 @@ const I18N = {
     m_profile_hint: "É isto que a IA recebe em cada planeamento. Muda as estrelas ou ✕ remove a entrada do perfil; a receita continua guardada.",
     m_rules: "Regras básicas e gosto", m_rules_hint: "Texto livre para todos os planeamentos, p. ex. preferências, rejeições, alergias.",
     m_rules_ph: "p. ex. Gostamos de picante, sem cogumelos, peixe no máximo uma vez por semana",
-    m_liked: "Gostámos", m_disliked: "Não gostámos", m_recent: "Cozinhado nas últimas 4 semanas",
+    m_liked: "Gostámos", m_neutral: "Neutro", m_disliked: "Não gostámos", m_recent: "Cozinhado nas últimas 4 semanas",
     m_recent_hint: "Não volta a ser proposto. ✕ remove o dia cozinhado.", m_none: "Ainda nada.",
     m_search: "Pesquisar …", m_sort_name: "Nome", m_sort_rating: "Avaliação", m_sort_last: "Última vez cozinhado", m_sort_times: "Vezes cozinhado",
     m_times: "cozinhado {n}×", m_last: "última vez {d}", m_never: "nunca cozinhado", m_stub: "só avaliação, sem receita guardada",
@@ -162,7 +162,7 @@ const I18N = {
     empty: "Nada planeado. As próximas propostas chegam à hora definida.", wishes: "Desejos",
     wishes_hint: "Prato, ingrediente ou link. Entra nas próximas propostas. «Receita própria» = sem receita da web",
     wish_ph: "p. ex. lasanha, peixe outra vez, algo com abóbora", add: "Adicionar", own_btn: "Receita própria", own_short: "(própria)",
-    del_wish: "Apagar desejo", rating: ["", "nunca mais", "melhor não", "ok", "bom", "ótimo"],
+    del_wish: "Apagar desejo", rating: ["", "nunca mais", "melhor não", "neutro", "bom", "ótimo"],
     days: ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"], loading_settings: "A carregar definições …",
     not_setup: "O planeador ainda não está configurado.", settings_hint: "Toca numa secção, altera, guarda. Vale logo para toda a casa.",
     ext: "As mesmas definições estão em", ext_path: "Definições → Dispositivos e serviços → Essensplaner",
@@ -182,7 +182,7 @@ const I18N = {
     m_profile_hint: "C'est ce que l'IA reçoit à chaque planification. Change les étoiles ou ✕ retire l'entrée du profil ; la recette reste enregistrée.",
     m_rules: "Règles de base et goûts", m_rules_hint: "Texte libre pour toutes les planifications, p. ex. préférences, aversions, allergies.",
     m_rules_ph: "p. ex. On aime épicé, pas de champignons, poisson au plus une fois par semaine",
-    m_liked: "Aimé", m_disliked: "Pas aimé", m_recent: "Cuisiné ces 4 dernières semaines",
+    m_liked: "Aimé", m_neutral: "Neutre", m_disliked: "Pas aimé", m_recent: "Cuisiné ces 4 dernières semaines",
     m_recent_hint: "Ne sera pas reproposé. ✕ retire le jour cuisiné.", m_none: "Rien pour l'instant.",
     m_search: "Rechercher …", m_sort_name: "Nom", m_sort_rating: "Note", m_sort_last: "Dernière fois cuisiné", m_sort_times: "Fois cuisiné",
     m_times: "cuisiné {n}×", m_last: "dernière fois {d}", m_never: "jamais cuisiné", m_stub: "note seulement, aucune recette enregistrée",
@@ -202,7 +202,7 @@ const I18N = {
     empty: "Rien de prévu. Les prochaines propositions arrivent à l'heure réglée.", wishes: "Envies",
     wishes_hint: "Plat, ingrédient ou lien. Entre dans les prochaines propositions. « Recette perso » = sans recette du web",
     wish_ph: "p. ex. lasagnes, du poisson, quelque chose au potiron", add: "Ajouter", own_btn: "Recette perso", own_short: "(perso)",
-    del_wish: "Supprimer l'envie", rating: ["", "plus jamais", "plutôt pas", "correct", "bon", "super"],
+    del_wish: "Supprimer l'envie", rating: ["", "plus jamais", "plutôt pas", "neutre", "bon", "super"],
     days: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"], loading_settings: "Chargement des réglages …",
     not_setup: "Le planificateur n'est pas encore configuré.", settings_hint: "Touche une section, modifie, enregistre. Valable tout de suite pour toute la maison.",
     ext: "Les mêmes réglages se trouvent sous", ext_path: "Paramètres → Appareils et services → Essensplaner",
@@ -1016,7 +1016,7 @@ class EssensplanerMemoryCard extends HTMLElement {
       <div class="form"><h3>${t("m_rules")}</h3><div class="desc">${esc(t("m_rules_hint"))}</div>
         <textarea id="ptext" class="ptext" placeholder="${esc(t("m_rules_ph"))}">${esc(this._ptext ?? d.profile_text)}</textarea>
         <div class="actions"><button class="small on" data-act="saveprofile">${t("save")}</button>${this._ok ? `<span class="hint">${t("m_saved")}</span>` : ""}</div></div>
-      ${block(t("m_liked"), d.liked || [], false)}${block(t("m_disliked"), d.disliked || [], false)}
+      ${block(t("m_liked"), d.liked || [], false)}${block(t("m_neutral"), d.neutral || [], false)}${block(t("m_disliked"), d.disliked || [], false)}
       ${block(t("m_recent"), d.recent || [], true, t("m_recent_hint"))}`;
   }
 

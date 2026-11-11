@@ -641,9 +641,9 @@ class WeekPlanner:
         return out
 
     def profile_data(self, today: date | None = None) -> dict[str, list[dict[str, Any]]]:
-        """Geschmacksprofil, wie es die KI bekommt: gemocht (7–10), nicht gemocht (1–4), kürzlich gekocht."""
+        """Geschmacksprofil, wie es die KI bekommt: gemocht (7–10), neutral (5–6), nicht gemocht (1–4), kürzlich gekocht."""
         today = today or dt_util.now().date()
-        liked, disliked, recent = [], [], []
+        liked, neutral, disliked, recent = [], [], [], []
         for rec in self.store.recipes.values():
             hist = rec.get("history") or {}
             rating = hist.get("rating")
@@ -653,17 +653,20 @@ class WeekPlanner:
                 liked.append(item)
             elif rating and rating <= RATING_DISLIKED:
                 disliked.append(item)
+            elif rating:
+                neutral.append(item)
             cooked = hist.get("cooked_on") or []
             if cooked and date.fromisoformat(cooked[-1]) > today - timedelta(days=28):
                 recent.append({**item, "last": cooked[-1]})
         recent.sort(key=lambda r: r["last"], reverse=True)
-        return {"liked": liked[-40:], "disliked": disliked[-40:], "recent": recent}
+        return {"liked": liked[-40:], "neutral": neutral[-40:], "disliked": disliked[-40:], "recent": recent}
 
     def _profile_context(self, today: date) -> dict[str, list[str]]:
         data = self.profile_data(today)
         note = lambda r: f" – {r['note']}" if r["note"] else ""  # noqa: E731
         return {
             "liked": [f"{r['title']} ({r['rating']}/{RATING_MAX}){note(r)} {r['url'] or ''}".strip() for r in data["liked"]],
+            "neutral": [f"{r['title']} ({r['rating']}/{RATING_MAX}){note(r)}" for r in data["neutral"]],
             "disliked": [f"{r['title']} ({r['rating']}/{RATING_MAX}){note(r)}" for r in data["disliked"]],
             "recent": [f"{r['title']} (zuletzt {r['last']})" for r in data["recent"]],
         }

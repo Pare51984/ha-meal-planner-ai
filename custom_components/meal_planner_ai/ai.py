@@ -268,6 +268,8 @@ def board_prompt(
         parts.append("Grundregeln und Geschmack des Haushalts:\n" + settings[CONF_PROFILE])
     if profile.get("liked"):
         parts.append("Gemocht (wichtigste Orientierung):\n" + "\n".join(profile["liked"]))
+    if profile.get("neutral"):
+        parts.append("Neutral (kein Vorbild, ab und zu wieder möglich):\n" + "\n".join(profile["neutral"]))
     if profile.get("disliked"):
         parts.append("Nicht gemocht (meiden, auch Ähnliches):\n" + "\n".join(profile["disliked"]))
     if profile.get("recent"):
