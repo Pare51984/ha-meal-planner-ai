@@ -285,10 +285,16 @@ def classify_diet(recipe: dict[str, Any], kcal_max: int | None) -> dict[str, Any
     gluten = [n for n in names if _contains(n, _GLUTEN, _GLUTEN_EXCEPTIONS)
               or (_INTL_GLUTEN.search(n) and not _INTL_GLUTEN_EXC.search(n))]
 
-    vegetarian = True if DIET_VEGETARIAN in site else (not meat if names else None)
-    vegan = True if DIET_VEGAN in site else (
+    # Fleisch in Zutaten oder Titel schlägt die Auszeichnung der Seite: manche Seiten markieren
+    # „vegetarisch“ falsch (Live-Test 11/2026: „Griechisches Putengyros“ als vegetarisch)
+    title_meat = _is_meat(str(recipe.get("title") or "").lower())
+    if meat or title_meat:
+        vegetarian = False
+    else:
+        vegetarian = True if DIET_VEGETARIAN in site else (True if names else None)
+    vegan = False if vegetarian is False else (True if DIET_VEGAN in site else (
         (vegetarian is True and not dairy and not other) if names else None
-    )
+    ))
     if vegan:
         vegetarian = True
 

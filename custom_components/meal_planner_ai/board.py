@@ -66,7 +66,7 @@ from .const import (
     THERMOMIX_SOURCES,
 )
 from .planning import dish_matches, enabled_sources
-from .search import TESTED, async_search, relevant
+from .search import NO_SEARCH, TESTED, async_search, relevant, same_dish
 from .const import CONF_REGION, REGION_LANGUAGE
 from .shopping import (
     apply_catalog,
@@ -93,7 +93,9 @@ def _parse_time(text: str) -> time:
 REDIRECT_HOSTS = ("vertexaisearch.cloud.google.com",)
 RETRY_DELAY = 20  # Sekunden bis zum zweiten Versuch beim Such-Agenten
 MAX_PROPOSALS = 20  # Gerichte pro submit_proposals-Aufruf, die geprüft werden
-SEARCH_BUDGET = 40  # Abrufe (Suchseiten + Rezepte) für die Ersatzsuche pro Lauf
+SEARCH_BUDGET = 40  # Abrufe (Suchseiten + Rezepte) für die Ersatzsuche pro Lauf, mindestens
+SEARCH_PER_DISH = 6  # … bzw. so viele Abrufe je Gericht der Woche, falls das mehr ist
+_BAD_TITLE = re.compile(r"alternative\s*:|\boder\b.*\?|^\W*$", re.IGNORECASE)
 MAX_FAILURES = 3  # KI-Fehlschläge pro Woche, danach kein stündlicher Neuversuch mehr
 MAX_TEXT = 200  # Wunsch, Suchbegriff, Seite
 MAX_URL = 2048
@@ -230,6 +232,7 @@ class WeekPlanner:
         self._failures: dict[str, int] = {}
         self._in_tick = False
         self._budget = SEARCH_BUDGET
+        self._run_rejected: list[str] = []  # in diesem Lauf abgelehnte Titel, im Folge-Prompt zuerst genannt
         self._wish_hosts: set[str] = set()
 
     # ----------------------------------------------------------- Zugriff ---
@@ -759,6 +762,13 @@ class WeekPlanner:
         if prop.get("_found") and recipe and recipe.get("title"):
             if not relevant(str(prop.get("query") or title), str(recipe["title"]), title):
                 return None, f"Suchtreffer '{recipe['title']}' passt nicht zu '{title}'"
+            if not same_dish(title, str(recipe["title"])):
+                # Hauptzutat fehlt: „Kürbis-Curry“ darf nicht zu „Hähnchen-Curry“ werden
+                return None, f"Suchtreffer '{recipe['title']}' ist ein anderes Gericht als '{title}'"
+            veggie_meant = bool(prop.get("meatless")) or any(
+                m in title.lower() for m in ("vegetar", "vegan", "veggie"))
+            if veggie_meant and classify_diet(recipe, self.settings[CONF_KCAL_MAX])[DIET_VEGETARIAN] is False:
+                return None, f"Suchtreffer '{recipe['title']}' ist nicht fleischlos, gesucht war '{title}'"
             real = _short(str(recipe["title"]), 56)
             if _norm_title(real) in taken:
                 return None, f"'{real}' doppelt"
@@ -840,7 +850,7 @@ class WeekPlanner:
         """Gericht selbst auf den freigegebenen Rezeptseiten suchen (höchstens 10 Suchseiten, 4 Rezepte)."""
         hosts = enabled_sources(self.settings)
         order = [prefer] if prefer in hosts else []
-        rest = [h for h in hosts if h not in order and not h.startswith("cookidoo.")]
+        rest = [h for h in hosts if h not in order and not h.startswith("cookidoo.") and h not in NO_SEARCH]
         if "(TM)" in title or prefer in THERMOMIX_SOURCES:
             # Thermomix-Idee: zuerst auf Thermomix-Seiten suchen, damit es ein TM-Gericht bleibt
             order += [h for h in rest if h in THERMOMIX_SOURCES]
@@ -1086,6 +1096,13 @@ class WeekPlanner:
             if not (wish and self._is_open_wish(wish, str(prop.get("title") or ""))):
                 # ausgeschlossene Titel (zuletzt gekocht, schon verworfen) gelten nicht für echte Wünsche
                 taken |= excluded
+            raw_title = str(prop.get("title") or "")
+            if _BAD_TITLE.search(raw_title):
+                reason = f"'{_short(raw_title)}': kein eindeutiges Gericht"
+                _LOGGER.info("Vorschlag verworfen: %s", reason)
+                rejected.append(reason)
+                self._run_rejected.append(raw_title)
+                continue
             try:
                 dish, reason = await self._check_dish(prop, taken, today)
             except Exception as err:  # noqa: BLE001 - ein kaputter Vorschlag darf den Lauf nicht abbrechen
@@ -1097,6 +1114,7 @@ class WeekPlanner:
                 _LOGGER.info("Vorschlag verworfen: %s", reason)
                 rejected.append(reason)
                 excluded.add(_norm_title(str(prop.get("title") or "")))
+                self._run_rejected.append(str(prop.get("title") or ""))
                 continue
             dishes.append(dish)
             added.append(dish)
@@ -1108,7 +1126,8 @@ class WeekPlanner:
         return board_prompt(
             settings=self.settings, meta=meta, need=need, trips=self._trip_texts(meta), keep=dishes,
             wishes=self._open_wishes(ctx["wishes"], dishes), calendar=ctx["calendar"],
-            profile=ctx["profile"], notes=notes, feedback=feedback, excluded=sorted(excluded),
+            profile=ctx["profile"], notes=notes, feedback=feedback,
+            excluded=list(dict.fromkeys([*reversed([t for t in self._run_rejected if t]), *sorted(excluded)])),
             today=dt_util.now().date())
 
     async def _publish(self, meta: dict[str, Any], dishes: list[dict[str, Any]], wishes: list[dict[str, Any]],
@@ -1168,7 +1187,7 @@ class WeekPlanner:
     async def async_generate(self, notes: str | None = None, force: bool = False) -> dict[str, Any]:
         """Vorschläge für die kommende Woche von der KI holen, prüfen und als Tafel ablegen."""
         if self.busy:
-            raise HomeAssistantError("Die Vorschläge werden gerade schon erstellt.")
+            raise ServiceValidationError("Die Vorschläge werden gerade schon erstellt.")
         settings = self.settings
         ai = self._search_ai() or settings[CONF_AI_TASK]
         if not ai:
@@ -1182,11 +1201,13 @@ class WeekPlanner:
     async def _run(self, job: Any) -> dict[str, Any]:
         if self.busy:
             job.close()
-            raise HomeAssistantError("Die Vorschläge werden gerade schon erstellt.")
+            raise ServiceValidationError("Die Vorschläge werden gerade schon erstellt.")
         self.busy = True
         async_dispatcher_send(self.hass, SIGNAL_BOARD_UPDATED)  # Karte zeigt „läuft …“, auch auf anderen Geräten
         self._frozen = self.settings
-        self._budget = SEARCH_BUDGET
+        # Liefert die KI keine Links, braucht jedes Gericht eine eigene Suche (Live-Test: 7 statt 10 Gerichte)
+        self._budget = max(SEARCH_BUDGET, SEARCH_PER_DISH * int(self._frozen[CONF_RECIPES_PER_WEEK]))
+        self._run_rejected = []
         try:
             return await job
         finally:
@@ -1256,7 +1277,7 @@ class WeekPlanner:
     # ------------------------------------------------ neu planen und tauschen ---
     def _check_ai(self) -> None:
         if self.busy:
-            raise HomeAssistantError("Die Vorschläge werden gerade schon erstellt.")
+            raise ServiceValidationError("Die Vorschläge werden gerade schon erstellt.")
         if not (self._search_ai() or self.settings[CONF_AI_TASK]):
             raise ServiceValidationError("Keine KI ausgewählt (Essensplaner → Konfigurieren → KI).")
 
@@ -1397,7 +1418,7 @@ class WeekPlanner:
                                      restart: bool = False) -> dict[str, Any]:
         """Vorschläge einer externen KI wie die der eingebauten KI prüfen und in die nächste Tafel übernehmen."""
         if self.busy:
-            raise HomeAssistantError("Die Vorschläge werden gerade schon erstellt.")
+            raise ServiceValidationError("Die Vorschläge werden gerade schon erstellt.")
         meta = self._plan_meta()
         cut = max(0, len(proposals) - MAX_PROPOSALS)
         result = await self._run(self._submit(meta, proposals[:MAX_PROPOSALS], final=final, restart=restart))

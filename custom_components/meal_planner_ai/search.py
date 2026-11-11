@@ -32,6 +32,9 @@ SITES: dict[str, tuple[str, str | None]] = {
     "rezeptwelt.de": ("https://www.rezeptwelt.de/suche?search={q}", None),
     "kitchenstories.com": ("https://www.kitchenstories.com/de/suche?search={q}", r"/de/rezepte/[a-z0-9-]{6,}"),
 }
+# Eigene Suche dort gerade kaputt (Live-Test 10.11.2026: kochbar.de antwortet auf die Suchadresse mit HTTP 404).
+# Links von der KI auf diese Seiten werden weiter geprüft und angenommen, nur die Ersatzsuche lässt sie aus.
+NO_SEARCH = ("kochbar.de",)
 # Am 07.11.2026 live geprüft: diese Suchen liefern echte Rezeptlinks. Sie kommen zuerst dran.
 TESTED = ("chefkoch.de", "rezeptwelt.de", "eatsmarter.de", "zaubertopf.de")
 # Seiten ohne Wörter in der Rezeptadresse (Treffer lassen sich nicht vorab am Link prüfen)
@@ -66,6 +69,45 @@ def _stem(word: str) -> str:
 
 def _stems(text: str) -> set[str]:
     return {_stem(w) for w in re.findall(r"[a-z]{4,}", _norm(text))}
+
+
+# Beschreibende Wörter vor dem eigentlichen Gericht, die nichts über die Hauptzutat sagen
+_ADJECTIVES = (
+    "schnell", "einfach", "cremig", "bunt", "vegetarisch", "vegan", "leicht", "herbstlich", "winterlich",
+    "klassisch", "wurzig", "wurzige", "asiatisch", "griechisch", "mediterran", "italienisch", "indisch",
+    "orientalisch", "mexikanisch", "frisch", "gebraten", "gebratene", "gefullt", "gefullte", "geschmort",
+    "uberbacken", "knusprig", "herzhaft", "scharf", "mild", "fruhling", "sommerlich", "omas", "schwabisch",
+    "hausgemacht", "selbstgemacht", "warm", "kalt", "lauwarm", "rot", "grun", "gelb", "weiss",
+)
+_HEAD_SPLIT = re.compile(r"\b(?:mit|in|auf|und|an|im|nach|vom|von|aus|zu|alla|al|à|a la)\b")
+
+
+def _head_words(title: str) -> list[str]:
+    """Wörter des eigentlichen Gerichts: der Teil vor „mit/in/auf …“, ohne Adjektive, Bindestriche getrennt."""
+    head = _HEAD_SPLIT.split(_norm(title).replace("(tm)", " "), maxsplit=1)[0]
+    words = re.findall(r"[a-z]{4,}", head)
+    return [w for w in words if not any(w.startswith(a) for a in _ADJECTIVES)]
+
+
+def _word_in(word: str, norm_title: str) -> bool:
+    """Steckt das Wort im Titel? Zusammengesetzte Wörter zählen auch über Anfang oder Ende
+    („Rinderschmorgulasch“ ~ „Rindergulasch“, „Ofenlachs“ ~ „Lachs“)."""
+    if _stem(word) in norm_title:
+        return True
+    return len(word) >= 8 and (word[:5] in norm_title or word[-5:] in norm_title)
+
+
+def same_dish(original: str, title: str) -> bool:
+    """Ist ein Suchtreffer dasselbe Gericht wie das gesuchte? Strenger als relevant(): Die Hauptzutat
+    (erstes Wort des Gerichts) muss im Treffer stecken und mindestens die Hälfte der Gerichtswörter.
+    Live-Test 11/2026: „Kürbis-Curry“ → „Hähnchen-Curry“, „Kürbispfanne mit Feta“ → „Feta-Dip“."""
+    words = _head_words(original)
+    if not words:
+        return True
+    norm = _norm(title)
+    if not _word_in(words[0], norm):
+        return False
+    return sum(1 for w in words if _word_in(w, norm)) * 2 >= len(words)
 
 
 def relevant(query: str, title: str, fallback: str = "") -> bool:

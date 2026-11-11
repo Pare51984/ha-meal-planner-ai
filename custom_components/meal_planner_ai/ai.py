@@ -71,6 +71,18 @@ def parse_json(text: Any) -> Any:
     raise AIError("Die KI-Antwort enthielt kein gültiges JSON.")
 
 
+EMPTY_HINT = ("Die KI hat eine leere Antwort geliefert. Häufige Ursache: „Maximale Tokens“ in der KI-Integration zu "
+              "klein, besonders mit Denkmodus (Thinking). Dort deutlich erhöhen, z. B. auf 16000.")
+
+
+def _token_hint(text: str) -> str:
+    """Hinweis anhängen, wenn der Fehler nach abgeschnittener Antwort aussieht."""
+    low = text.lower()
+    if "max_tokens" in low or "max tokens" in low or "token limit" in low or "maximum tokens" in low:
+        return " „Maximale Tokens“ in der KI-Integration erhöhen."
+    return ""
+
+
 async def async_ask(hass: HomeAssistant, entity_id: str, task_name: str, instructions: str) -> Any:
     """Aufgabe an die KI schicken und JSON zurückbekommen.
 
@@ -89,11 +101,17 @@ async def async_ask(hass: HomeAssistant, entity_id: str, task_name: str, instruc
         except TimeoutError as err:
             raise AIError(f"KI {entity_id} hat nicht innerhalb von {AI_TIMEOUT // 60} Minuten geantwortet.") from err
         except HomeAssistantError as err:
-            raise AIError(f"KI-Aufruf fehlgeschlagen: {err}") from err
+            raise AIError(f"KI-Aufruf fehlgeschlagen: {err}{_token_hint(str(err))}") from err
         response = (resp or {}).get("response") or {}
-        if response.get("response_type") == "error":
-            raise AIError(f"KI meldet einen Fehler: {(response.get('data') or {}).get('code') or ''}".strip())
         text = ((response.get("speech") or {}).get("plain") or {}).get("speech") or ""
+        if response.get("response_type") == "error":
+            # Code allein („unknown“) hilft nicht weiter; der Sprechtext enthält die eigentliche Meldung
+            code = (response.get("data") or {}).get("code") or "unknown"
+            detail = " ".join(str(text).split())[:300]
+            raise AIError(f"KI meldet einen Fehler ({code})" + (f": {detail}" if detail else "")
+                          + _token_hint(detail))
+        if not str(text).strip():
+            raise AIError(EMPTY_HINT)
         try:
             return parse_json(text)
         except AIError:
@@ -111,8 +129,10 @@ async def async_ask(hass: HomeAssistant, entity_id: str, task_name: str, instruc
     except TimeoutError as err:
         raise AIError(f"KI {entity_id} hat nicht innerhalb von {AI_TIMEOUT // 60} Minuten geantwortet.") from err
     except HomeAssistantError as err:
-        raise AIError(f"KI-Aufruf fehlgeschlagen: {err}") from err
+        raise AIError(f"KI-Aufruf fehlgeschlagen: {err}{_token_hint(str(err))}") from err
     data = (resp or {}).get("data")
+    if data is None or (isinstance(data, str) and not data.strip()):
+        raise AIError(EMPTY_HINT)
     try:
         return parse_json(data)
     except AIError:

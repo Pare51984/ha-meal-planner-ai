@@ -99,8 +99,10 @@ async def test_submit_caps_proposals_and_search(hass: HomeAssistant, freezer):
             patch("custom_components.meal_planner_ai.board.async_search", side_effect=search):
         res = await call(hass, "submit_proposals", {"dishes": dishes})
     assert "ignored" in res and res["count"] == 0
-    # 20 geprüfte Links plus höchstens 40 Abrufe für die Ersatzsuche
-    assert len(fetched) + len(searched) <= 20 + 40
+    # 20 geprüfte Links plus höchstens das Suchbudget (mindestens 40, sonst 6 je Gericht der Woche)
+    from custom_components.meal_planner_ai.board import SEARCH_BUDGET, SEARCH_PER_DISH
+    per_week = hass.config_entries.async_entries("meal_planner_ai")[0].runtime_data.planner.settings["recipes_per_week"]
+    assert len(fetched) + len(searched) <= 20 + max(SEARCH_BUDGET, SEARCH_PER_DISH * per_week)
 
 
 # ------------------------------------------------- Nr. 2 und 7 Lauf vs. Deadline ---
