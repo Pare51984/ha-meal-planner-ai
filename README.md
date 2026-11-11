@@ -48,7 +48,7 @@ The integration does the checking, importing and storing itself; the AI only pro
 | Option | What you need | Notes |
 |---|---|---|
 | **AI in Home Assistant** | An *AI Task* entity: Google Gemini, Anthropic (Claude) or OpenAI (ChatGPT) integration with an API key | Runs on schedule inside HA. |
-| **Search agent with web search** (optional, recommended) | Pick a provider under *Create search agent with web search at* | Finds real recipe links, also Cookidoo. Gemini: a free API key from Google AI Studio works; in our test (11/2026) `gemini-3.8-flash` searched fine on the free tier at no cost (older test: `gemini-3.1-flash-lite` refused search there). The free tier has rate limits; if Google answers 429, the integration falls back to its own search. Google returns redirect links, the integration resolves them. |
+| **Search agent with web search** (optional, recommended) | Pick a provider under *Create search agent with web search at* | Finds real recipe links, also Cookidoo. Every provider gets the same treatment: a current low-cost model (Gemini `gemini-3.8-flash`, Claude `claude-haiku-5-5`, ChatGPT `gpt-6.1-terra`), web search on, 16000 maximum tokens, no access to your home; you can change the model in the agent. Gemini: a free API key from Google AI Studio works; in our test (11/2026) `gemini-3.8-flash` searched fine on the free tier at no cost (older test: `gemini-3.1-flash-lite` refused search there). The free tier has rate limits; if Google answers 429, the integration falls back to its own search. Google returns redirect links, the integration resolves them. |
 | **External AI** (subscription, no API key) | An AI with scheduled tasks and web search (e.g. Claude), connected to HA via MCP, plus remote access to HA | Tell the AI *"Set up my meal planner from Home Assistant."* It calls `meal_planner_ai.external_setup` and creates the task. If nothing arrives within 5 hours, the AI in HA takes over. |
 
 For MCP you can use the official **Model Context Protocol Server** integration or any MCP server that can call actions.
@@ -95,13 +95,14 @@ Tested live: Home Assistant 2026.11 on a Raspberry Pi 4, German, Bring! via the 
 search agent, Claude as external AI through a scheduled task with an MCP add-on, all display modes, migration from the
 predecessor "Essensplaner". The automated tests (95) run against Home Assistant 2026.2.
 
-One test week each with the AI task and search agent of other providers (11/2026, default settings otherwise):
+Test runs with the AI task and search agent (11/2026, default settings otherwise):
 
 | Model | Result |
 |---|---|
-| OpenAI `gpt-6.1-terra` | best run: 10 dishes, most links found by the AI itself, about 1.5 minutes |
+| Gemini `gemini-3.8-flash` | in daily use (main AI and search agent) |
+| OpenAI `gpt-6.1-terra` | 10 dishes, most links found by the AI itself, about 1.5 minutes |
 | OpenAI `gpt-6.1-sol` | 10 dishes, fewer own links, about 5 minutes |
-| Claude Sonnet 5.5 | 7 dishes, no own links (all found by the integration's search) |
+| Claude Sonnet 5.5 | with the default *maximum tokens* (3000): 7 dishes, no own links (all found by the integration's search) |
 | Claude Haiku 5.5 | with the default *maximum tokens* (3000): failed, thinking used them up. With the search agent the integration creates (16000): 10 dishes, few own links, about 8 minutes. |
 
 The official *Model Context Protocol Server* integration works as the MCP path: added as a custom connector in Claude

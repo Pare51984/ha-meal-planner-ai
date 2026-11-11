@@ -38,7 +38,7 @@
         "data_description": {
           "proposals_from": "Normalfall: KI in Home Assistant. Externe KI nur, wenn eine geplante Aufgabe in einem KI-Abo liefert; kommt bis 5 Stunden nach der Planungszeit nichts, springt die Haupt-KI ein.",
           "ai_search": "Ein Agent mit Websuche findet echte Rezeptlinks, auch auf Cookidoo. Agenten mit eingeschalteter Websuche sind mit „Websuche an“ markiert. „Keine“: Die Haupt-KI nennt nur Gerichte und der Essensplaner sucht selbst auf den Rezeptseiten (Cookidoo dann nicht).",
-          "create_search_agent": "Legt beim gewählten Anbieter den Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben aus. Bei Gemini mit Google-Suche und dem Modell gemini-3.8-flash, das im Test auch im Gratis-Tarif suchen durfte. Deine anderen Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
+          "create_search_agent": "Legt beim gewählten Anbieter den Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben aus. Modell je Anbieter: Gemini gemini-3.8-flash (im Test auch im Gratis-Tarif mit Suche), Claude claude-haiku-5-5, ChatGPT gpt-6.1-terra; im Agenten jederzeit änderbar. Deine anderen Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
           "ai_task": "Schlägt die Gerichte vor und bewertet „cholesterinarm“. Heißt meist „… AI Task“, z. B. „Google AI Task“.",
           "ai_shopping_names": "Aus „1 rote Paprikaschote, gewürfelt“ wird „Paprika“. Gut für Bring!, das feste Artikel kennt."
         }
@@ -244,7 +244,7 @@
         "data_description": {
           "proposals_from": "Normalfall: KI in Home Assistant. Externe KI nur, wenn eine geplante Aufgabe in einem KI-Abo liefert; kommt bis 5 Stunden nach der Planungszeit nichts, springt die Haupt-KI ein.",
           "ai_search": "Ein Agent mit Websuche findet echte Rezeptlinks, auch auf Cookidoo. Agenten mit eingeschalteter Websuche sind mit „Websuche an“ markiert. „Keine“: Die Haupt-KI nennt nur Gerichte und der Essensplaner sucht selbst auf den Rezeptseiten (Cookidoo dann nicht).",
-          "create_search_agent": "Legt beim gewählten Anbieter den Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben aus. Bei Gemini mit Google-Suche und dem Modell gemini-3.8-flash, das im Test auch im Gratis-Tarif suchen durfte. Deine anderen Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
+          "create_search_agent": "Legt beim gewählten Anbieter den Agenten „Essensplaner Rezeptsuche“ mit Websuche an und wählt ihn oben aus. Modell je Anbieter: Gemini gemini-3.8-flash (im Test auch im Gratis-Tarif mit Suche), Claude claude-haiku-5-5, ChatGPT gpt-6.1-terra; im Agenten jederzeit änderbar. Deine anderen Agenten und die Sprachsteuerung bleiben unverändert. „Nein“ = nichts anlegen.",
           "ai_task": "Schlägt die Gerichte vor und bewertet „cholesterinarm“. Heißt meist „… AI Task“, z. B. „Google AI Task“.",
           "ai_shopping_names": "Aus „1 rote Paprikaschote, gewürfelt“ wird „Paprika“. Gut für Bring!, das feste Artikel kennt."
         }

@@ -100,7 +100,9 @@ Chefkoch-Suche) und nimmt nur Treffer, die sich als passendes Rezept auslesen la
 auffindbar ist). Im Schritt KI das Häkchen „Such-Agent mit Websuche automatisch anlegen“ setzen: Der
 Essensplaner legt in deiner KI-Integration einen eigenen Gesprächsagenten „Essensplaner Rezeptsuche“ mit
 Websuche an – bei Google Gemini mit „Google Search tool“, bei Claude (Anthropic) und ChatGPT (OpenAI) mit
-„Web search“. Für Claude und ChatGPT braucht es ein API-Konto beim Anbieter (Abrechnung pro Nutzung,
+„Web search“. Alle Anbieter werden gleich behandelt: je ein aktuelles, günstiges Modell (Gemini `gemini-3.8-flash`,
+Claude `claude-haiku-5-5`, ChatGPT `gpt-6.1-terra`), Websuche an, 16000 „Maximale Tokens“, kein Zugriff aufs Haus;
+das Modell lässt sich im Agenten ändern. Für Claude und ChatGPT braucht es ein API-Konto beim Anbieter (Abrechnung pro Nutzung,
 getrennt von einem Chat-Abo). Bestehende Agenten und die Sprachsteuerung bleiben unverändert. Die Google-Suche ist im kostenlosen
 Gemini-Tarif begrenzt (Fehler 429 = Kontingent erschöpft); dann greift automatisch die eigene Suche.
 Tipp: Im kostenlosen Tarif von Google AI Studio lief im Test (11/2026) **Gemini 3.8 Flash** mit Google-Suche
@@ -118,8 +120,8 @@ Einmalig unter **Einstellungen → Geräte & Dienste → Integration hinzufügen
 | **Gemini (Google)** | aistudio.google.com → API-Schlüssel → Integration „Google Generative AI“ | kostenlos nutzbar (im Test mit Gemini 3.8 Flash); Google-Suche im Gratis-Tarif begrenzt |
 | **ChatGPT (OpenAI)** | platform.openai.com → Guthaben + API-Schlüssel → Integration „OpenAI Conversation“ | pro Nutzung |
 
-Danach im Essensplaner unter **KI** bei „Such-Agent mit Websuche anlegen bei“ den Anbieter wählen. Gute Mischung: Gemini
-als Haupt-KI (kostenlos), Claude nur für die Rezeptsuche. API-Schlüssel nie weitergeben.
+Danach im Essensplaner unter **KI** bei „Such-Agent mit Websuche anlegen bei“ den Anbieter wählen. Tipp: Gemini ist
+kostenlos nutzbar. API-Schlüssel nie weitergeben.
 
 ### Externe KI über dein Abo (ohne API-Schlüssel)
 Statt einer KI in Home Assistant kann eine KI außerhalb die Rezepte heraussuchen, zum Beispiel dein Claude- oder
@@ -169,13 +171,14 @@ Live getestet: Home Assistant 2026.11 auf Raspberry Pi 4, Deutsch, Bring!, Gemin
 externe KI über eine geplante Aufgabe mit MCP-App, alle Anzeigearten, Übernahme vom Vorgänger „Essensplaner“.
 Die automatischen Tests (95) laufen gegen Home Assistant 2026.2.
 
-Je ein Testlauf mit KI-Task und Such-Agent anderer Anbieter (11/2026, sonst Standardeinstellungen):
+Testläufe mit KI-Task und Such-Agent (11/2026, sonst Standardeinstellungen):
 
 | Modell | Ergebnis |
 |---|---|
-| OpenAI `gpt-6.1-terra` | bester Lauf: 10 Gerichte, die meisten Links von der KI selbst, ca. 1,5 Minuten |
+| Gemini `gemini-3.8-flash` | im täglichen Einsatz (Haupt-KI und Such-Agent) |
+| OpenAI `gpt-6.1-terra` | 10 Gerichte, die meisten Links von der KI selbst, ca. 1,5 Minuten |
 | OpenAI `gpt-6.1-sol` | 10 Gerichte, weniger eigene Links, ca. 5 Minuten |
-| Claude Sonnet 5.5 | 7 Gerichte, keine eigenen Links (alle über die eigene Suche) |
+| Claude Sonnet 5.5 | mit Standard-„Maximale Tokens“ (3000): 7 Gerichte, keine eigenen Links (alle über die eigene Suche) |
 | Claude Haiku 5.5 | mit Standard-„Maximale Tokens“ (3000) gescheitert, das Nachdenken hat sie aufgebraucht. Mit dem Such-Agenten, den die Integration anlegt (16000): 10 Gerichte, wenige eigene Links, ca. 8 Minuten |
 
 Die offizielle Integration *Model Context Protocol Server* funktioniert als MCP-Weg: in Claude als eigener Connector

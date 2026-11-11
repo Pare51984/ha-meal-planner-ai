@@ -62,7 +62,7 @@ TEXTS: dict[str, dict[str, Any]] = {
             "vier Aufrufe, beim letzten final: true setzen.\n"
             "6. Antworte zum Schluss mit einer kurzen Liste der übernommenen Gerichte."
         ),
-        "req_ai": "Ein KI-Abo mit geplanten Aufgaben und Websuche (z. B. Claude, ChatGPT; Gemini ungetestet)",
+        "req_ai": "Ein KI-Abo mit geplanten Aufgaben und Websuche (getestet mit Claude; ChatGPT und Gemini ungetestet)",
         "req_mcp": "Eine Verbindung dieser KI zu deinem Home Assistant über MCP: entweder die Integration "
                    "„Model Context Protocol Server“ mit der Werkzeug-Sammlung „Meal Planner AI“ oder ein MCP-Server, "
                    "der Aktionen aufrufen kann",
@@ -107,7 +107,7 @@ TEXTS: dict[str, dict[str, Any]] = {
             "final: true on the last one.\n"
             "6. Finally reply with a short list of the accepted dishes."
         ),
-        "req_ai": "An AI subscription with scheduled tasks and web search (e.g. Claude, ChatGPT; Gemini untested)",
+        "req_ai": "An AI subscription with scheduled tasks and web search (tested with Claude; ChatGPT and Gemini untested)",
         "req_mcp": "A connection from that AI to your Home Assistant via MCP: either the “Model Context Protocol "
                    "Server” integration with the “Meal Planner AI” tool set, or an MCP server that can call actions",
         "req_remote": "Remote access to Home Assistant from outside (e.g. Home Assistant Cloud or Cloudflare), "
@@ -151,7 +151,7 @@ TEXTS: dict[str, dict[str, Any]] = {
             "llamadas; en la última pon final: true.\n"
             "6. Al final responde con una lista corta de los platos aceptados."
         ),
-        "req_ai": "Una suscripción de IA con tareas programadas y búsqueda web (p. ej. Claude, ChatGPT; Gemini sin probar)",
+        "req_ai": "Una suscripción de IA con tareas programadas y búsqueda web (probado con Claude; ChatGPT y Gemini sin probar)",
         "req_mcp": "Una conexión de esa IA con tu Home Assistant por MCP: la integración «Model Context Protocol "
                    "Server» con el conjunto de herramientas «Meal Planner AI», o un servidor MCP que pueda llamar acciones",
         "req_remote": "Acceso remoto a Home Assistant desde fuera (p. ej. Home Assistant Cloud o Cloudflare), "
@@ -195,7 +195,7 @@ TEXTS: dict[str, dict[str, Any]] = {
             "na última define final: true.\n"
             "6. No fim responde com uma lista curta dos pratos aceites."
         ),
-        "req_ai": "Uma subscrição de IA com tarefas agendadas e pesquisa web (p. ex. Claude, ChatGPT; Gemini não testado)",
+        "req_ai": "Uma subscrição de IA com tarefas agendadas e pesquisa web (testado com Claude; ChatGPT e Gemini não testados)",
         "req_mcp": "Uma ligação dessa IA ao teu Home Assistant por MCP: a integração «Model Context Protocol Server» "
                    "com o conjunto de ferramentas «Meal Planner AI», ou um servidor MCP que consiga chamar ações",
         "req_remote": "Acesso remoto ao Home Assistant a partir de fora (p. ex. Home Assistant Cloud ou Cloudflare), "
@@ -240,7 +240,7 @@ TEXTS: dict[str, dict[str, Any]] = {
             "appels au maximum ; au dernier, mets final: true.\n"
             "6. Pour finir, réponds avec une courte liste des plats acceptés."
         ),
-        "req_ai": "Un abonnement IA avec tâches planifiées et recherche web (p. ex. Claude, ChatGPT ; Gemini non testé)",
+        "req_ai": "Un abonnement IA avec tâches planifiées et recherche web (testé avec Claude ; ChatGPT et Gemini non testés)",
         "req_mcp": "Une connexion de cette IA à ton Home Assistant via MCP : l'intégration « Model Context Protocol "
                    "Server » avec l'ensemble d'outils « Meal Planner AI », ou un serveur MCP capable d'appeler des actions",
         "req_remote": "Un accès à distance à Home Assistant (p. ex. Home Assistant Cloud ou Cloudflare), "

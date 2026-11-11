@@ -149,6 +149,8 @@ PROVIDER_NAMES = {"anthropic": "Claude (Anthropic)", "openai_conversation": "Cha
 
 def _create_agent_field(hass: HomeAssistant, ai_task: str | None, search: str) -> dict[Any, Any]:
     """Auswahl, bei welchem KI-Anbieter der Such-Agent angelegt wird (nur Anbieter ohne Such-Agent)."""
+    from homeassistant.helpers import entity_registry as er
+
     from .agent import _existing, pick_entry, provider_entries
 
     entries = [e for e in provider_entries(hass) if not _existing(e)]
@@ -157,9 +159,12 @@ def _create_agent_field(hass: HomeAssistant, ai_task: str | None, search: str) -
     options = [{"value": "no", "label": ui(hass.config.language, "no")}] + [
         {"value": e.entry_id, "label": f"{PROVIDER_NAMES.get(e.domain, e.domain)}: {e.title}"} for e in entries]
     default = "no"
-    if search == AI_NONE:
-        preferred = next((e for e in entries if e.domain == "anthropic"), None) or pick_entry(hass, ai_task)
-        default = preferred.entry_id if preferred in entries else entries[0].entry_id
+    if search == AI_NONE and ai_task and ai_task != AI_NONE:
+        # neutral: nur den Anbieter vorschlagen, den der Nutzer schon als Haupt-KI gewählt hat
+        preferred = pick_entry(hass, ai_task)
+        reg_entry = er.async_get(hass).async_get(ai_task)
+        if preferred in entries and reg_entry and reg_entry.config_entry_id == preferred.entry_id:
+            default = preferred.entry_id
     return {vol.Optional("create_search_agent", default=default): sel.SelectSelector(
         sel.SelectSelectorConfig(options=options, mode=sel.SelectSelectorMode.DROPDOWN))}
 

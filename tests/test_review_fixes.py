@@ -184,9 +184,29 @@ async def test_search_agent_named_by_provider(hass: HomeAssistant):
     assert agent_title("anthropic") == "Essensplaner Rezeptsuche (Claude)"
     assert agent_title("google_generative_ai_conversation") == "Essensplaner Rezeptsuche (Gemini)"
     assert PROVIDERS["google_generative_ai_conversation"]["chat_model"] == "models/gemini-3.8-flash"
+    # faire Wahl: alle Anbieter bekommen ein Modell, die gleiche Token-Grenze, Websuche und keinen Hauszugriff
+    for cfg in PROVIDERS.values():
+        assert cfg["chat_model"] and cfg["max_tokens"] == 16000 and cfg["llm_hass_api"] == []
     # alter Name ohne Anbieter wird weiter erkannt, damit kein zweiter Agent entsteht
     for title in (AGENT_TITLE, agent_title("anthropic")):
         entry = MockConfigEntry(domain="anthropic", subentries_data=[
             ConfigSubentryData(data={}, subentry_type="conversation", title=title, unique_id=None)])
         entry.add_to_hass(hass)
         assert _existing(entry)
+
+
+async def test_create_agent_default_is_neutral(hass: HomeAssistant):
+    """Ohne Haupt-KI schlägt die Einrichtung keinen Anbieter vor (früher fest Claude)."""
+    from types import SimpleNamespace
+    from unittest.mock import patch
+
+    from custom_components.meal_planner_ai.config_flow import _create_agent_field
+
+    fake = [SimpleNamespace(entry_id="a", domain="anthropic", title="Claude", subentries={}),
+            SimpleNamespace(entry_id="g", domain="google_generative_ai_conversation", title="Gemini", subentries={})]
+    with patch("custom_components.meal_planner_ai.agent.provider_entries", return_value=fake):
+        field = _create_agent_field(hass, None, "none")
+        assert next(iter(field)).default() == "no"
+        # mit einer Haupt-KI, die zu keinem Anbieter gehört, ebenfalls keine Vorauswahl
+        field = _create_agent_field(hass, "ai_task.irgendwas", "none")
+        assert next(iter(field)).default() == "no"

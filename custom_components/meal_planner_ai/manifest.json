@@ -25,5 +25,5 @@
     "recipe-scrapers==15.13.0"
   ],
   "single_config_entry": true,
-  "version": "0.39.3"
+  "version": "0.39.4"
 }

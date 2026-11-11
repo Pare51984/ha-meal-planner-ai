@@ -38,8 +38,9 @@ PROVIDERS: dict[str, dict[str, Any]] = {
         "recommended": False,
         "llm_hass_api": [],
         "enable_google_search_tool": True,
-        # Gemini 2.5 denkt vor der Antwort; das zählt mit zum Limit (8000 brach am 08.11.2026 ab)
-        "max_tokens": 30000,
+        # Gemini denkt vor der Antwort; das zählt mit zum Limit (8000 brach am 08.11.2026 ab).
+        # Für alle Anbieter gleich: 16000 Tokens und je ein aktuelles, günstiges Modell (faire Wahl)
+        "max_tokens": 16000,
         "thinking_budget": 4096,
         # 08.11.2026: mit 3.1 Flash Lite lehnte Google die Suche im kostenlosen Tarif ab (429), 2.5 Flash ging;
         # 11.11.2026: 3.8 Flash sucht im kostenlosen Tarif problemlos (Live-Betrieb)
@@ -52,6 +53,7 @@ PROVIDERS: dict[str, dict[str, Any]] = {
         "web_search_max_uses": 15,
         "user_location": False,
         "max_tokens": 16000,
+        "chat_model": "claude-haiku-5-5",  # 11.11.2026 live geprüft: 10 Gerichte
     },
     "openai_conversation": {
         "recommended": False,
@@ -60,6 +62,7 @@ PROVIDERS: dict[str, dict[str, Any]] = {
         "search_context_size": "medium",
         "user_location": False,
         "max_tokens": 16000,
+        "chat_model": "gpt-6.1-terra",  # 10.11.2026 live geprüft: 10 Gerichte, meiste Links selbst
     },
 }
 AUTO_PREFIX = "auto:"
