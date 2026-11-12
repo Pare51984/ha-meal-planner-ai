@@ -13,7 +13,6 @@ const I18N = {
     more: "Mehr Vorschläge", more_hint: "Holt 5 weitere Gerichte dazu, Gewähltes bleibt. Einfach auswählen, was passt.", cand: "Zur Auswahl für diese Woche", cand_hint: "kommt erst auf die Einkaufsliste, wenn ihr es wählt", plan_now: "Jetzt Vorschläge planen", plan_now_sure: "Nochmal tippen: jetzt planen", plan_now_hint: "Plant die kommende Woche sofort statt zum eingestellten Termin.", busy: "KI sucht Rezepte, 1 bis 3 Minuten …",
     shop_now: "{trip} jetzt einkaufen", shop_sure: "Nochmal tippen: {trip} kommt jetzt auf die Liste", shop_hint: "Ihr kauft früher ein? Dann kommt der Einkauf sofort auf die Einkaufsliste.",
     tl_plan: "**{n} Vorschläge** kommen als Kacheln. Wünsche bis dahin unten unter **Essenswünsche** eintragen.", tl_deadline: "**Auswahlschluss:** nicht Gewähltes verschwindet, die Woche steht.", tl_release: "**{trip}** kommt auf die Einkaufsliste, später Gewähltes sofort.",
-    m_admin: "Geschmacksprofil und Rezepte können nur Administratoren ändern.",
     title: "Essensplan", h_title: "So geht's", h_pick: "**Auswählen:** Pro Gericht einen Einkauf antippen ({trips}), nochmal tippen = abwählen. Gestrichelt = Tipp des Planers.", h_now: "{trip} kommt sofort nach dem Antippen auf die Einkaufsliste.", h_undo: "**Umentschieden?** Auf der Kachel **Doch nicht** drücken, die Zutaten kommen wieder von der Liste.", h_cook: "**Gekocht?** Kreis antippen. **Sterne** sind freiwillig und fließen in die nächsten Vorschläge ein.", sub_now: "sofort", sub_at: "ab {at}",
     x_changed: "Der Zeitplan hat sich geändert: Deine KI ist auf „{old}“ eingerichtet, jetzt gilt „{now}“. Schreib deiner KI noch einmal den Satz aus Schritt 3, damit sie die Aufgabe anpasst.",
     x_copy_phrase: "Satz kopieren", x_manual: "Klappt das nicht? Aufgabe von Hand anlegen", x_manual_hint: "Entweder die komplette Chat-Nachricht einfügen (mit Zeitplan und Text) oder in der KI selbst eine geplante Aufgabe mit dem Zeitplan oben und diesem Text anlegen.",
@@ -53,7 +52,6 @@ const I18N = {
     more: "More suggestions", more_hint: "Adds 5 more dishes, picked ones stay. Just pick what fits.", cand: "To choose for this week", cand_hint: "only goes on the shopping list once you pick it", plan_now: "Plan suggestions now", plan_now_sure: "Tap again: plan now", plan_now_hint: "Plans the coming week right away instead of at the scheduled time.", busy: "AI is searching recipes, 1 to 3 minutes …",
     shop_now: "Shop {trip} now", shop_sure: "Tap again: {trip} goes on the list now", shop_hint: "Shopping earlier? Then this trip goes on the shopping list right away.",
     tl_plan: "**{n} suggestions** arrive as tiles. Add wishes below under **Meal wishes** before then.", tl_deadline: "**Selection closes:** unpicked suggestions disappear, the week is set.", tl_release: "**{trip}** goes on the shopping list, later picks right away.",
-    m_admin: "Only administrators can change the taste profile and recipes.",
     title: "Meal plan", h_title: "How it works", h_pick: "**Choose:** tap a shopping trip per dish ({trips}), tap again to deselect. Dashed = the planner's tip.", h_now: "{trip} goes on the shopping list as soon as you tap.", h_undo: "**Changed your mind?** Press **Not after all** on the tile, the ingredients come off the list.", h_cook: "**Cooked?** Tap the circle. **Stars** are optional and shape the next suggestions.", sub_now: "right away", sub_at: "from {at}",
     x_changed: "The schedule has changed: your AI is set up for “{old}”, now it is “{now}”. Send your AI the sentence from step 3 again so it updates the task.",
     x_copy_phrase: "Copy sentence", x_manual: "Doesn't work? Create the task by hand", x_manual_hint: "Either paste the full chat message (with schedule and text) or create a scheduled task in the AI yourself with the schedule above and this text.",
@@ -93,7 +91,6 @@ const I18N = {
     more: "Más propuestas", more_hint: "Añade 5 platos más, lo elegido se queda. Elegid lo que encaje.", cand: "Para elegir esta semana", cand_hint: "solo va a la lista al elegirlo", plan_now: "Planificar ahora", plan_now_sure: "Toca otra vez: planificar ahora", plan_now_hint: "Planifica la próxima semana ya, en lugar de a la hora fijada.", busy: "La IA busca recetas, de 1 a 3 minutos …",
     shop_now: "Comprar {trip} ahora", shop_sure: "Toca otra vez: {trip} pasa ahora a la lista", shop_hint: "¿Compráis antes? Entonces esta compra pasa ya a la lista.",
     tl_plan: "Llegan **{n} propuestas** como tarjetas. Antes, añade deseos abajo en **Deseos de comida**.", tl_deadline: "**Cierre de la elección:** lo no elegido desaparece, la semana queda fijada.", tl_release: "**{trip}** pasa a la lista de la compra, lo elegido después al momento.",
-    m_admin: "Solo los administradores pueden cambiar el perfil de gustos y las recetas.",
     title: "Menú", h_title: "Cómo funciona", h_pick: "**Elegir:** toca una compra por plato ({trips}), otra vez = quitar. Discontinuo = consejo del planificador.", h_now: "{trip} pasa a la lista de la compra al tocarlo.", h_undo: "**¿Cambio de idea?** Pulsa **Mejor no** en la tarjeta, los ingredientes salen de la lista.", h_cook: "**¿Cocinado?** Toca el círculo. Las **estrellas** son opcionales y orientan las próximas propuestas.", sub_now: "al momento", sub_at: "desde {at}",
     x_changed: "El horario ha cambiado: tu IA está configurada para «{old}», ahora es «{now}». Envía de nuevo a tu IA la frase del paso 3 para que actualice la tarea.",
     x_copy_phrase: "Copiar frase", x_manual: "¿No funciona? Crear la tarea a mano", x_manual_hint: "Pega el mensaje completo (con horario y texto) o crea tú mismo en la IA una tarea programada con el horario de arriba y este texto.",
@@ -133,7 +130,6 @@ const I18N = {
     more: "Mais sugestões", more_hint: "Acrescenta mais 5 pratos, o escolhido fica. Escolham o que servir.", cand: "Para escolher esta semana", cand_hint: "só vai para a lista quando o escolherem", plan_now: "Planear agora", plan_now_sure: "Toca outra vez: planear agora", plan_now_hint: "Planeia a próxima semana já, em vez de à hora definida.", busy: "A IA procura receitas, 1 a 3 minutos …",
     shop_now: "Comprar {trip} agora", shop_sure: "Toca outra vez: {trip} vai agora para a lista", shop_hint: "Vão às compras mais cedo? Então esta compra vai já para a lista.",
     tl_plan: "Chegam **{n} sugestões** como cartões. Antes disso, adiciona desejos abaixo em **Desejos de refeição**.", tl_deadline: "**Fecho da escolha:** o que não foi escolhido desaparece, a semana fica definida.", tl_release: "**{trip}** vai para a lista de compras, escolhas posteriores de imediato.",
-    m_admin: "Só os administradores podem alterar o perfil de gostos e as receitas.",
     title: "Ementa", h_title: "Como funciona", h_pick: "**Escolher:** toca numa compra por prato ({trips}), de novo = retirar. Tracejado = dica do planeador.", h_now: "{trip} vai para a lista de compras ao tocar.", h_undo: "**Mudaste de ideias?** Carrega em **Afinal não** no cartão, os ingredientes saem da lista.", h_cook: "**Cozinhado?** Toca no círculo. As **estrelas** são opcionais e orientam as próximas sugestões.", sub_now: "já", sub_at: "a partir de {at}",
     x_changed: "O horário mudou: a tua IA está configurada para «{old}», agora é «{now}». Envia de novo à tua IA a frase do passo 3 para atualizar a tarefa.",
     x_copy_phrase: "Copiar frase", x_manual: "Não funciona? Criar a tarefa à mão", x_manual_hint: "Cola a mensagem completa (com horário e texto) ou cria tu mesmo na IA uma tarefa agendada com o horário acima e este texto.",
@@ -173,7 +169,6 @@ const I18N = {
     more: "Plus de propositions", more_hint: "Ajoute 5 plats de plus, les choix restent. Prenez ce qui convient.", cand: "À choisir cette semaine", cand_hint: "ne va sur la liste qu’une fois choisi", plan_now: "Planifier maintenant", plan_now_sure: "Touchez encore : planifier maintenant", plan_now_hint: "Planifie la semaine prochaine tout de suite au lieu de l'heure prévue.", busy: "L'IA cherche des recettes, 1 à 3 minutes …",
     shop_now: "Faire {trip} maintenant", shop_sure: "Touchez encore : {trip} va sur la liste maintenant", shop_hint: "Vous faites les courses plus tôt ? Cette course va tout de suite sur la liste.",
     tl_plan: "**{n} propositions** arrivent en tuiles. Ajoutez vos envies avant, ci-dessous sous **Envies de repas**.", tl_deadline: "**Clôture du choix :** ce qui n'est pas choisi disparaît, la semaine est fixée.", tl_release: "**{trip}** va sur la liste de courses, les choix suivants tout de suite.",
-    m_admin: "Seuls les administrateurs peuvent modifier le profil de goûts et les recettes.",
     title: "Menu", h_title: "Mode d'emploi", h_pick: "**Choisir :** touchez une course par plat ({trips}), à nouveau = retirer. Pointillés = conseil du planificateur.", h_now: "{trip} va sur la liste de courses dès que vous touchez.", h_undo: "**Changé d'avis ?** Appuyez sur **Finalement non** sur la tuile, les ingrédients quittent la liste.", h_cook: "**Cuisiné ?** Touchez le cercle. Les **étoiles** sont facultatives et guident les prochaines propositions.", sub_now: "tout de suite", sub_at: "dès {at}",
     x_changed: "L'horaire a changé : ton IA est configurée pour « {old} », maintenant c'est « {now} ». Renvoie à ton IA la phrase de l'étape 3 pour qu'elle mette la tâche à jour.",
     x_copy_phrase: "Copier la phrase", x_manual: "Ça ne marche pas ? Créer la tâche à la main", x_manual_hint: "Colle le message complet (avec horaire et texte) ou crée toi-même dans l'IA une tâche planifiée avec l'horaire ci-dessus et ce texte.",
@@ -451,11 +446,14 @@ class EssensplanerCard extends HTMLElement {
 
   _render() {
     if (!this.shadowRoot || !this._hass) return;
-    const admin = this._canSettings();
-    if (!admin) this._tab = "plan";
+    // Rezepte sehen und bewerten alle; Geschmacksprofil und Einstellungen nur Administratoren
+    const admin = this._isAdmin();
+    const avail = [["plan", "tab_plan"], ...(admin ? [["profile", "m_profile"]] : []), ["recipes", "m_recipes"],
+      ...(this._canSettings() ? [["settings", "tab_settings"]] : [])];
+    if (!avail.some(([k]) => k === this._tab)) this._tab = "plan";
     const cur = this._tab || "plan";
-    const tabs = this._titleHtml(this._config.title == null ? t("title") : this._config.title, "mdi:silverware-fork-knife") + (admin ? `<div class="tabs">${[["plan", "tab_plan"], ["profile", "m_profile"], ["recipes", "m_recipes"], ["settings", "tab_settings"]]
-      .map(([k, label]) => `<button class="tab ${cur === k ? "on" : ""}" data-tab="${k}">${t(label)}</button>`).join("")}</div>` : "");
+    const tabs = this._titleHtml(this._config.title == null ? t("title") : this._config.title, "mdi:silverware-fork-knife") + `<div class="tabs">${avail
+      .map(([k, label]) => `<button class="tab ${cur === k ? "on" : ""}" data-tab="${k}">${t(label)}</button>`).join("")}</div>`;
     if (this._tab === "settings") return this._paint(tabs + this._settingsHtml(), true);
     if (MEM_TABS.includes(this._tab)) return this._showMemory(tabs);
     const prop = this._attrs(this._config.proposals);
@@ -690,9 +688,8 @@ class EssensplanerCard extends HTMLElement {
 
   // ------------------------------------------------------------ Einstellungen ---
   // Nutzt den normalen Optionsdialog der Integration über die HA-API (nur für Administratoren).
-  _canSettings() {
-    return this._config.settings !== false && !!(this._hass && this._hass.user && this._hass.user.is_admin);
-  }
+  _isAdmin() { return !!(this._hass && this._hass.user && this._hass.user.is_admin); }
+  _canSettings() { return this._config.settings !== false && this._isAdmin(); }
   _t(key, ph) {
     let text = (this._trans || {})["component." + DOMAIN + "." + key];
     if (text == null || text === "") return null;
@@ -965,8 +962,6 @@ class EssensplanerMemoryCard extends HTMLElement {
     LANG = I18N[lang] ? lang : "en";
     // neu laden, wenn sich die Woche ändert (gekocht, bewertet)
     const id = this._config.week;
-    // Nicht-Admins sehen nur einen Hinweis: einmal zeichnen, nicht bei jeder Zustandsänderung im Haus
-    if (!(hass.user && hass.user.is_admin)) { if (!old) this._render(); return; }
     // Integration noch nicht geladen (z. B. kurz nach dem Neustart): nicht anfragen, sonst Fehler im Log.
     // Sobald der Sensor da ist, ändert er sich und das Laden startet von selbst.
     if (!hass.states[id]) { if (!old) this._render(); return; }
@@ -1021,6 +1016,7 @@ class EssensplanerMemoryCard extends HTMLElement {
   }
 
   _recipesHtml(d) {
+    const admin = !!(this._hass.user && this._hass.user.is_admin);  // löschen gilt für alle, daher nur Administratoren
     const q = this._q.toLowerCase();
     // nur bewertete Rezepte; alles andere ist Zwischenspeicher aus Vorschlägen
     let list = (d.recipes || []).filter((r) => r.rating).filter((r) => !q || (r.title || "").toLowerCase().includes(q) || (r.note || "").toLowerCase().includes(q));
@@ -1046,7 +1042,7 @@ class EssensplanerMemoryCard extends HTMLElement {
             ${r.note && !edit ? `<span class="l2">„${esc(r.note)}“</span>` : ""}</div>
           ${edit ? `<div class="rbox"><input id="n-${esc(r.id)}" value="${esc(r.note || "")}" placeholder="${esc(t("note_ph"))}"><button class="small on" data-act="savenote" data-id="${esc(r.id)}">${t("save")}</button></div>` : ""}
         </div>
-        <button class="x ${this._sure === r.id ? "warn" : ""}" data-act="del" data-id="${esc(r.id)}" aria-label="${t("m_del")}" title="${t("m_del")}">${this._sure === r.id ? t("m_del_sure") : "🗑"}</button></div>`;
+        ${admin ? `<button class="x ${this._sure === r.id ? "warn" : ""}" data-act="del" data-id="${esc(r.id)}" aria-label="${t("m_del")}" title="${t("m_del")}">${this._sure === r.id ? t("m_del_sure") : "🗑"}</button>` : ""}</div>`;
     };
     return `<div class="mbar"><input id="mq" placeholder="${esc(t("m_search"))}" value="${esc(this._q)}">
         <select id="msort">${["name", "rating", "last", "times"].map((k) => `<option value="${k}" ${this._sort === k ? "selected" : ""}>${t("m_sort_" + k)}</option>`).join("")}</select></div>
@@ -1058,13 +1054,11 @@ class EssensplanerMemoryCard extends HTMLElement {
 
   _render() {
     if (!this.shadowRoot || !this._hass) return;
-    if (!(this._hass.user && this._hass.user.is_admin)) {
-      // Profil und Rezepte ändern nur Administratoren (wie die Tabs in der Hauptkarte)
-      this.shadowRoot.innerHTML = `<style>${cardCss(this._config)}</style><div class="empty">${t("m_admin")}</div>`;
-      return;
-    }
+    // Rezepte sehen und bewerten alle; das Geschmacksprofil ändern nur Administratoren
+    const admin = !!(this._hass.user && this._hass.user.is_admin);
+    if (!admin) this._view = "recipes";
     const d = this._data;
-    const tabs = this._config.embedded ? "" : `<div class="tabs">${["profile", "recipes"].map((v) => `<button class="tab ${this._view === v ? "on" : ""}" data-view="${v}">${t(v === "profile" ? "m_profile" : "m_recipes")}</button>`).join("")}</div>`;
+    const tabs = this._config.embedded || !admin ? "" : `<div class="tabs">${["profile", "recipes"].map((v) => `<button class="tab ${this._view === v ? "on" : ""}" data-view="${v}">${t(v === "profile" ? "m_profile" : "m_recipes")}</button>`).join("")}</div>`;
     let body = this._err ? `<div class="empty err">${esc(this._err)}</div>` : "";
     if (!d) body += `<div class="empty">${t("loading")}</div>`;
     else body += this._view === "recipes" ? this._recipesHtml(d) : this._profileHtml(d);

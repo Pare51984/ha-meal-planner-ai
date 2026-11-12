@@ -247,7 +247,8 @@ async def test_settings_services_admin_only(hass, hass_read_only_user):
 
     entry = await setup_entry(hass)
     ctx = Context(user_id=hass_read_only_user.id)
-    for service, data in (("set_profile", {"text": "kein Fisch"}), ("external_setup", {"activate": True})):
+    for service, data in (("set_profile", {"text": "kein Fisch"}), ("external_setup", {"activate": True}),
+                          ("delete_recipe", {"recipe_id": "x"})):
         with pytest.raises(Unauthorized):
             await hass.services.async_call("meal_planner_ai", service, data, blocking=True,
                                            return_response=True, context=ctx)
@@ -265,3 +266,20 @@ def test_parser_imported_at_module_level():
 
     assert services.parse_recipe.__module__.endswith(".parser")
     assert "import" not in inspect.getsource(services.fetch_recipe)
+
+
+async def test_rating_open_to_all_users(hass, hass_read_only_user):
+    """Bewerten und Notizen gehen für alle (Reiter „Rezepte“ ist für jeden sichtbar)."""
+    from homeassistant.core import Context
+
+    from .test_integration import setup_entry
+
+    entry = await setup_entry(hass)
+    store = entry.runtime_data.store
+    store.recipes["r1"] = {"id": "r1", "title": "Linsencurry", "source_url": None, "ingredients": [],
+                           "history": {"status": "cooked", "rating": None, "cooked_on": [], "bought_on": None,
+                                       "note": None}}
+    ctx = Context(user_id=hass_read_only_user.id)
+    await hass.services.async_call("meal_planner_ai", "update_history", {"recipe_id": "r1", "rating": 8, "note": "lecker"},
+                                   blocking=True, context=ctx)
+    assert store.recipes["r1"]["history"]["rating"] == 8 and store.recipes["r1"]["history"]["note"] == "lecker"

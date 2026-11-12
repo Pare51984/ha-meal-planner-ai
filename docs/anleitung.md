@@ -46,7 +46,7 @@ doch noch gekocht, fällt die Kopie weg.
 einem Neustart). Scheitert die KI, versucht er es bis zu drei Mal und meldet den Fehler einmal per Push.
 
 ## 3. Die Karte bedienen
-Die Karte hat bis zu vier Reiter. „Geschmacksprofil“, „Rezepte“ und „Einstellungen“ sehen nur Administratoren.
+Die Karte hat bis zu vier Reiter. „Essensplan“ und „Rezepte“ sehen alle; im Reiter „Rezepte“ kann jeder bewerten, Bewertungen entfernen und Notizen schreiben, Rezepte löschen können nur Administratoren. „Geschmacksprofil“ und „Einstellungen“ sehen nur Administratoren.
 
 ### Bereiche im Reiter „Essensplan“
 | Bereich | Bedeutung |

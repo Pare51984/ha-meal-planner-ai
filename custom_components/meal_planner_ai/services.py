@@ -717,8 +717,8 @@ SERVICES: list[tuple[str, Any, vol.Schema, SupportsResponse]] = [
 ]
 
 
-# Diese Aktionen ändern die Einstellungen der Integration und sind daher nur für Administratoren.
-ADMIN_SERVICES = frozenset({"set_profile", "external_setup"})
+# Diese Aktionen ändern die Einstellungen der Integration oder löschen für den ganzen Haushalt: nur für Administratoren.
+ADMIN_SERVICES = frozenset({"set_profile", "external_setup", "delete_recipe"})
 
 
 def async_register_services(hass: HomeAssistant) -> None:

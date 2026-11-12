@@ -45,7 +45,7 @@ the next suggestions, already picked. If it gets cooked before the deadline, the
 after a restart). If the AI fails, it tries up to three times and reports the error once by push.
 
 ## 3. Using the card
-The card has up to four tabs. "Taste profile", "Recipes" and "Settings" are visible to administrators only.
+The card has up to four tabs. "Meal plan" and "Recipes" are visible to everyone; in "Recipes" anyone can rate, remove ratings and write notes, only administrators can delete recipes. "Taste profile" and "Settings" are visible to administrators only.
 
 ### Sections of the "Meal plan" tab
 | Section | Meaning |
