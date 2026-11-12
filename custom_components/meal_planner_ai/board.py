@@ -298,7 +298,7 @@ class WeekPlanner:
         _, _, dish = self.find(dish_id)
         dish["skip_items"] = sorted({n.strip() for n in names if n.strip()})
         if dish["on_list"]:
-            await async_remove_tag(self.hass, self._list_entity(), dish["title"])
+            await async_remove_tag(self.hass, self._list_entity(), dish["title"], self.store)
             dish["on_list"] = False
         report = await self.async_sync()
         return {"dish": dish, **report}
@@ -360,11 +360,11 @@ class WeekPlanner:
                     if want and not dish["on_list"]:
                         items = await self._items_for(dish)
                         if items:
-                            await async_add_items(self.hass, target, items, dish["title"])
+                            await async_add_items(self.hass, target, items, dish["title"], self.store)
                         dish["on_list"] = True
                         report["added"].append(dish["title"])
                     elif not want and dish["on_list"] and not dish["cooked_on"]:
-                        await async_remove_tag(self.hass, target, dish["title"])
+                        await async_remove_tag(self.hass, target, dish["title"], self.store)
                         dish["on_list"] = False
                         report["removed"].append(dish["title"])
                 except HomeAssistantError as err:
@@ -384,7 +384,7 @@ class WeekPlanner:
         for dish in (old or {}).get("dishes", []):
             if dish["id"] not in keep and dish.get("on_list") and not dish.get("cooked_on"):
                 try:
-                    await async_remove_tag(self.hass, self._list_entity(), dish["title"])
+                    await async_remove_tag(self.hass, self._list_entity(), dish["title"], self.store)
                 except HomeAssistantError as err:
                     _LOGGER.warning("Einkaufsliste für '%s' nicht bereinigt: %s", dish["title"], err)
 
@@ -473,7 +473,7 @@ class WeekPlanner:
                 dish["choice"] = CHOICE_DECLINED
             # auch Einkäufe, die es nach einer Änderung der Einstellungen nicht mehr gibt
             if dish["choice"] not in self.trip_keys and dish["on_list"]:
-                await async_remove_tag(self.hass, target, dish["title"])
+                await async_remove_tag(self.hass, target, dish["title"], self.store)
                 dish["on_list"] = False
         kept = [d for d in nxt["dishes"] if d["choice"] in self.trip_keys]
         per_trip = {k: sum(1 for d in kept if d["choice"] == k) for k in self.trip_keys}
@@ -1355,7 +1355,7 @@ class WeekPlanner:
         if new is None:
             raise HomeAssistantError("Kein passendes anderes Gericht gefunden. " + "; ".join(rejected[-3:]))
         if dish["on_list"]:
-            await async_remove_tag(self.hass, self._list_entity(), dish["title"])
+            await async_remove_tag(self.hass, self._list_entity(), dish["title"], self.store)
         new.update(nr=dish["nr"], choice=dish["choice"], tip=dish["choice"] if dish["choice"] in self.trip_keys
                    else new.get("tip"))
         board["dishes"][board["dishes"].index(dish)] = new

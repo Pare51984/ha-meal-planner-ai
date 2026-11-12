@@ -33,9 +33,10 @@ No extra app and no cloud service of its own: recipes are read straight from the
 * Languages: German, English, Spanish, Portuguese, French.
 
 ## Installation
-1. HACS → three dots → *Custom repositories* → add `https://github.com/Pare51984/ha-meal-planner-ai`
-   as type *Integration*, then install **Meal Planner AI**. (Manual: copy `custom_components/meal_planner_ai`
-   to `/config/custom_components/`.)
+1. Open HACS, search for **Meal Planner AI** and install it.
+   If it does not show up yet: HACS → three dots → *Custom repositories* → add
+   `https://github.com/Pare51984/ha-meal-planner-ai` as type *Integration*, then install it.
+   (Manual: copy `custom_components/meal_planner_ai` to `/config/custom_components/`.)
 2. Restart Home Assistant.
 3. Settings → Devices & services → Add integration → **Meal Planner AI**. Pick region, shopping list,
    kitchen devices, AI and where the card should appear.

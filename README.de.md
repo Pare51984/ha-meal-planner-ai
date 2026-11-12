@@ -14,9 +14,10 @@ wird nur die Rezeptseite selbst, über [recipe-scrapers](https://github.com/hhur
 > ausprobieren und Rückmeldung in den [Issues](https://github.com/Pare51984/ha-meal-planner-ai/issues) geben.
 
 ## Installation
-HACS → drei Punkte → *Benutzerdefinierte Repositories* → `https://github.com/Pare51984/ha-meal-planner-ai` als
-*Integration* hinzufügen und **Meal Planner AI** installieren (oder `custom_components/meal_planner_ai` von Hand nach
-`/config/custom_components/` kopieren), Home Assistant neu starten.
+In HACS nach **Meal Planner AI** suchen und installieren, danach Home Assistant neu starten.
+Falls die Integration dort noch nicht auftaucht: HACS → drei Punkte → *Benutzerdefinierte Repositories* →
+`https://github.com/Pare51984/ha-meal-planner-ai` als *Integration* hinzufügen und installieren
+(oder `custom_components/meal_planner_ai` von Hand nach `/config/custom_components/` kopieren).
 
 ## Einrichtung
 Einstellungen → Geräte & Dienste → Integration hinzufügen → **Meal Planner AI**.

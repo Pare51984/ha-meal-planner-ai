@@ -12,6 +12,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import Unauthorized
 from homeassistant.helpers import llm
 from homeassistant.util.json import JsonObjectType
 
@@ -85,7 +86,14 @@ class SetupTool(llm.Tool):
                          llm_context: llm.LLMContext) -> JsonObjectType:
         from .services import async_external_setup
 
-        return await async_external_setup(hass, bool(tool_input.tool_args.get("activate")))
+        activate = bool(tool_input.tool_args.get("activate"))
+        if activate:
+            # Umstellen ändert die Einstellungen: wie die Aktion external_setup nur für Administratoren
+            user_id = llm_context.context.user_id if llm_context.context else None
+            user = await hass.auth.async_get_user(user_id) if user_id else None
+            if user is None or not user.is_admin:
+                raise Unauthorized(context=llm_context.context)
+        return await async_external_setup(hass, activate)
 
 
 class EssensplanerAPI(llm.API):

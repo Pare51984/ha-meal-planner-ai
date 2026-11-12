@@ -17,6 +17,7 @@ from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, Supp
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.service import async_register_admin_service
 from homeassistant.util import dt as dt_util
 
 from .ai import AIError, assess_prompt, async_ask
@@ -36,6 +37,7 @@ from .const import (
     STATUSES,
     USER_AGENT,
 )
+from .parser import parse_recipe  # lädt recipe_scrapers beim Import des Moduls, nicht auf der Event-Loop
 from .planning import evaluate_recipe, planner_brief, settings_from_options, validate_plan
 from .shopping import async_add_items
 from .storage import RecipeStore
@@ -149,8 +151,6 @@ async def fetch_html(hass: HomeAssistant, url: str) -> tuple[str, str]:
 
 
 async def fetch_recipe(hass: HomeAssistant, url: str) -> dict[str, Any]:
-    from .parser import parse_recipe  # Bibliothek erst bei Bedarf laden
-
     html, final_url = await fetch_html(hass, url)
     try:
         return await hass.async_add_executor_job(parse_recipe, html, final_url)
@@ -354,7 +354,7 @@ async def _add_to_shopping_list(call: ServiceCall) -> ServiceResponse:
     portions = call.data.get("servings") or settings["portions"]
     items, staples = await entry.runtime_data.planner.async_recipe_items(recipe, portions)
     target = _list_entity(hass, entry)
-    written = await async_add_items(hass, target, items, recipe.get("title") or recipe["id"])
+    written = await async_add_items(hass, target, items, recipe.get("title") or recipe["id"], store)
     store.update_history(recipe["id"], status=STATUS_BOUGHT)
     fmt = lambda i: f"{i['name']} ({i['spec']})" if i["spec"] else i["name"]  # noqa: E731
     return {
@@ -717,6 +717,13 @@ SERVICES: list[tuple[str, Any, vol.Schema, SupportsResponse]] = [
 ]
 
 
+# Diese Aktionen ändern die Einstellungen der Integration und sind daher nur für Administratoren.
+ADMIN_SERVICES = frozenset({"set_profile", "external_setup"})
+
+
 def async_register_services(hass: HomeAssistant) -> None:
     for name, handler, schema, response in SERVICES:
-        hass.services.async_register(DOMAIN, name, handler, schema=schema, supports_response=response)
+        if name in ADMIN_SERVICES:
+            async_register_admin_service(hass, DOMAIN, name, handler, schema=schema, supports_response=response)
+        else:
+            hass.services.async_register(DOMAIN, name, handler, schema=schema, supports_response=response)

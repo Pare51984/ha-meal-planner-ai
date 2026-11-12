@@ -235,3 +235,33 @@ async def test_builtin_sources_removable_and_restorable(hass: HomeAssistant):
     assert flow["type"] is FlowResultType.CREATE_ENTRY, flow
     await hass.async_block_till_done()
     assert "chefkoch.de" in (await call(hass, "get_settings"))["planner"]["enabled_sources"]
+
+
+async def test_settings_services_admin_only(hass, hass_read_only_user):
+    """set_profile und external_setup ändern die Einstellungen: nur für Administratoren."""
+    import pytest
+    from homeassistant.core import Context
+    from homeassistant.exceptions import Unauthorized
+
+    from .test_integration import setup_entry
+
+    entry = await setup_entry(hass)
+    ctx = Context(user_id=hass_read_only_user.id)
+    for service, data in (("set_profile", {"text": "kein Fisch"}), ("external_setup", {"activate": True})):
+        with pytest.raises(Unauthorized):
+            await hass.services.async_call("meal_planner_ai", service, data, blocking=True,
+                                           return_response=True, context=ctx)
+    assert entry.options.get("profile", "") != "kein Fisch"
+    res = await hass.services.async_call("meal_planner_ai", "set_profile", {"text": "kein Fisch"},
+                                         blocking=True, return_response=True)
+    assert res["profile_text"] == "kein Fisch"
+
+
+def test_parser_imported_at_module_level():
+    """recipe_scrapers wird mit dem Modul geladen (Import-Executor), nicht beim ersten Abruf auf der Event-Loop."""
+    import inspect
+
+    from custom_components.meal_planner_ai import services
+
+    assert services.parse_recipe.__module__.endswith(".parser")
+    assert "import" not in inspect.getsource(services.fetch_recipe)

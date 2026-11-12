@@ -4,6 +4,11 @@ Format wie im bisherigen Planer: Artikelname (Katalogname) als Eintrag, in der
 Beschreibung Teile "<Menge> (<Gericht>)", mehrere Gerichte mit " + " verbunden.
 So kann jedes Gericht einzeln wieder ausgetragen werden. Abgehakte Einträge
 werden nie angefasst und nie neu angelegt.
+
+Gelöscht werden nur Einträge, die die Integration selbst angelegt hat (Namen je Liste
+im Speicher unter OWNED_KEY). In einen Eintrag des Haushalts (z. B. selbst eingetragene
+„Milch“) wird nur ein Teil in die Beschreibung geschrieben; beim Austragen wird die
+Beschreibung wiederhergestellt, der Eintrag bleibt stehen.
 """
 
 from __future__ import annotations
@@ -19,6 +24,47 @@ from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from .classify import format_amount, parse_ingredient, servings_from_yields
 
 _LOGGER = logging.getLogger(__name__)
+
+OWNED_KEY = "shopping_owned"  # {Listen-Entität: [Artikelnamen in Kleinbuchstaben, die wir angelegt haben]}
+_OWNED_MAX = 500
+
+
+class _Owned:
+    """Welche offenen Einträge hat die Integration selbst angelegt? Liegt im Rezeptspeicher (meta)."""
+
+    def __init__(self, store: Any, entity_id: str) -> None:
+        self._store = store
+        self._entity = entity_id
+        data = store.meta.get(OWNED_KEY) if store is not None else None
+        self._names: list[str] = list((data or {}).get(entity_id, []))
+
+    def __contains__(self, name: str) -> bool:
+        return name.strip().lower() in self._names
+
+    def add(self, name: str) -> None:
+        key = name.strip().lower()
+        if key not in self._names:
+            self._names = [*self._names, key][-_OWNED_MAX:]
+            self._save()
+
+    def discard(self, name: str) -> None:
+        key = name.strip().lower()
+        if key in self._names:
+            self._names = [n for n in self._names if n != key]
+            self._save()
+
+    def _save(self) -> None:
+        if self._store is None:
+            return
+        data = dict(self._store.meta.get(OWNED_KEY) or {})
+        data[self._entity] = self._names
+        self._store.set_meta(OWNED_KEY, data)
+
+
+def _only_ours(description: str | None) -> bool:
+    """Besteht die Beschreibung nur aus unseren Teilen „… (Gericht)“? Leer zählt nicht."""
+    parts = [p.strip() for p in (description or "").split(" + ") if p.strip()]
+    return bool(parts) and all(p.endswith(")") for p in parts)
 
 DEFAULT_STAPLES = "Salz, Pfeffer, Zucker, Öl, Olivenöl, Rapsöl, Sonnenblumenöl, Pflanzenöl, Essig, Mehl, Brühe, Gemüsebrühe, Wasser"
 DEFAULT_CATALOG = """Emmentaler gerieben = Reibekäse
@@ -211,9 +257,12 @@ async def _item_call(hass: HomeAssistant, entity_id: str, service: str, data: di
 
 
 async def async_add_items(
-    hass: HomeAssistant, entity_id: str, items: list[dict[str, str]], tag: str
+    hass: HomeAssistant, entity_id: str, items: list[dict[str, str]], tag: str, store: Any = None
 ) -> list[dict[str, str]]:
-    """Zutaten eines Gerichts eintragen; vorhandene offene Artikel bekommen einen weiteren Teil."""
+    """Zutaten eines Gerichts eintragen; vorhandene offene Artikel bekommen einen weiteren Teil.
+
+    store: Rezeptspeicher, in dem gemerkt wird, welche Einträge wir selbst angelegt haben."""
+    owned = _Owned(store, entity_id)
     features = await _features(hass, entity_id)
     if not features & TodoListEntityFeature.CREATE_TODO_ITEM:
         raise HomeAssistantError(f"In {entity_id} können keine Einträge angelegt werden.")
@@ -237,6 +286,8 @@ async def async_add_items(
                 result.append({**item, "action": "already"})
                 continue
             new_desc = f"{desc} + {part}" if desc else part
+            if found["summary"] in owned and not _only_ours(desc):
+                owned.discard(found["summary"])  # gleichnamiger Eintrag des Haushalts, nicht unserer
             if await _item_call(hass, entity_id, "update_item", {"item": found["uid"], "description": new_desc}):
                 found["description"] = new_desc
                 result.append({**item, "action": "merged"})
@@ -250,6 +301,8 @@ async def async_add_items(
             if found and found.get("uid"):
                 desc = found.get("description") or ""
                 new_desc = f"{desc} + {part}" if desc else part
+                if found["summary"] in owned and not _only_ours(desc):
+                    owned.discard(found["summary"])
                 if await _item_call(hass, entity_id, "update_item", {"item": found["uid"], "description": new_desc}):
                     found["description"] = new_desc
                     result.append({**item, "action": "merged"})
@@ -257,17 +310,22 @@ async def async_add_items(
         await hass.services.async_call(
             "todo", "add_item",
             {"entity_id": entity_id, "item": item["name"], "description": part}, blocking=True)
+        owned.add(item["name"])
         result.append({**item, "action": "added"})
         # Namen sind innerhalb eines Gerichts eindeutig: lokal merken statt die ganze Liste neu zu laden
         existing[item["name"].strip().lower()] = {"summary": item["name"], "description": part}
     return result
 
 
-async def async_remove_tag(hass: HomeAssistant, entity_id: str, tag: str) -> list[str]:
-    """Alle Teile eines Gerichts aus offenen Einträgen entfernen; leere Einträge löschen.
+async def async_remove_tag(hass: HomeAssistant, entity_id: str, tag: str, store: Any = None) -> list[str]:
+    """Alle Teile eines Gerichts aus offenen Einträgen entfernen.
+
+    Leer gewordene Einträge werden nur gelöscht, wenn wir sie selbst angelegt haben; bei Einträgen
+    des Haushalts wird nur unser Teil aus der Beschreibung genommen (die ursprüngliche bleibt).
 
     Nach jeder Änderung wird die Liste neu gelesen, weil manche Listen dabei die IDs neu vergeben.
     Einträge, die es nicht mehr gibt, werden still übergangen (dann ist ja nichts mehr auszutragen)."""
+    owned = _Owned(store, entity_id)
     features = await _features(hass, entity_id)
     with_desc = bool(features & TodoListEntityFeature.SET_DESCRIPTION_ON_ITEM)
     marker = _marker(tag)
@@ -286,10 +344,13 @@ async def async_remove_tag(hass: HomeAssistant, entity_id: str, tag: str) -> lis
         rest = strip_tag(item.get("description"), tag) if with_desc else ""
         if rest and rest == (item.get("description") or "").strip():
             break  # nichts zu entfernen (sollte mit has_tag nicht vorkommen): nie im Kreis laufen
-        if rest:
+        ours = not with_desc or item["summary"] in owned
+        if rest or not ours:
             ok = await _item_call(hass, entity_id, "update_item", {"item": item["uid"], "description": rest})
         else:
             ok = await _item_call(hass, entity_id, "remove_item", {"item": item["uid"]})
+            if ok:
+                owned.discard(item["summary"])
         if ok:
             removed.append(item["summary"])
         else:
