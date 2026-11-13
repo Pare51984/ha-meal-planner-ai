@@ -37,8 +37,8 @@ const I18N = {
     ext: "Dieselben Einstellungen findest du auch unter", ext_path: "Einstellungen → Geräte & Dienste → Essensplaner",
     saved: "„{s}“ gespeichert. Der Essensplaner übernimmt die Änderung sofort.", saving: "Speichert …", next: "Weiter",
     cancel: "Abbrechen", back: "Zurück", all_settings: "Alle Einstellungen", no_choice: "Keine Auswahl verfügbar.",
-    m_title: "Gemerkt", m_profile: "Geschmacksprofil", m_recipes: "Rezepte", m_scale: "Sterne steuern die nächsten Vorschläge: 7–10 gemocht, die KI nimmt das Gericht als Vorbild. 5–6 neutral, kein Vorbild, kommt aber ab und zu wieder. 1–4 nicht gemocht, wird nicht mehr vorgeschlagen.",
-    m_profile_hint: "Das bekommt die KI bei jeder Planung mit. Sterne ändern oder ✕ entfernt den Eintrag aus dem Profil, das Rezept bleibt gespeichert.",
+    m_title: "Gemerkt", m_profile: "Geschmacksprofil", m_scale: "Sterne steuern die nächsten Vorschläge: 7–10 gemocht, die KI nimmt das Gericht als Vorbild. 5–6 neutral, kein Vorbild, kommt aber ab und zu wieder. 1–4 nicht gemocht, wird nicht mehr vorgeschlagen.",
+    m_profile_hint: "Das bekommt die KI bei jeder Planung mit. Wer die Sterne ändert, verschiebt das Rezept in die passende Gruppe; „Bewertung entfernen“ nimmt es aus dem Profil, gespeichert bleibt es trotzdem.", m_rules_ro: "Nur Administratoren können den Text ändern.",
     m_rules: "Grundregeln und Geschmack", m_rules_hint: "Freitext für alle Planungen, z. B. Vorlieben, Abneigungen, Allergien.",
     m_rules_ph: "z. B. Wir essen gern scharf, keine Pilze, Fisch höchstens einmal pro Woche",
     m_liked: "Gemocht", m_neutral: "Neutral", m_disliked: "Nicht gemocht", m_recent: "In den letzten 4 Wochen gekocht",
@@ -76,8 +76,8 @@ const I18N = {
     ext: "The same settings are also under", ext_path: "Settings → Devices & services → Essensplaner",
     saved: "“{s}” saved. The meal planner applies the change right away.", saving: "Saving …", next: "Next",
     cancel: "Cancel", back: "Back", all_settings: "All settings", no_choice: "Nothing to choose.",
-    m_title: "Remembered", m_profile: "Taste profile", m_recipes: "Recipes", m_scale: "Stars shape the next suggestions: 7–10 liked, the AI takes the dish as an example. 5–6 neutral, no example, but may come back now and then. 1–4 disliked, no longer suggested.",
-    m_profile_hint: "The AI gets this with every planning run. Change the stars or ✕ to remove the entry from the profile; the recipe stays stored.",
+    m_title: "Remembered", m_profile: "Taste profile", m_scale: "Stars shape the next suggestions: 7–10 liked, the AI takes the dish as an example. 5–6 neutral, no example, but may come back now and then. 1–4 disliked, no longer suggested.",
+    m_profile_hint: "The AI gets this with every planning run. Changing the stars moves the recipe to the matching group; \"Remove rating\" takes it out of the profile, it stays stored.", m_rules_ro: "Only administrators can change this text.",
     m_rules: "Basic rules and taste", m_rules_hint: "Free text for all planning runs, e.g. likes, dislikes, allergies.",
     m_rules_ph: "e.g. We like it spicy, no mushrooms, fish at most once a week",
     m_liked: "Liked", m_neutral: "Neutral", m_disliked: "Disliked", m_recent: "Cooked in the last 4 weeks",
@@ -95,8 +95,8 @@ const I18N = {
     x_changed: "El horario ha cambiado: tu IA está configurada para «{old}», ahora es «{now}». Envía de nuevo a tu IA la frase del paso 3 para que actualice la tarea.",
     x_copy_phrase: "Copiar frase", x_manual: "¿No funciona? Crear la tarea a mano", x_manual_hint: "Pega el mensaje completo (con horario y texto) o crea tú mismo en la IA una tarea programada con el horario de arriba y este texto.",
     x_how: "Cómo crear la tarea en tu IA (Home Assistant no puede hacerlo por ti)", x_copy_chat: "Copiar mensaje para el chat", x_copy: "Copiar solo el texto de la tarea",
-    m_title: "Guardado", m_profile: "Perfil de gustos", m_recipes: "Recetas", m_scale: "Las estrellas guían las próximas propuestas: 7–10 gustó, la IA lo toma como ejemplo. 5–6 neutral, no es ejemplo, pero puede volver de vez en cuando. 1–4 no gustó, ya no se propone.",
-    m_profile_hint: "Esto recibe la IA en cada planificación. Cambia las estrellas o ✕ quita la entrada del perfil; la receta se queda guardada.",
+    m_title: "Guardado", m_profile: "Perfil de gustos", m_scale: "Las estrellas guían las próximas propuestas: 7–10 gustó, la IA lo toma como ejemplo. 5–6 neutral, no es ejemplo, pero puede volver de vez en cuando. 1–4 no gustó, ya no se propone.",
+    m_profile_hint: "Esto recibe la IA en cada planificación. Cambiar las estrellas mueve la receta al grupo correspondiente; \"Quitar valoración\" la saca del perfil, la receta se queda guardada.", m_rules_ro: "Solo los administradores pueden cambiar este texto.",
     m_rules: "Reglas básicas y gustos", m_rules_hint: "Texto libre para todas las planificaciones, p. ej. preferencias, rechazos, alergias.",
     m_rules_ph: "p. ej. Nos gusta el picante, sin setas, pescado como mucho una vez por semana",
     m_liked: "Gustó", m_neutral: "Neutral", m_disliked: "No gustó", m_recent: "Cocinado en las últimas 4 semanas",
@@ -134,8 +134,8 @@ const I18N = {
     x_changed: "O horário mudou: a tua IA está configurada para «{old}», agora é «{now}». Envia de novo à tua IA a frase do passo 3 para atualizar a tarefa.",
     x_copy_phrase: "Copiar frase", x_manual: "Não funciona? Criar a tarefa à mão", x_manual_hint: "Cola a mensagem completa (com horário e texto) ou cria tu mesmo na IA uma tarefa agendada com o horário acima e este texto.",
     x_how: "Como criar a tarefa na tua IA (o Home Assistant não o faz por ti)", x_copy_chat: "Copiar mensagem para o chat", x_copy: "Copiar só o texto da tarefa",
-    m_title: "Guardado", m_profile: "Perfil de gosto", m_recipes: "Receitas", m_scale: "As estrelas orientam as próximas sugestões: 7–10 gostámos, a IA usa o prato como exemplo. 5–6 neutro, não é exemplo, mas pode voltar de vez em quando. 1–4 não gostámos, deixa de ser sugerido.",
-    m_profile_hint: "É isto que a IA recebe em cada planeamento. Muda as estrelas ou ✕ remove a entrada do perfil; a receita continua guardada.",
+    m_title: "Guardado", m_profile: "Perfil de gosto", m_scale: "As estrelas orientam as próximas sugestões: 7–10 gostámos, a IA usa o prato como exemplo. 5–6 neutro, não é exemplo, mas pode voltar de vez em quando. 1–4 não gostámos, deixa de ser sugerido.",
+    m_profile_hint: "É isto que a IA recebe em cada planeamento. Mudar as estrelas move a receita para o grupo certo; \"Remover avaliação\" tira-a do perfil, a receita continua guardada.", m_rules_ro: "Só os administradores podem alterar este texto.",
     m_rules: "Regras básicas e gosto", m_rules_hint: "Texto livre para todos os planeamentos, p. ex. preferências, rejeições, alergias.",
     m_rules_ph: "p. ex. Gostamos de picante, sem cogumelos, peixe no máximo uma vez por semana",
     m_liked: "Gostámos", m_neutral: "Neutro", m_disliked: "Não gostámos", m_recent: "Cozinhado nas últimas 4 semanas",
@@ -173,8 +173,8 @@ const I18N = {
     x_changed: "L'horaire a changé : ton IA est configurée pour « {old} », maintenant c'est « {now} ». Renvoie à ton IA la phrase de l'étape 3 pour qu'elle mette la tâche à jour.",
     x_copy_phrase: "Copier la phrase", x_manual: "Ça ne marche pas ? Créer la tâche à la main", x_manual_hint: "Colle le message complet (avec horaire et texte) ou crée toi-même dans l'IA une tâche planifiée avec l'horaire ci-dessus et ce texte.",
     x_how: "Créer la tâche dans ton IA (Home Assistant ne peut pas le faire à ta place)", x_copy_chat: "Copier le message", x_copy: "Copier seulement le texte de la tâche",
-    m_title: "Mémorisé", m_profile: "Profil de goût", m_recipes: "Recettes", m_scale: "Les étoiles guident les prochaines propositions : 7–10 aimé, l'IA prend le plat comme exemple. 5–6 neutre, pas un exemple, mais peut revenir de temps en temps. 1–4 pas aimé, n'est plus proposé.",
-    m_profile_hint: "C'est ce que l'IA reçoit à chaque planification. Change les étoiles ou ✕ retire l'entrée du profil ; la recette reste enregistrée.",
+    m_title: "Mémorisé", m_profile: "Profil de goût", m_scale: "Les étoiles guident les prochaines propositions : 7–10 aimé, l'IA prend le plat comme exemple. 5–6 neutre, pas un exemple, mais peut revenir de temps en temps. 1–4 pas aimé, n'est plus proposé.",
+    m_profile_hint: "C'est ce que l'IA reçoit à chaque planification. Changer les étoiles déplace la recette dans le bon groupe ; « Retirer la note » la sort du profil, la recette reste enregistrée.", m_rules_ro: "Seuls les administrateurs peuvent modifier ce texte.",
     m_rules: "Règles de base et goûts", m_rules_hint: "Texte libre pour toutes les planifications, p. ex. préférences, aversions, allergies.",
     m_rules_ph: "p. ex. On aime épicé, pas de champignons, poisson au plus une fois par semaine",
     m_liked: "Aimé", m_neutral: "Neutre", m_disliked: "Pas aimé", m_recent: "Cuisiné ces 4 dernières semaines",
@@ -250,9 +250,12 @@ const themeCss = (config) => {
 
 // Bewertung: 10 Sterne (bis 0.40 waren es 5; die Texte in I18N.rating gelten je zwei Sterne)
 const STAR_MAX = 10;
+// Gruppen wie im Backend (const.py RATING_LIKED / RATING_DISLIKED)
+const RATING_LIKED = 7;
+const RATING_DISLIKED = 4;
 const STARS = Array.from({ length: STAR_MAX }, (_, i) => i + 1);
 const DOCS_URL = "https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/";
-const MEM_TABS = ["profile", "recipes"];
+const MEM_TABS = ["profile"];
 const cardCss = (config) => `
       :host{display:block;
         --_tile:var(--ep-tile,var(--ha-card-background,var(--card-background-color,#fff)));
@@ -378,6 +381,8 @@ const cardCss = (config) => `
       .mbar input,.mbar select,.ptext{font:inherit;font-size:13px;border:1px solid var(--_border);border-radius:calc(var(--_radius) * .6);padding:7px 10px;background:var(--_input);color:var(--_text)}
       .mbar input{flex:1;min-width:140px}
       .ptext{width:100%;box-sizing:border-box;min-height:80px;resize:vertical}
+      .ptext.ro{min-height:0;white-space:pre-wrap;margin-bottom:4px}
+      .desc.scale{margin:0 2px 10px}
       .count{font-weight:400;color:var(--_muted)}
       .xbox{max-width:none}
       .xl{margin:4px 0 10px;padding-left:20px;font-size:13px;line-height:1.4}
@@ -446,10 +451,8 @@ class EssensplanerCard extends HTMLElement {
 
   _render() {
     if (!this.shadowRoot || !this._hass) return;
-    // Rezepte sehen und bewerten alle; Geschmacksprofil und Einstellungen nur Administratoren
-    const admin = this._isAdmin();
-    const avail = [["plan", "tab_plan"], ...(admin ? [["profile", "m_profile"]] : []), ["recipes", "m_recipes"],
-      ...(this._canSettings() ? [["settings", "tab_settings"]] : [])];
+    // Geschmacksprofil sehen und bewerten alle (Freitext ändern nur Administratoren), Einstellungen nur Administratoren
+    const avail = [["plan", "tab_plan"], ["profile", "m_profile"], ...(this._canSettings() ? [["settings", "tab_settings"]] : [])];
     if (!avail.some(([k]) => k === this._tab)) this._tab = "plan";
     const cur = this._tab || "plan";
     const tabs = this._titleHtml(this._config.title == null ? t("title") : this._config.title, "mdi:silverware-fork-knife") + `<div class="tabs">${avail
@@ -665,7 +668,6 @@ class EssensplanerCard extends HTMLElement {
       this._mem = document.createElement("meal-planner-memory-card");
       this._mem.setConfig({ ...this._config, embedded: true });
     }
-    this._mem._view = this._tab;
     this.shadowRoot.getElementById("mem").appendChild(this._mem);
     this._mem.hass = this._hass;
     this._mem._render();
@@ -945,7 +947,6 @@ class EssensplanerCard extends HTMLElement {
 class EssensplanerMemoryCard extends HTMLElement {
   setConfig(config) {
     this._config = { ...DEFAULTS, ...(config || {}) };
-    this._view = this._view || "profile";
     this._q = this._q || "";
     this._sort = this._sort || "name";
     this._limit = 30;
@@ -998,36 +999,26 @@ class EssensplanerMemoryCard extends HTMLElement {
     return `${d}.${m}.${y}`;
   }
 
+  // Geschmacksprofil für alle: Freitext (ändern nur Administratoren), darunter die bewerteten Rezepte
+  // in den Gruppen, wie die KI sie bekommt. Bewerten und Notizen gehen für alle, löschen nur für Administratoren.
   _profileHtml(d) {
-    const row = (r, recent) => `<div class="mrow"><div class="txt"><div class="name">${this._title(r)}</div>
-        <div class="mtools">${recent ? `<span class="l2">${esc(t("m_last", { d: this._date(r.last) }))}</span>` : this._stars(r, "rate")}
-        ${r.note ? `<span class="l2">„${esc(r.note)}“</span>` : ""}</div></div>
-        ${recent ? `<button class="x" data-act="uncook" data-id="${esc(r.id)}" data-day="${esc(r.last)}" aria-label="✕">✕</button>`
-          : `<button class="x" data-act="unrate" data-id="${esc(r.id)}" aria-label="${t("m_unrate")}" title="${t("m_unrate")}">✕</button>`}</div>`;
-    const block = (title, list, recent, hint) => `<div class="form"><h3>${title} <span class="count">${list.length}</span></h3>
-      ${hint ? `<div class="desc">${esc(hint)}</div>` : ""}
-      ${list.length ? list.map((r) => row(r, recent)).join("") : `<div class="l2">${t("m_none")}</div>`}</div>`;
-    return `<div class="sec">${t("m_profile")}<span>${esc(t("m_profile_hint"))}</span></div>
-      <div class="form"><h3>${t("m_rules")}</h3><div class="desc">${esc(t("m_rules_hint"))}</div>
-        <textarea id="ptext" class="ptext" placeholder="${esc(t("m_rules_ph"))}">${esc(this._ptext ?? d.profile_text)}</textarea>
-        <div class="actions"><button class="small on" data-act="saveprofile">${t("save")}</button>${this._ok ? `<span class="hint">${t("m_saved")}</span>` : ""}</div></div>
-      ${block(t("m_liked"), d.liked || [], false)}${block(t("m_neutral"), d.neutral || [], false)}${block(t("m_disliked"), d.disliked || [], false)}
-      ${block(t("m_recent"), d.recent || [], true, t("m_recent_hint"))}`;
-  }
-
-  _recipesHtml(d) {
-    const admin = !!(this._hass.user && this._hass.user.is_admin);  // löschen gilt für alle, daher nur Administratoren
+    const admin = !!(this._hass.user && this._hass.user.is_admin);
     const q = this._q.toLowerCase();
-    // nur bewertete Rezepte; alles andere ist Zwischenspeicher aus Vorschlägen
-    let list = (d.recipes || []).filter((r) => r.rating).filter((r) => !q || (r.title || "").toLowerCase().includes(q) || (r.note || "").toLowerCase().includes(q));
     const by = {
       name: (a, b) => (a.title || "").localeCompare(b.title || ""),
       rating: (a, b) => (b.rating || 0) - (a.rating || 0) || (a.title || "").localeCompare(b.title || ""),
       last: (a, b) => String(b.last || "").localeCompare(String(a.last || "")),
       times: (a, b) => b.times - a.times,
     };
-    list = [...list].sort(by[this._sort] || by.name);
-    const shown = list.slice(0, this._limit);
+    // nur bewertete Rezepte; alles andere ist Zwischenspeicher aus Vorschlägen
+    const rated = (d.recipes || []).filter((r) => r.rating)
+      .filter((r) => !q || (r.title || "").toLowerCase().includes(q) || (r.note || "").toLowerCase().includes(q))
+      .sort(by[this._sort] || by.name);
+    const groups = [
+      [t("m_liked"), rated.filter((r) => r.rating >= RATING_LIKED)],
+      [t("m_neutral"), rated.filter((r) => r.rating > RATING_DISLIKED && r.rating < RATING_LIKED)],
+      [t("m_disliked"), rated.filter((r) => r.rating <= RATING_DISLIKED)],
+    ];
     const row = (r) => {
       const info = [r.times ? t("m_times", { n: r.times }) : t("m_never")];
       if (r.last) info.push(t("m_last", { d: this._date(r.last) }));
@@ -1037,42 +1028,51 @@ class EssensplanerMemoryCard extends HTMLElement {
       return `<div class="mrow"><div class="txt"><div class="name">${this._title(r)}</div>
           <div class="l2">${esc(info.join(" · "))}</div>
           <div class="mtools">${this._stars(r, "rate")}
-            ${r.rating ? `<button class="small" data-act="unrate" data-id="${esc(r.id)}">${t("m_unrate")}</button>` : ""}
+            <button class="small" data-act="unrate" data-id="${esc(r.id)}">${t("m_unrate")}</button>
             <button class="small ${edit ? "on" : ""}" data-act="note" data-id="${esc(r.id)}">${t("m_note")}</button>
             ${r.note && !edit ? `<span class="l2">„${esc(r.note)}“</span>` : ""}</div>
           ${edit ? `<div class="rbox"><input id="n-${esc(r.id)}" value="${esc(r.note || "")}" placeholder="${esc(t("note_ph"))}"><button class="small on" data-act="savenote" data-id="${esc(r.id)}">${t("save")}</button></div>` : ""}
         </div>
         ${admin ? `<button class="x ${this._sure === r.id ? "warn" : ""}" data-act="del" data-id="${esc(r.id)}" aria-label="${t("m_del")}" title="${t("m_del")}">${this._sure === r.id ? t("m_del_sure") : "🗑"}</button>` : ""}</div>`;
     };
-    return `<div class="mbar"><input id="mq" placeholder="${esc(t("m_search"))}" value="${esc(this._q)}">
-        <select id="msort">${["name", "rating", "last", "times"].map((k) => `<option value="${k}" ${this._sort === k ? "selected" : ""}>${t("m_sort_" + k)}</option>`).join("")}</select></div>
-      <div class="form"><h3>${t("m_recipes")} <span class="count">${esc(t("m_count", { n: list.length }))}</span></h3>
-        <div class="desc">${esc(t("m_scale"))}</div>
-        ${shown.length ? shown.map(row).join("") : `<div class="l2">${t("m_none")}</div>`}
+    const recentRow = (r) => `<div class="mrow"><div class="txt"><div class="name">${this._title(r)}</div>
+        <div class="mtools"><span class="l2">${esc(t("m_last", { d: this._date(r.last) }))}</span></div></div>
+        <button class="x" data-act="uncook" data-id="${esc(r.id)}" data-day="${esc(r.last)}" aria-label="✕">✕</button></div>`;
+    const block = (title, list, render, hint) => {
+      const shown = list.slice(0, this._limit);
+      return `<div class="form"><h3>${title} <span class="count">${list.length}</span></h3>
+        ${hint ? `<div class="desc">${esc(hint)}</div>` : ""}
+        ${shown.length ? shown.map(render).join("") : `<div class="l2">${t("m_none")}</div>`}
         ${list.length > shown.length ? `<div class="actions"><button class="small" data-act="more">${esc(t("m_more", { n: list.length - shown.length }))}</button></div>` : ""}</div>`;
+    };
+    const text = this._ptext ?? d.profile_text ?? "";
+    const rules = admin
+      ? `<textarea id="ptext" class="ptext" placeholder="${esc(t("m_rules_ph"))}">${esc(text)}</textarea>
+        <div class="actions"><button class="small on" data-act="saveprofile">${t("save")}</button>${this._ok ? `<span class="hint">${t("m_saved")}</span>` : ""}</div>`
+      : `<div class="ptext ro">${text ? esc(text) : `<span class="l2">${t("m_none")}</span>`}</div><div class="l2">${esc(t("m_rules_ro"))}</div>`;
+    return `<div class="sec">${t("m_profile")}<span>${esc(t("m_profile_hint"))}</span></div>
+      <div class="form"><h3>${t("m_rules")}</h3><div class="desc">${esc(t("m_rules_hint"))}</div>${rules}</div>
+      <div class="mbar"><input id="mq" placeholder="${esc(t("m_search"))}" value="${esc(this._q)}">
+        <select id="msort">${["name", "rating", "last", "times"].map((k) => `<option value="${k}" ${this._sort === k ? "selected" : ""}>${t("m_sort_" + k)}</option>`).join("")}</select></div>
+      <div class="desc scale">${esc(t("m_scale"))}</div>
+      ${groups.map(([title, list]) => block(title, list, row)).join("")}
+      ${block(t("m_recent"), d.recent || [], recentRow, t("m_recent_hint"))}`;
   }
 
   _render() {
     if (!this.shadowRoot || !this._hass) return;
-    // Rezepte sehen und bewerten alle; das Geschmacksprofil ändern nur Administratoren
-    const admin = !!(this._hass.user && this._hass.user.is_admin);
-    if (!admin) this._view = "recipes";
     const d = this._data;
-    const tabs = this._config.embedded || !admin ? "" : `<div class="tabs">${["profile", "recipes"].map((v) => `<button class="tab ${this._view === v ? "on" : ""}" data-view="${v}">${t(v === "profile" ? "m_profile" : "m_recipes")}</button>`).join("")}</div>`;
     let body = this._err ? `<div class="empty err">${esc(this._err)}</div>` : "";
     if (!d) body += `<div class="empty">${t("loading")}</div>`;
-    else body += this._view === "recipes" ? this._recipesHtml(d) : this._profileHtml(d);
+    else body += this._profileHtml(d);
     const focus = this.shadowRoot.activeElement && this.shadowRoot.activeElement.id;
-    this.shadowRoot.innerHTML = `<style>${cardCss(this._config)}</style>${tabs}${body}`;
+    this.shadowRoot.innerHTML = `<style>${cardCss(this._config)}</style>${body}`;
     this._bind(d);
     if (focus === "mq") { const q = this.shadowRoot.getElementById("mq"); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
   }
 
   _bind(d) {
     const root = this.shadowRoot;
-    root.querySelectorAll("[data-view]").forEach((el) => el.addEventListener("click", () => {
-      this._view = el.dataset.view; this._sure = null; this._render();
-    }));
     const q = root.getElementById("mq");
     if (q) q.addEventListener("input", () => { this._q = q.value; this._limit = 30; this._render(); });
     const sort = root.getElementById("msort");

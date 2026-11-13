@@ -45,7 +45,7 @@ the next suggestions, already picked. If it gets cooked before the deadline, the
 after a restart). If the AI fails, it tries up to three times and reports the error once by push.
 
 ## 3. Using the card
-The card has up to four tabs. "Meal plan" and "Recipes" are visible to everyone; in "Recipes" anyone can rate, remove ratings and write notes, only administrators can delete recipes. "Taste profile" and "Settings" are visible to administrators only.
+The card has up to three tabs. "Meal plan" and "Taste profile" are visible to everyone, "Settings" to administrators only. In the taste profile anyone can rate, remove ratings and write notes; only administrators can change the free text (everyone else can read it) and delete recipes.
 
 ### Sections of the "Meal plan" tab
 | Section | Meaning |
@@ -137,8 +137,7 @@ the external AI within five hours after the planning time, it steps in.
 * **Taste (free text):** sent with every planning, e.g. "like Mediterranean, no offal".
 * Ratings go from **1 to 10 stars**. **Liked (7–10 stars)** is named to the AI as an example, **neutral (5–6 stars)** is no example but may come back now and then, **disliked (1–4 stars)** is not suggested again. Ratings from the 5-star days were doubled once by the update to 0.41.0 (4 of 5 is now 8 of 10).
 * **Cooked in the last 4 weeks** is not suggested again. This is based on the "cooked" circle only.
-* **"Taste profile" tab:** free text, liked, neutral, disliked, recently cooked. The "Recipes" tab explains the star groups right above the list. ✕ removes an entry.
-* **"Recipes" tab:** all rated recipes with search, sorting, note and delete.
+* **"Taste profile" tab:** the free text on top, below it all rated recipes in the groups liked, neutral and disliked, with search, sorting, stars, note and (administrators only) delete. Changing the stars moves the recipe to the matching group. The meaning of the stars is shown right above the groups. At the bottom the recently cooked dishes; ✕ removes the cooked day.
 
 All data stays local in Home Assistant. It is removed when you delete the integration.
 

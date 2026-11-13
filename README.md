@@ -29,7 +29,7 @@ No extra app and no cloud service of its own: recipes are read straight from the
   words, kitchen devices, calendar rules (e.g. "guest eats with us").
 * Shopping list: amounts scaled to your servings, staples and spices left out, names mapped to your list's catalog
   (good for Bring!), per-dish tags so dishes can be removed again.
-* Taste memory: profile text, ratings, cooking history; editable in the card (tabs "Taste profile" and "Recipes").
+* Taste memory: profile text, ratings, cooking history; editable in the card (tab "Taste profile").
 * Languages: German, English, Spanish, Portuguese, French.
 
 ## Installation

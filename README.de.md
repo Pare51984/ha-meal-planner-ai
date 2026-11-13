@@ -59,12 +59,13 @@ Farben folgen standardmäßig dem aktiven Home-Assistant-Design. Alternativ `pre
 sich in der Karte überschreiben: `accent`, `accent_text`, `tile`, `tile_selected`, `tile_done`, `text`, `muted`,
 `chip`, `chip_text`, `star`, `star_off`, `input`, `border`, `tile_border`, `radius`, `background`.
 
-### Reiter „Geschmacksprofil“ und „Rezepte“
-Die Essensplaner-Karte hat für Administratoren vier Reiter: Essensplan, Geschmacksprofil, Rezepte, Einstellungen. Alle anderen sehen Essensplan und Rezepte und können dort bewerten und Notizen schreiben.
-**Geschmacksprofil** zeigt, was die KI über den Haushalt bekommt: Grundregeln (direkt bearbeitbar), gemocht (7–10 Sterne), neutral (5–6 Sterne),
-nicht gemocht (1–4 Sterne) und die in den letzten 4 Wochen gekochten Gerichte. **Rezepte** listet alle gespeicherten
-Rezepte mit Suche und Sortierung. Sterne und Notizen lassen sich ändern, Bewertungen, Kochtage und Rezepte löschen.
-Wer beides als eigene Karte woanders haben will, nimmt `custom:meal-planner-memory-card`.
+### Reiter „Geschmacksprofil“
+Die Essensplaner-Karte hat drei Reiter: Essensplan und Geschmacksprofil für alle, Einstellungen nur für Administratoren.
+**Geschmacksprofil** zeigt, was die KI über den Haushalt bekommt: oben die Grundregeln als Freitext (ändern nur Administratoren,
+alle anderen sehen sie), darunter alle bewerteten Rezepte in den Gruppen gemocht (7–10 Sterne), neutral (5–6 Sterne) und
+nicht gemocht (1–4 Sterne), mit Suche und Sortierung, ganz unten die in den letzten 4 Wochen gekochten Gerichte.
+Sterne und Notizen kann jeder ändern; wer die Sterne ändert, verschiebt das Rezept in die passende Gruppe. Rezepte löschen nur Administratoren.
+Wer das als eigene Karte woanders haben will, nimmt `custom:meal-planner-memory-card`.
 
 ## Wochenablauf
 Einkäufe mit festem Termin (z. B. Samstag 12 Uhr) haben in der Karte einen Knopf **„jetzt einkaufen“**: Wer früher
