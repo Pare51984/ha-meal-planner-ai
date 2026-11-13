@@ -138,7 +138,7 @@ kostenlose Gemini-KI auswählen. Kommt fünf Stunden nach dem Planungstermin nic
 * **Geschmack (Freitext):** wird bei jeder Planung mitgegeben, z. B. „gern mediterran, keine Innereien“.
 * Bewertet wird mit **1 bis 10 Sternen**. **Gemocht (7–10 Sterne)** wird der KI als Vorbild genannt, **neutral (5–6 Sterne)** ist kein Vorbild, kann aber ab und zu wieder kommen, **nicht gemocht (1–4 Sterne)** wird nicht mehr vorgeschlagen. Bewertungen aus der Zeit mit 5 Sternen wurden beim Update auf 0.41.0 einmalig verdoppelt (4 von 5 ist jetzt 8 von 10).
 * **In den letzten 4 Wochen gekocht** wird nicht erneut vorgeschlagen. Grundlage ist nur der Kreis „gekocht“.
-* **Reiter „Geschmacksprofil“:** oben der Freitext, darunter alle bewerteten Rezepte in den Gruppen Gemocht, Neutral und Nicht gemocht, mit Suche, Sortierung, Sternen, Notiz und (nur Administratoren) Löschen. Wer die Sterne ändert, verschiebt das Rezept in die passende Gruppe. Die Bedeutung der Sterne steht direkt über den Gruppen. Ganz unten die zuletzt gekochten Gerichte; ✕ entfernt den Kochtag.
+* **Reiter „Geschmacksprofil“:** oben alle bewerteten Rezepte in den Gruppen Gemocht, Neutral und Nicht gemocht, mit Suche, Sortierung, Sternen, Notiz und (nur Administratoren) Löschen. Wer die Sterne ändert, verschiebt das Rezept in die passende Gruppe. Die Bedeutung der Sterne steht direkt über den Gruppen. Darunter die zuletzt gekochten Gerichte (✕ entfernt den Kochtag) und ganz unten der Freitext mit den Grundregeln.
 
 Alle Daten liegen lokal in Home Assistant. Beim Löschen der Integration werden sie mit entfernt.
 

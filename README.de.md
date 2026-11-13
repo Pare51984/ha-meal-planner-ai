@@ -61,9 +61,9 @@ sich in der Karte überschreiben: `accent`, `accent_text`, `tile`, `tile_selecte
 
 ### Reiter „Geschmacksprofil“
 Die Essensplaner-Karte hat drei Reiter: Essensplan und Geschmacksprofil für alle, Einstellungen nur für Administratoren.
-**Geschmacksprofil** zeigt, was die KI über den Haushalt bekommt: oben die Grundregeln als Freitext (ändern nur Administratoren,
-alle anderen sehen sie), darunter alle bewerteten Rezepte in den Gruppen gemocht (7–10 Sterne), neutral (5–6 Sterne) und
-nicht gemocht (1–4 Sterne), mit Suche und Sortierung, ganz unten die in den letzten 4 Wochen gekochten Gerichte.
+**Geschmacksprofil** zeigt, was die KI über den Haushalt bekommt: oben alle bewerteten Rezepte in den Gruppen gemocht (7–10 Sterne),
+neutral (5–6 Sterne) und nicht gemocht (1–4 Sterne), mit Suche und Sortierung, darunter die in den letzten 4 Wochen gekochten Gerichte,
+ganz unten die Grundregeln als Freitext (ändern nur Administratoren, alle anderen sehen sie).
 Sterne und Notizen kann jeder ändern; wer die Sterne ändert, verschiebt das Rezept in die passende Gruppe. Rezepte löschen nur Administratoren.
 Wer das als eigene Karte woanders haben will, nimmt `custom:meal-planner-memory-card`.
 

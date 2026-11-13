@@ -1050,13 +1050,14 @@ class EssensplanerMemoryCard extends HTMLElement {
       ? `<textarea id="ptext" class="ptext" placeholder="${esc(t("m_rules_ph"))}">${esc(text)}</textarea>
         <div class="actions"><button class="small on" data-act="saveprofile">${t("save")}</button>${this._ok ? `<span class="hint">${t("m_saved")}</span>` : ""}</div>`
       : `<div class="ptext ro">${text ? esc(text) : `<span class="l2">${t("m_none")}</span>`}</div><div class="l2">${esc(t("m_rules_ro"))}</div>`;
+    // Rezepte zuerst (werden am häufigsten genutzt), die Grundregeln als Freitext ganz unten
     return `<div class="sec">${t("m_profile")}<span>${esc(t("m_profile_hint"))}</span></div>
-      <div class="form"><h3>${t("m_rules")}</h3><div class="desc">${esc(t("m_rules_hint"))}</div>${rules}</div>
       <div class="mbar"><input id="mq" placeholder="${esc(t("m_search"))}" value="${esc(this._q)}">
         <select id="msort">${["name", "rating", "last", "times"].map((k) => `<option value="${k}" ${this._sort === k ? "selected" : ""}>${t("m_sort_" + k)}</option>`).join("")}</select></div>
       <div class="desc scale">${esc(t("m_scale"))}</div>
       ${groups.map(([title, list]) => block(title, list, row)).join("")}
-      ${block(t("m_recent"), d.recent || [], recentRow, t("m_recent_hint"))}`;
+      ${block(t("m_recent"), d.recent || [], recentRow, t("m_recent_hint"))}
+      <div class="form"><h3>${t("m_rules")}</h3><div class="desc">${esc(t("m_rules_hint"))}</div>${rules}</div>`;
   }
 
   _render() {
