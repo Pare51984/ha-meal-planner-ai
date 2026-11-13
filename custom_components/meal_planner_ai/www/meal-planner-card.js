@@ -539,13 +539,19 @@ class EssensplanerCard extends HTMLElement {
     const moreRow = `<div class="darow shop">${this._busy === "more" || (serverBusy && !this._busy)
       ? `<button class="small on" disabled>⏳ ${t("busy")}</button>`
       : `<button class="small ${this._sure === "more" ? "on" : ""}" data-act="more" data-kind="${rk}"${this._busy || serverBusy ? " disabled" : ""}>${rk === "more" ? "➕" : "✨"} ${t(this._sure === "more" ? "plan_now_sure" : rk)}</button>`}<span class="hint">${t(rk + "_hint")}</span></div>`;
+    // Früher einkaufen: Einkäufe mit festem Termin, die noch nicht auf der Liste sind, sofort freigeben
+    const waiting = trips.filter((x) => [[prop, props], [week, plan]].some(([b, ds]) =>
+      (b.released || {})[x.key] === false && ds.some((d) => d.choice === x.key && !d.ingredients_ready && !d.own_recipe)));
+    const shopRow = waiting.length
+      ? `<div class="darow shop">${waiting.map((x) => `<button class="small ${this._shopSure === x.key ? "on" : ""}" data-act="shopnow" data-trip="${esc(x.key)}">🛒 ${esc(this._shopSure === x.key ? t("shop_sure", { trip: x.name }) : t("shop_now", { trip: x.name }))}</button>`).join("")}<span class="hint">${esc(t("shop_hint"))}</span></div>`
+      : "";
     if (props.length) {
       const counts = trips.map((t) => `${props.filter((d) => d.choice === t.key).length} × ${t.name}`).join(", ");
       const rel = Object.entries(prop.release_at || {}).map(([k, at]) => t("release", { trip: tripName(k), at: fmt(at) }));
       body += `<div class="sec">${esc(t("proposals", { kw: prop.kw }))} · ${esc(counts)}<span>${esc(t("proposals_hint", { at: fmt(prop.deadline) }))}${rel.length ? ". " + esc(rel.join(", ")) : ""}</span></div>
         <div class="grid">${props.map(propTile).join("")}</div>`;
       if ((prop.deficits || []).length) body += `<div class="darow pick"><span class="hint">${t("open")}${esc(prop.deficits.join(", "))}</span></div>`;
-      body += moreRow;
+      body += moreRow + shopRow;  // beide Knöpfe direkt unter den Vorschlägen, dort wird ausgewählt
     }
     // Kandidaten in der laufenden Woche (über „Mehr Vorschläge“ dazugeholt, noch nicht gewählt)
     const cands = plan.filter((d) => d.choice === "none" && !d.cooked_on);
@@ -561,12 +567,7 @@ class EssensplanerCard extends HTMLElement {
         <div class="grid">${cands.map(propTile).join("")}</div>
         <div class="darow"><button class="small ${this._sure === "dropall" ? "on" : ""}" data-act="dropall">✕ ${t(this._sure === "dropall" ? "drop_all_sure" : "drop_all")}</button></div>`;
     }
-    // Früher einkaufen: Einkäufe mit festem Termin, die noch nicht auf der Liste sind, sofort freigeben
-    const waiting = trips.filter((x) => [[prop, props], [week, plan]].some(([b, ds]) =>
-      (b.released || {})[x.key] === false && ds.some((d) => d.choice === x.key && !d.ingredients_ready && !d.own_recipe)));
-    if (waiting.length) {
-      body += `<div class="darow shop">${waiting.map((x) => `<button class="small ${this._shopSure === x.key ? "on" : ""}" data-act="shopnow" data-trip="${esc(x.key)}">🛒 ${esc(this._shopSure === x.key ? t("shop_sure", { trip: x.name }) : t("shop_now", { trip: x.name }))}</button>`).join("")}<span class="hint">${esc(t("shop_hint"))}</span></div>`;
-    }
+    if (!props.length) body += shopRow;
     if (!props.length && !plan.length) body += `<div class="empty">${t("empty")}</div>`;
     if (!props.length) body += moreRow;
     const undo = this._undo && [...propsAll, ...plan].find((d) => d.id === this._undo.id && d.choice === "declined");
