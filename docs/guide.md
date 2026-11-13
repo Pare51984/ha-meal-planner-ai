@@ -38,8 +38,8 @@ Example with the defaults: suggestions Friday 18:00, selection deadline Saturday
 | fixed shopping time | The trip's ingredients go on the shopping list, minus what you marked as at home. |
 | during the week | Tick off cooked dishes with the circle, rate them with stars if you like. Need one dish more? "More suggestions" adds five. |
 
-**Carried over:** a dish of the running week that is not cooked yet but whose ingredients are at home is carried into
-the next suggestions, already picked. If it gets cooked before the deadline, the copy is dropped.
+**No repeats:** dishes of the running week never come back automatically in the next suggestions, not even when they
+were bought and not cooked yet. If you want one again, add it as a wish.
 
 **Restart or outage:** the meal planner checks hourly whether something is due and catches up on missed steps (e.g.
 after a restart). If the AI fails, it tries up to three times and reports the error once by push.

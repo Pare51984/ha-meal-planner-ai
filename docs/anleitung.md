@@ -38,9 +38,8 @@ Beispiel mit den Standardwerten: Vorschläge Freitag 18:00, Auswahlschluss Samst
 | fester Einkaufstermin | Die Zutaten des Einkaufs kommen auf die Einkaufsliste, ohne das, was ihr als daheim markiert habt. |
 | während der Woche | Gekochtes mit dem Kreis abhaken, optional mit Sternen bewerten. Braucht ihr ein Gericht mehr, holt „Mehr Vorschläge“ fünf weitere. |
 
-**Übernahme in die neue Woche:** Ein Gericht aus der laufenden Woche, das noch nicht gekocht ist, dessen Zutaten aber
-schon da sind, wird in die nächsten Vorschläge übernommen und ist dort schon gewählt. Wird es vor dem Auswahlschluss
-doch noch gekocht, fällt die Kopie weg.
+**Keine Wiederholung:** Gerichte der laufenden Woche kommen nie automatisch in die nächsten Vorschläge, auch nicht,
+wenn schon eingekauft und noch nicht gekocht wurde. Soll ein Gericht wieder auf den Plan, wünscht ihr es euch ausdrücklich.
 
 **Neustart oder Ausfall:** Der Essensplaner prüft stündlich, ob etwas fällig ist, und holt Verpasstes nach (z. B. nach
 einem Neustart). Scheitert die KI, versucht er es bis zu drei Mal und meldet den Fehler einmal per Push.

@@ -207,20 +207,20 @@ async def test_week(hass: HomeAssistant, freezer):
         rec = await call(hass, "get_recipe", {"url": URL1})
         assert rec["history"]["rating"] == 10 and rec["history"]["status"] == "cooked"
 
-        # Nächster Freitag: Linsencurry (Zutaten da, nicht gekocht) wird übernommen,
+        # Nächster Freitag: Linsencurry (Zutaten da, nicht gekocht) wird NICHT übernommen (ab 0.45),
         # Nudeln sind frisch gekocht und gut bewertet -> im Prompt als gemocht + zuletzt gekocht
         freezer.move_to("2026-11-20 18:00:05+01:00")
         async_fire_time_changed(hass)
         await hass.async_block_till_done(wait_background_tasks=True)
         st = hass.states.get("sensor.meal_planner_proposals")
-        first = st.attributes["dishes"][0]
-        assert first["title"] == "Linsencurry" and first["carried"] and first["choice"] == "trip1"
+        titles = [d["title"] for d in st.attributes["dishes"]]
+        assert "Linsencurry" not in titles and not any(d.get("carried") for d in st.attributes["dishes"])
         plan_prompt = [p for p in PROMPTS if p.startswith("Du bist der Essensplaner")][-1]
         assert "Nudeln mit Spinat-Hackfleisch-Soße (10/10)" in plan_prompt
         assert "In den letzten 4 Wochen gekocht" in plan_prompt
         assert "Nudeln mit Spinat-Hackfleisch-Soße" not in [d["title"] for d in st.attributes["dishes"]]
-        # übernommenes Gericht kommt nicht auf die Liste (Zutaten da)
-        assert "Linsen" not in await _items(hass)
+        # Gerichte der laufenden Woche schlägt auch die KI nicht erneut vor
+        assert "linsencurry" in plan_prompt.lower().split("nicht vorschlagen")[-1]
 
 
 async def test_three_trips_sunday(hass: HomeAssistant, freezer):

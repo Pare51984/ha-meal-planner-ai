@@ -465,7 +465,7 @@ class WeekPlanner:
         if not nxt:
             return {"finalized": False, "reason": "keine Vorschläge"}
         target = self._list_entity()
-        # in der laufenden Woche inzwischen gekocht: die übernommene Kopie braucht es nicht mehr
+        # Kopien aus Versionen vor 0.45 (automatische Übernahme): inzwischen gekocht, also weg damit
         cooked = {_norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])
                   if d["cooked_on"]}
         for dish in nxt["dishes"]:
@@ -1042,16 +1042,6 @@ class WeekPlanner:
                              settings)
         return meta
 
-    def _carried(self) -> list[dict[str, Any]]:
-        """Bereits eingekaufte, noch nicht gekochte Gerichte wandern in die neue Woche."""
-        carried: list[dict[str, Any]] = []
-        for dish in (self.boards.get("current") or {}).get("dishes", []):
-            if dish["ingredients_ready"] and not dish["cooked_on"] and dish["choice"] in self.trip_keys:
-                first = self.trip_keys[0]
-                carried.append({**dish, "id": uuid.uuid4().hex[:8], "choice": first, "tip": first,
-                                "carried": True, "on_list": False})
-        return carried
-
     async def _context(self, meta: dict[str, Any]) -> dict[str, Any]:
         """Wünsche, Kalender und Geschmacksprofil für eine Planungsrunde laden."""
         settings = self.settings
@@ -1230,7 +1220,9 @@ class WeekPlanner:
     async def _generate(self, meta: dict[str, Any], notes: str | None, keep: list[dict[str, Any]] | None = None,
                         excluded: set[str] | None = None) -> dict[str, Any]:
         total = self.settings[CONF_RECIPES_PER_WEEK]
-        dishes = list(keep) if keep is not None else self._carried()
+        # Gerichte der laufenden Woche werden nie automatisch übernommen (ab 0.45); wieder auf den Plan
+        # kommen sie nur als ausdrücklicher Wunsch.
+        dishes = list(keep) if keep is not None else []
         ctx = await self._context(meta)
         self._replaced = []
         excluded = set(excluded or ()) | {
@@ -1398,7 +1390,7 @@ class WeekPlanner:
         meta = self._plan_meta()
         total = self.settings[CONF_RECIPES_PER_WEEK]
         board = None if restart else self._next_for(meta)
-        dishes = list(board["dishes"]) if board else self._carried()
+        dishes = list(board["dishes"]) if board else []
         excluded = set(board.get("excluded", [])) if board else {
             _norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])}
         ctx = await self._context(meta)
@@ -1436,7 +1428,7 @@ class WeekPlanner:
                       restart: bool) -> dict[str, Any]:
         total = self.settings[CONF_RECIPES_PER_WEEK]
         board = None if restart else self._next_for(meta)
-        dishes = list(board["dishes"]) if board else self._carried()
+        dishes = list(board["dishes"]) if board else []
         excluded = set(board.get("excluded", [])) if board else {
             _norm_title(d["title"]) for d in (self.boards.get("current") or {}).get("dishes", [])}
         problems = list((board or {}).get("problems", []))
