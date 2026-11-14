@@ -68,7 +68,7 @@ Die Karte hat bis zu drei Reiter. „Essensplan“ und „Geschmacksprofil“ se
 | Sterne, „+ Notiz“ | Bewertung und Notiz. Beides fließt in künftige Vorschläge ein. |
 
 ### Weitere Knöpfe
-* **Mehr Vorschläge:** holt fünf weitere Gerichte. Vor dem Auswahlschluss kommen sie zu den Vorschlägen, während der Woche unter „Zur Auswahl für diese Woche“.
+* **Mehr Vorschläge:** holt fünf weitere Gerichte. Vor dem Auswahlschluss kommen sie zu den Vorschlägen, während der Woche unter „Zur Auswahl für diese Woche“. Offene Essenswünsche werden dabei berücksichtigt und danach abgehakt: Während der Auswahl stehen die Wünsche deshalb direkt unter den Vorschlägen, Wunsch eintragen und gleich „Mehr Vorschläge“ drücken.
 * **Übrige Vorschläge entfernen:** räumt alle nicht gewählten Gerichte unter „Zur Auswahl“ auf einmal weg (zweimal tippen).
 * **🛒 „… jetzt einkaufen“:** erscheint bei Einkäufen mit festem Termin, solange der Termin noch nicht erreicht ist. Setzt die Zutaten sofort auf die Liste, wenn ihr früher einkaufen geht (zweimal tippen).
 * **Jetzt Vorschläge planen:** plant die kommende Woche sofort statt zum eingestellten Termin (zweimal tippen).

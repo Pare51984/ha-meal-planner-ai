@@ -478,3 +478,35 @@ async def test_swap_in_running_week_updates_list(hass: HomeAssistant, freezer):
                                            blocking=True, return_response=True)
     descs = " ".join(i.get("description") or "" for i in items["todo.meal_planner_shopping_list"]["items"])
     assert "Linsencurry" not in descs and "Nudeln" in descs
+
+
+async def test_more_takes_wish_and_checks_it_off(hass: HomeAssistant, freezer):
+    """Wunsch während der Auswahl eintragen, „Mehr Vorschläge“ plant ihn ein und hakt ihn ab."""
+    from .test_integration import URL1
+    from .test_workflow import URL3
+
+    freezer.move_to("2026-11-13 18:30:00+01:00")
+    entry = await _external(hass)
+    _ai_setup(hass, entry)
+    await hass.async_block_till_done()
+    planner = entry.runtime_data.planner
+    wishes = planner.wishes_entity()
+    with patch(f"{SVC}.fetch_html", side_effect=fake_fetch2):
+        await call(hass, "submit_proposals", {"dishes": [{"title": "Linsencurry", "url": URL2},
+                                                         {"title": "Gemüsepfanne", "url": URL3}], "final": True})
+        await hass.services.async_call("todo", "add_item", {"entity_id": wishes, "item": "Nudeln mit Spinat"},
+                                       blocking=True)
+        prompts: list[str] = []
+
+        async def ai(prompt):
+            prompts.append(prompt)
+            return {"dishes": [{"title": "Nudeln mit Spinat", "url": URL1, "wish": "Nudeln mit Spinat"}]}
+
+        with patch.object(planner, "_ask_proposals", side_effect=ai):
+            await call(hass, "more_proposals", {"count": 1})
+    assert "Nudeln mit Spinat" in prompts[0]
+    new = planner.boards["next"]["dishes"][-1]
+    assert new["title"].startswith("Nudeln") and new["wish"]
+    items = await hass.services.async_call("todo", "get_items", {"entity_id": wishes}, blocking=True,
+                                           return_response=True)
+    assert items[wishes]["items"] == []

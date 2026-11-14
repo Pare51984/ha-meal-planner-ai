@@ -29,7 +29,7 @@ const I18N = {
     open: "Offen: ", week: "Diese Woche · {c}/{n} gekocht",
     week_hint: "Kreis antippen = gekocht. Sterne sind freiwillig und fließen in die nächsten Vorschläge ein",
     empty: "Gerade nichts geplant. Die nächsten Vorschläge kommen zum eingestellten Termin.", wishes: "Essenswünsche",
-    wishes_hint: "Gericht, Zutat oder Rezeptlink. Fließt in die nächsten Vorschläge ein. „Eigenes Rezept“ = ohne Rezept aus dem Netz",
+    wishes_hint: "Gericht, Zutat oder Rezeptlink. Fließt in die nächsten Vorschläge ein, auch gleich bei „Mehr Vorschläge“. „Eigenes Rezept“ = ohne Rezept aus dem Netz",
     wish_ph: "z. B. Lasagne, mal wieder Fisch, was mit Kürbis", add: "Hinzufügen", own_btn: "Eigenes Rezept", own_short: "(eigenes)",
     del_wish: "Wunsch löschen", rating: ["", "nicht nochmal", "eher nicht", "neutral", "gut", "super"],
     days: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], loading_settings: "Einstellungen werden geladen …",
@@ -68,7 +68,7 @@ const I18N = {
     open: "Open: ", week: "This week · {c}/{n} cooked",
     week_hint: "Tap the circle = cooked. Stars are optional and shape the next proposals",
     empty: "Nothing planned right now. The next proposals arrive at the scheduled time.", wishes: "Meal wishes",
-    wishes_hint: "Dish, ingredient or recipe link. Goes into the next proposals. “Own recipe” = no recipe from the web",
+    wishes_hint: "Dish, ingredient or recipe link. Goes into the next proposals, right away with “More suggestions” too. “Own recipe” = no recipe from the web",
     wish_ph: "e.g. lasagne, fish again, something with pumpkin", add: "Add", own_btn: "Own recipe", own_short: "(own)",
     del_wish: "Delete wish", rating: ["", "never again", "rather not", "neutral", "good", "great"],
     days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], loading_settings: "Loading settings …",
@@ -117,7 +117,7 @@ const I18N = {
     open: "Pendiente: ", week: "Esta semana · {c}/{n} cocinados",
     week_hint: "Toca el círculo = cocinado. Las estrellas son opcionales e influyen en las próximas propuestas",
     empty: "Nada planificado. Las próximas propuestas llegan a la hora fijada.", wishes: "Deseos",
-    wishes_hint: "Plato, ingrediente o enlace. Entra en las próximas propuestas. «Receta propia» = sin receta de la web",
+    wishes_hint: "Plato, ingrediente o enlace. Entra en las próximas propuestas, también al pulsar «Más propuestas». «Receta propia» = sin receta de la web",
     wish_ph: "p. ej. lasaña, otra vez pescado, algo con calabaza", add: "Añadir", own_btn: "Receta propia", own_short: "(propia)",
     del_wish: "Borrar deseo", rating: ["", "nunca más", "mejor no", "neutral", "bueno", "genial"],
     days: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"], loading_settings: "Cargando ajustes …",
@@ -156,7 +156,7 @@ const I18N = {
     open: "Em falta: ", week: "Esta semana · {c}/{n} cozinhados",
     week_hint: "Toca no círculo = cozinhado. As estrelas são opcionais e contam para as próximas propostas",
     empty: "Nada planeado. As próximas propostas chegam à hora definida.", wishes: "Desejos",
-    wishes_hint: "Prato, ingrediente ou link. Entra nas próximas propostas. «Receita própria» = sem receita da web",
+    wishes_hint: "Prato, ingrediente ou link. Entra nas próximas propostas, também logo com «Mais sugestões». «Receita própria» = sem receita da web",
     wish_ph: "p. ex. lasanha, peixe outra vez, algo com abóbora", add: "Adicionar", own_btn: "Receita própria", own_short: "(própria)",
     del_wish: "Apagar desejo", rating: ["", "nunca mais", "melhor não", "neutro", "bom", "ótimo"],
     days: ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"], loading_settings: "A carregar definições …",
@@ -195,7 +195,7 @@ const I18N = {
     open: "Manquant : ", week: "Cette semaine · {c}/{n} cuisinés",
     week_hint: "Touche le cercle = cuisiné. Les étoiles sont facultatives et guident les prochaines propositions",
     empty: "Rien de prévu. Les prochaines propositions arrivent à l'heure réglée.", wishes: "Envies",
-    wishes_hint: "Plat, ingrédient ou lien. Entre dans les prochaines propositions. « Recette perso » = sans recette du web",
+    wishes_hint: "Plat, ingrédient ou lien. Entre dans les prochaines propositions, aussi tout de suite avec « Plus de propositions ». « Recette perso » = sans recette du web",
     wish_ph: "p. ex. lasagnes, du poisson, quelque chose au potiron", add: "Ajouter", own_btn: "Recette perso", own_short: "(perso)",
     del_wish: "Supprimer l'envie", rating: ["", "plus jamais", "plutôt pas", "neutre", "bon", "super"],
     days: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"], loading_settings: "Chargement des réglages …",
@@ -545,13 +545,22 @@ class EssensplanerCard extends HTMLElement {
     const shopRow = waiting.length
       ? `<div class="darow shop">${waiting.map((x) => `<button class="small ${this._shopSure === x.key ? "on" : ""}" data-act="shopnow" data-trip="${esc(x.key)}">🛒 ${esc(this._shopSure === x.key ? t("shop_sure", { trip: x.name }) : t("shop_now", { trip: x.name }))}</button>`).join("")}<span class="hint">${esc(t("shop_hint"))}</span></div>`
       : "";
+    // Essenswünsche: während der Auswahl direkt unter den Vorschlägen, damit man einen Wunsch eintragen
+    // und gleich „Mehr Vorschläge“ drücken kann (der berücksichtigt offene Wünsche); sonst unten
+    let wishRow = "";
+    if (this._hass.states[this._config.wishes]) {
+      const open = this._wishes.filter((w) => w.status !== "completed");
+      wishRow = `<div class="sec">${t("wishes")}<span>${esc(t("wishes_hint"))}</span></div>
+        <div class="wish"><input id="wish-in" placeholder="${esc(t("wish_ph"))}" value="${esc(this._wish)}"><button class="small on" data-act="wish">${t("add")}</button><button class="small" data-act="wishown">${t("own_btn")}</button></div>
+        ${open.length ? `<div class="chips">${open.map((w) => `<span class="chip">${esc(w.summary)}${/eigenes rezept/i.test(w.description || "") ? ` <small>${t("own_short")}</small>` : ""}<button data-act="delwish" data-uid="${esc(w.uid)}" aria-label="${t("del_wish")}">✕</button></span>`).join("")}</div>` : ""}`;
+    }
     if (props.length) {
       const counts = trips.map((t) => `${props.filter((d) => d.choice === t.key).length} × ${t.name}`).join(", ");
       const rel = Object.entries(prop.release_at || {}).map(([k, at]) => t("release", { trip: tripName(k), at: fmt(at) }));
       body += `<div class="sec">${esc(t("proposals", { kw: prop.kw }))} · ${esc(counts)}<span>${esc(t("proposals_hint", { at: fmt(prop.deadline) }))}${rel.length ? ". " + esc(rel.join(", ")) : ""}</span></div>
         <div class="grid">${props.map(propTile).join("")}</div>`;
       if ((prop.deficits || []).length) body += `<div class="darow pick"><span class="hint">${t("open")}${esc(prop.deficits.join(", "))}</span></div>`;
-      body += moreRow + shopRow;  // beide Knöpfe direkt unter den Vorschlägen, dort wird ausgewählt
+      body += wishRow + moreRow + shopRow;  // Wünsche und Knöpfe direkt unter den Vorschlägen, dort wird ausgewählt
     }
     // Kandidaten in der laufenden Woche (über „Mehr Vorschläge“ dazugeholt, noch nicht gewählt)
     const cands = plan.filter((d) => d.choice === "none" && !d.cooked_on);
@@ -574,12 +583,7 @@ class EssensplanerCard extends HTMLElement {
     if (undo) {
       body += `<div class="undobar"><span>${esc(t("removed", { title: undo.title }))}</span><button class="small on" data-act="restore" data-id="${esc(undo.id)}">${t("undo")}</button></div>`;
     }
-    if (this._hass.states[this._config.wishes]) {
-      const open = this._wishes.filter((w) => w.status !== "completed");
-      body += `<div class="sec">${t("wishes")}<span>${esc(t("wishes_hint"))}</span></div>
-        <div class="wish"><input id="wish-in" placeholder="${esc(t("wish_ph"))}" value="${esc(this._wish)}"><button class="small on" data-act="wish">${t("add")}</button><button class="small" data-act="wishown">${t("own_btn")}</button></div>
-        ${open.length ? `<div class="chips">${open.map((w) => `<span class="chip">${esc(w.summary)}${/eigenes rezept/i.test(w.description || "") ? ` <small>${t("own_short")}</small>` : ""}<button data-act="delwish" data-uid="${esc(w.uid)}" aria-label="${t("del_wish")}">✕</button></span>`).join("")}</div>` : ""}`;
-    }
+    if (!props.length) body += wishRow;
 
     let help = "";
     if (this._config.help !== false && sched) {

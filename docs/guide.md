@@ -68,7 +68,7 @@ The card has up to three tabs. "Meal plan" and "Taste profile" are visible to ev
 | Stars, "+ Note" | Rating and note. Both feed into future suggestions. |
 
 ### More buttons
-* **More suggestions:** adds five more dishes. Before the deadline they join the suggestions, during the week they appear under "To choose for this week".
+* **More suggestions:** adds five more dishes. Before the deadline they join the suggestions, during the week they appear under "To choose for this week". Open meal wishes are taken into account and ticked off afterwards: during the selection the wishes sit right below the suggestions, so add a wish and press "More suggestions" right away.
 * **Remove remaining suggestions:** clears all unpicked dishes under "To choose" at once (tap twice).
 * **🛒 "Shop … now":** shown for fixed-time trips until their time is reached. Puts the ingredients on the list right away when you go shopping earlier (tap twice).
 * **Plan suggestions now:** plans the coming week right away instead of at the scheduled time (tap twice).

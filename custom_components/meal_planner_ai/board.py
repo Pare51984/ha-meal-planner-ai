@@ -1126,6 +1126,20 @@ class WeekPlanner:
             excluded=list(dict.fromkeys([*reversed([t for t in self._run_rejected if t]), *sorted(excluded)])),
             today=dt_util.now().date())
 
+    async def _check_off_wishes(self, wishes: list[dict[str, Any]],
+                                dishes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Eingeplante Wünsche von der Wunschliste nehmen; die offenen zurückgeben (bleiben stehen)."""
+        open_wishes = self._open_wishes(wishes, dishes)
+        open_uids = {w["uid"] for w in open_wishes}
+        for wish in (w for w in wishes if w["uid"] not in open_uids):
+            try:
+                await self.hass.services.async_call(
+                    "todo", "remove_item", {"entity_id": self.wishes_entity(), "item": wish["uid"]},
+                    blocking=True)
+            except HomeAssistantError as err:  # schon gelöscht o. Ä.
+                _LOGGER.debug("Wunsch nicht entfernt: %s", err)
+        return open_wishes
+
     async def _publish(self, meta: dict[str, Any], dishes: list[dict[str, Any]], wishes: list[dict[str, Any]],
                        problems: list[str], *, rounds: int, source: str, excluded: set[str],
                        notify: bool) -> dict[str, Any]:
@@ -1149,16 +1163,7 @@ class WeekPlanner:
         await self._untag_dropped(old, dishes)
         self.boards["next"] = board
         self._changed()
-        open_wishes = self._open_wishes(wishes, dishes)
-        open_uids = {w["uid"] for w in open_wishes}
-        fulfilled = [w for w in wishes if w["uid"] not in open_uids]
-        for wish in fulfilled:  # nicht eingeplante Wünsche bleiben für nächste Woche stehen
-            try:
-                await self.hass.services.async_call(
-                    "todo", "remove_item", {"entity_id": self.wishes_entity(), "item": wish["uid"]},
-                    blocking=True)
-            except HomeAssistantError as err:  # schon gelöscht o. Ä.: die Benachrichtigung trotzdem senden
-                _LOGGER.debug("Wunsch nicht entfernt: %s", err)
+        open_wishes = await self._check_off_wishes(wishes, dishes)
         if notify and not board["notified"]:
             board["notified"] = True
             self._changed()
@@ -1317,6 +1322,8 @@ class WeekPlanner:
                 dish["choice"] = CHOICE_NONE
         board["dishes"] = before + new  # Vorhandenes bleibt in jedem Fall stehen
         board["excluded"] = sorted(excluded)[-80:]
+        # Wünsche, die während der Auswahl eingetragen und jetzt eingeplant wurden, abhaken
+        await self._check_off_wishes(ctx["wishes"], new)
         if key == "next":
             board["deficits"] = [label for label, *_ in self._week_deficits(board["dishes"])]
         self._changed()
