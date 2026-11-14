@@ -283,3 +283,34 @@ async def test_rating_open_to_all_users(hass, hass_read_only_user):
     await hass.services.async_call("meal_planner_ai", "update_history", {"recipe_id": "r1", "rating": 8, "note": "lecker"},
                                    blocking=True, context=ctx)
     assert store.recipes["r1"]["history"]["rating"] == 8 and store.recipes["r1"]["history"]["note"] == "lecker"
+
+
+def test_staples_multiword_and_ai_names():
+    """„weißer Pfeffer“ und „frisch gemahlener Pfeffer“ zählen zum Grundvorrat (Fehler aus KW 47)."""
+    from custom_components.meal_planner_ai.shopping import build_items, is_staple, parse_staples
+
+    staples = parse_staples("Salz, Pfeffer, Zucker, Öl, Mehl")
+    for name in ("weißer Pfeffer", "frisch gemahlener Pfeffer", "Pfeffer", "brauner Zucker", "Jodsalz", "Weizenmehl"):
+        assert is_staple(name, staples, False), name
+    for name in ("Paprika edelsüß", "Zuckerschoten", "Pfefferminze", "Kürbis"):
+        assert not is_staple(name, staples, False), name
+    items, skipped = build_items({"ingredients": ["1 Prise weißer Pfeffer", "250 g Kürbis"], "yields": "2"}, 2,
+                                 staples, False)
+    assert [i["name"] for i in items] == ["Kürbis"] and skipped == ["weißer Pfeffer"]
+
+
+async def test_ai_renamed_staple_is_dropped(hass):
+    """Die KI macht aus „Pfeffer, weiß“ den Namen „Pfeffer“: der wird danach auch noch gefiltert."""
+    from unittest.mock import patch
+
+    from .test_integration import setup_entry
+
+    entry = await setup_entry(hass)
+    planner = entry.runtime_data.planner
+    planner._frozen = {**planner.settings, "ai_task": "ai_task.x", "ai_shopping_names": True}
+    recipe = {"id": "r1", "ingredients": ["1 Prise Pfeffer, weiß, gemahlen", "250 g Kürbis"], "yields": "2"}
+    entry.runtime_data.store.recipes["r1"] = recipe
+    answer = {"items": [{"name": "Pfeffer", "spec": "weiß"}, {"name": "Kürbis", "spec": "250 g"}]}
+    with patch("custom_components.meal_planner_ai.board.async_ask", return_value=answer):
+        items, skipped = await planner.async_recipe_items(recipe, 2)
+    assert [i["name"] for i in items] == ["Kürbis"] and "Pfeffer" in skipped

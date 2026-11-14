@@ -76,6 +76,7 @@ from .shopping import (
     async_add_items,
     async_remove_tag,
     build_items,
+    is_staple,
     parse_catalog,
     parse_staples,
 )
@@ -333,7 +334,15 @@ class WeekPlanner:
                             **(recipe.get("ai_shopping") or {}), cache_key: ai_items})
                 except (AIError, AttributeError, KeyError, TypeError) as err:
                     _LOGGER.warning("KI-Aufbereitung der Einkaufsliste übersprungen: %s", err)
-        return apply_catalog(items, catalog), skipped
+        # Die KI benennt oft um ("weißer Pfeffer" -> "Pfeffer, weiß"): danach erneut gegen den Grundvorrat prüfen
+        staples = parse_staples(settings[CONF_STAPLES])
+        kept = []
+        for item in apply_catalog(items, catalog):
+            if is_staple(item["name"], staples, settings[CONF_SKIP_SPICES]):
+                skipped.append(item["name"])
+            else:
+                kept.append(item)
+        return kept, skipped
 
     def _wants_list(self, board: dict[str, Any], dish: dict[str, Any]) -> bool:
         if dish["ingredients_ready"] or dish["own_recipe"] or not dish.get("recipe_id"):

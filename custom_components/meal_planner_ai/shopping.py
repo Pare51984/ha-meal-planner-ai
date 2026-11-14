@@ -114,12 +114,19 @@ def parse_catalog(text: str | None) -> dict[str, str]:
     return mapping
 
 
+def is_staple(name: str, staples: set[str], skip_spices: bool) -> bool:
+    """Öffentlich für den Planer: auch von der KI aufbereitete Namen prüfen."""
+    return _is_staple(name, staples, skip_spices)
+
+
 def _is_staple(name: str, staples: set[str], skip_spices: bool) -> bool:
     low = name.lower().strip(" .")
     if low in staples or any(low == f"etwas {s}" for s in staples):
         return True
-    # Zusammensetzungen wie "Jodsalz", "Meersalz", "Weizenmehl" (nur längere Grundzutaten, nicht "Öl")
-    if " " not in low and any(len(s) >= 4 and low.endswith(s) for s in staples):
+    # Zusammensetzungen wie "Jodsalz", "Meersalz", "Weizenmehl" (nur längere Grundzutaten, nicht "Öl");
+    # bei mehreren Wörtern zählt das letzte: "weißer Pfeffer", "frisch gemahlener Pfeffer", "brauner Zucker"
+    last = low.split()[-1] if low.split() else low
+    if last in staples or any(len(s) >= 4 and last.endswith(s) for s in staples):
         return True
     for sep in (" und ", ", ", " & "):
         if sep in low and all(p.strip() in staples for p in low.split(sep)):
