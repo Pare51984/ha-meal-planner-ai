@@ -45,7 +45,7 @@ const I18N = {
     m_recent_hint: "Wird nicht erneut vorgeschlagen. ✕ entfernt den Kochtag.", m_none: "Noch nichts.",
     m_search: "Suchen …", m_sort_name: "Name", m_sort_rating: "Bewertung", m_sort_last: "Zuletzt gekocht", m_sort_times: "Wie oft gekocht",
     m_times: "{n}× gekocht", m_last: "zuletzt {d}", m_never: "noch nie gekocht", m_stub: "nur Bewertung, kein Rezept gespeichert",
-    m_del: "Löschen", m_del_sure: "Wirklich löschen?", m_unrate: "Bewertung entfernen", m_note: "Notiz", m_saved: "Gespeichert.",
+    m_del: "Löschen", m_del_sure: "Wirklich löschen?", m_unrate: "Bewertung entfernen", rate_ask: "Bewertung von {a} auf {b} Sterne ändern?", unrate_ask: "Bewertung ({a} Sterne) entfernen?", yes: "Ja", m_note: "Notiz", m_saved: "Gespeichert.",
     m_more: "{n} weitere anzeigen", m_count: "{n} Rezepte",
   },
   en: {
@@ -84,7 +84,7 @@ const I18N = {
     m_recent_hint: "Won't be proposed again. ✕ removes the cooked day.", m_none: "Nothing yet.",
     m_search: "Search …", m_sort_name: "Name", m_sort_rating: "Rating", m_sort_last: "Last cooked", m_sort_times: "Times cooked",
     m_times: "cooked {n}×", m_last: "last {d}", m_never: "never cooked", m_stub: "rating only, no recipe stored",
-    m_del: "Delete", m_del_sure: "Really delete?", m_unrate: "Remove rating", m_note: "Note", m_saved: "Saved.",
+    m_del: "Delete", m_del_sure: "Really delete?", m_unrate: "Remove rating", rate_ask: "Change rating from {a} to {b} stars?", unrate_ask: "Remove rating ({a} stars)?", yes: "Yes", m_note: "Note", m_saved: "Saved.",
     m_more: "Show {n} more", m_count: "{n} recipes",
   },
   es: {
@@ -103,7 +103,7 @@ const I18N = {
     m_recent_hint: "No se volverá a proponer. ✕ quita el día cocinado.", m_none: "Nada todavía.",
     m_search: "Buscar …", m_sort_name: "Nombre", m_sort_rating: "Valoración", m_sort_last: "Cocinado por última vez", m_sort_times: "Veces cocinado",
     m_times: "cocinado {n}×", m_last: "última vez {d}", m_never: "nunca cocinado", m_stub: "solo valoración, sin receta guardada",
-    m_del: "Borrar", m_del_sure: "¿Seguro que borrar?", m_unrate: "Quitar valoración", m_note: "Nota", m_saved: "Guardado.",
+    m_del: "Borrar", m_del_sure: "¿Seguro que borrar?", m_unrate: "Quitar valoración", rate_ask: "¿Cambiar la valoración de {a} a {b} estrellas?", unrate_ask: "¿Quitar la valoración ({a} estrellas)?", yes: "Sí", m_note: "Nota", m_saved: "Guardado.",
     m_more: "Mostrar {n} más", m_count: "{n} recetas",
     x_title: "Configurar IA externa", x_intro: "Las propuestas vienen de una IA fuera de Home Assistant, p. ej. una tarea programada en tu suscripción de Claude o ChatGPT. En cada ejecución recoge el encargo con tus ajustes actuales y devuelve los platos; el planificador comprueba cada plato.", x_need: "Lo que necesitas", x_when: "Cuándo debe ejecutarse la tarea", x_text: "Texto para la tarea programada", x_copied: "Copiado ✓",
     tab_plan: "Menú", tab_settings: "Ajustes", prep: "Listo en {n} min", meatless: "vegetariano",
@@ -142,7 +142,7 @@ const I18N = {
     m_recent_hint: "Não volta a ser proposto. ✕ remove o dia cozinhado.", m_none: "Ainda nada.",
     m_search: "Pesquisar …", m_sort_name: "Nome", m_sort_rating: "Avaliação", m_sort_last: "Última vez cozinhado", m_sort_times: "Vezes cozinhado",
     m_times: "cozinhado {n}×", m_last: "última vez {d}", m_never: "nunca cozinhado", m_stub: "só avaliação, sem receita guardada",
-    m_del: "Apagar", m_del_sure: "Apagar mesmo?", m_unrate: "Remover avaliação", m_note: "Nota", m_saved: "Guardado.",
+    m_del: "Apagar", m_del_sure: "Apagar mesmo?", m_unrate: "Remover avaliação", rate_ask: "Mudar a avaliação de {a} para {b} estrelas?", unrate_ask: "Remover a avaliação ({a} estrelas)?", yes: "Sim", m_note: "Nota", m_saved: "Guardado.",
     m_more: "Mostrar mais {n}", m_count: "{n} receitas",
     x_title: "Configurar IA externa", x_intro: "As propostas vêm de uma IA fora do Home Assistant, p. ex. uma tarefa agendada na tua subscrição Claude ou ChatGPT. Em cada execução vai buscar o pedido com as tuas definições atuais e devolve os pratos; o planeador verifica cada prato.", x_need: "O que precisas", x_when: "Quando a tarefa deve correr", x_text: "Texto para a tarefa agendada", x_copied: "Copiado ✓",
     tab_plan: "Ementa", tab_settings: "Definições", prep: "Pronto em {n} min", meatless: "vegetariano",
@@ -181,7 +181,7 @@ const I18N = {
     m_recent_hint: "Ne sera pas reproposé. ✕ retire le jour cuisiné.", m_none: "Rien pour l'instant.",
     m_search: "Rechercher …", m_sort_name: "Nom", m_sort_rating: "Note", m_sort_last: "Dernière fois cuisiné", m_sort_times: "Fois cuisiné",
     m_times: "cuisiné {n}×", m_last: "dernière fois {d}", m_never: "jamais cuisiné", m_stub: "note seulement, aucune recette enregistrée",
-    m_del: "Supprimer", m_del_sure: "Vraiment supprimer ?", m_unrate: "Retirer la note", m_note: "Note", m_saved: "Enregistré.",
+    m_del: "Supprimer", m_del_sure: "Vraiment supprimer ?", m_unrate: "Retirer la note", rate_ask: "Changer la note de {a} à {b} étoiles ?", unrate_ask: "Retirer la note ({a} étoiles) ?", yes: "Oui", m_note: "Note", m_saved: "Enregistré.",
     m_more: "Afficher {n} de plus", m_count: "{n} recettes",
     x_title: "Configurer une IA externe", x_intro: "Les propositions viennent d'une IA hors de Home Assistant, p. ex. une tâche planifiée dans ton abonnement Claude ou ChatGPT. À chaque exécution, elle récupère la demande avec tes réglages actuels et renvoie les plats ; le planificateur vérifie chaque plat.", x_need: "Ce qu'il te faut", x_when: "Quand la tâche doit s'exécuter", x_text: "Texte de la tâche planifiée", x_copied: "Copié ✓",
     tab_plan: "Menu", tab_settings: "Réglages", prep: "Prêt en {n} min", meatless: "végétarien",
@@ -254,6 +254,14 @@ const STAR_MAX = 10;
 const RATING_LIKED = 7;
 const RATING_DISLIKED = 4;
 const STARS = Array.from({ length: STAR_MAX }, (_, i) => i + 1);
+// Rückfrage, bevor eine bestehende Bewertung geändert oder entfernt wird (erste Bewertung geht direkt).
+// ask = {id, n} mit n = neue Sterne, 0 = entfernen; act/data für die Ja-Taste.
+function rateAskHtml(ask, current, yesAct) {
+  const q = ask.n ? t("rate_ask", { a: current, b: ask.n }) : t("unrate_ask", { a: current });
+  return `<div class="rbox rateask"><span class="hint">${esc(q)}</span>
+    <button class="small on" data-act="${yesAct}" data-id="${esc(ask.id)}" data-n="${ask.n}">${t("yes")}</button>
+    <button class="small" data-act="rate_no" data-id="${esc(ask.id)}">${t("cancel")}</button></div>`;
+}
 const DOCS_URL = "https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/";
 const MEM_TABS = ["profile"];
 const cardCss = (config) => `
@@ -331,6 +339,7 @@ const cardCss = (config) => `
       .darow{display:flex;align-items:center;gap:8px;margin-top:8px}
       .darow.shop{flex-wrap:wrap;margin:-4px 4px 14px}
       .darow.pick{margin:-4px 4px 14px}
+      .rateask{flex-basis:100%;flex-wrap:wrap;align-items:center;margin-top:6px}
       .undobar{position:sticky;bottom:12px;z-index:2;display:flex;align-items:center;gap:12px;justify-content:space-between;margin:0 4px 14px;padding:10px 14px;border-radius:12px;background:var(--_text);color:var(--_tile);box-shadow:0 4px 14px rgba(0,0,0,.18);font-size:14px}
       .rbox input,.wish input{flex:1;min-width:0;font:inherit;font-size:13px;border:1px solid var(--_border);border-radius:calc(var(--_radius) * .6);padding:7px 10px;background:var(--_input);color:var(--_text)}
       .wish{display:flex;gap:6px;margin:0 0 8px}
@@ -522,6 +531,7 @@ class EssensplanerCard extends HTMLElement {
             ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div></div>
         <div class="foot"><div class="stars">${stars}</div>
           <span class="hint">${d.rating ? `${d.rating}/${STAR_MAX} · ${t("rating")[Math.ceil(d.rating / 2)]}` : t("how")}</span>
+          ${this._rateAsk && this._rateAsk.id === d.id ? rateAskHtml(this._rateAsk, d.rating, "star_yes") : ""}
           ${d.rating ? `<button class="small" data-act="note" data-id="${esc(d.id)}">${t("note")}</button>` : ""}
           ${!done && !d.rating ? `<button class="small" data-act="decline" data-id="${esc(d.id)}">${t("decline")}</button>` : ""}${link(d)}</div>
         ${!done ? ready(d) : ""}
@@ -646,7 +656,14 @@ class EssensplanerCard extends HTMLElement {
       if (act === "pick") this._svc("choose_dish", { dish_id: d.id, choice: d.choice === el.dataset.trip ? "none" : el.dataset.trip });
       else if (act === "ready") this._svc("set_ingredients_ready", { dish_id: d.id, ready: !d.ingredients_ready });
       else if (act === "cooked") this._svc("mark_cooked", { dish_id: d.id, cooked: !d.cooked_on });
-      else if (act === "star") this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: +el.dataset.n });
+      else if (act === "star") {
+        const n = +el.dataset.n;
+        if (d.rating && d.rating !== n) { this._rateAsk = { id: d.id, n }; return this._render(); }  // ändern: erst bestätigen
+        if (d.rating === n) return;
+        this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: n });
+      }
+      else if (act === "star_yes") { this._rateAsk = null; this._svc("mark_cooked", { dish_id: d.id, cooked: !!d.cooked_on, rating: +el.dataset.n }); }
+      else if (act === "rate_no") { this._rateAsk = null; this._render(); }
       else if (act === "decline" || act === "drop") {
         this._prev = { ...(this._prev || {}), [d.id]: d.choice };
         clearTimeout(this._undoTimer);
@@ -1037,6 +1054,7 @@ class EssensplanerMemoryCard extends HTMLElement {
           <div class="l2">${esc(info.join(" · "))}</div>
           <div class="mtools">${this._stars(r, "rate")}
             <button class="small" data-act="unrate" data-id="${esc(r.id)}">${t("m_unrate")}</button>
+            ${this._rateAsk && this._rateAsk.id === r.id ? rateAskHtml(this._rateAsk, r.rating, "rate_yes") : ""}
             <button class="small ${edit ? "on" : ""}" data-act="note" data-id="${esc(r.id)}">${t("m_note")}</button>
             ${r.note && !edit ? `<span class="l2">„${esc(r.note)}“</span>` : ""}</div>
           ${edit ? `<div class="rbox"><input id="n-${esc(r.id)}" value="${esc(r.note || "")}" placeholder="${esc(t("note_ph"))}"><button class="small on" data-act="savenote" data-id="${esc(r.id)}">${t("save")}</button></div>` : ""}
@@ -1091,8 +1109,16 @@ class EssensplanerMemoryCard extends HTMLElement {
     root.querySelectorAll("[data-act]").forEach((el) => el.addEventListener("click", (ev) => {
       ev.preventDefault();
       const act = el.dataset.act, id = el.dataset.id;
-      if (act === "rate") return this._svc("update_history", { recipe_id: id, rating: +el.dataset.n });
-      if (act === "unrate") return this._svc("update_history", { recipe_id: id, rating: 0 });
+      // bestehende Bewertung ändern oder entfernen: erst nachfragen
+      const cur = ((d && d.recipes) || []).find((r) => r.id === id);
+      if (act === "rate" || act === "unrate") {
+        const n = act === "rate" ? +el.dataset.n : 0;
+        if (cur && cur.rating === n) return;
+        if (cur && cur.rating) { this._rateAsk = { id, n }; return this._render(); }
+        return this._svc("update_history", { recipe_id: id, rating: n });
+      }
+      if (act === "rate_yes") { this._rateAsk = null; return this._svc("update_history", { recipe_id: id, rating: +el.dataset.n }); }
+      if (act === "rate_no") { this._rateAsk = null; return this._render(); }
       if (act === "uncook") return this._svc("update_history", { recipe_id: id, remove_cooked_on: el.dataset.day });
       if (act === "note") { this._editing = this._editing === id ? null : id; return this._render(); }
       if (act === "savenote") {
