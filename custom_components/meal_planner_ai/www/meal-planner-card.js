@@ -267,11 +267,28 @@ function rateAskHtml(ask, current, yesAct) {
 // Adresse merken, damit beim nächsten Zeichnen gute Bilder sofort da sind und schlechte gar nicht erst.
 const IMG_OK = new Set();
 const IMG_BAD = new Set();
-function thumbHtml(url, cls) {
+function thumbHtml(url, cls, title) {
   if (!url || IMG_BAD.has(url) || !/^https:\/\//.test(url)) return "";
-  return `<img class="${cls}" src="${esc(url)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"${IMG_OK.has(url) ? "" : " data-wait"}>`;
+  return `<img class="${cls}" src="${esc(url)}" alt="" data-title="${esc(title || "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${IMG_OK.has(url) ? "" : " data-wait"}>`;
+}
+// Tipp aufs Bild: groß über der Karte zeigen, Tipp irgendwohin oder Esc schließt
+function zoomImage(root, url, title) {
+  const old = root.querySelector(".zoom"); if (old) old.remove();
+  const box = document.createElement("div");
+  box.className = "zoom";
+  box.setAttribute("role", "dialog");
+  box.innerHTML = `<img src="${esc(url)}" alt="${esc(title || "")}" referrerpolicy="no-referrer">${title ? `<div class="zcap">${esc(title)}</div>` : ""}`;
+  const close = () => { box.remove(); document.removeEventListener("keydown", onKey); };
+  const onKey = (e) => { if (e.key === "Escape") close(); };
+  box.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); close(); });
+  document.addEventListener("keydown", onKey);
+  root.appendChild(box);
 }
 function bindThumbs(root) {
+  root.querySelectorAll("img.thumb, img.mthumb").forEach((img) => img.addEventListener("click", (e) => {
+    e.preventDefault(); e.stopPropagation();
+    zoomImage(root, img.getAttribute("src"), img.dataset.title);
+  }));
   root.querySelectorAll("img[data-wait]").forEach((img) => {
     const url = img.getAttribute("src");
     const good = () => {
@@ -332,6 +349,10 @@ const cardCss = (config) => `
       .tile.undo .name{text-decoration:line-through}
       .head{display:flex;gap:10px;align-items:flex-start}
       img[data-wait]{opacity:0}  /* unsichtbar bis geladen; versteckt (display:none) würde lazy gar nicht laden */
+      .thumb,.mthumb{cursor:zoom-in}
+      .zoom{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;cursor:zoom-out}
+      .zoom img{width:94vw;max-width:760px;height:auto;max-height:80vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+      .zcap{color:#fff;font-size:15px;text-align:center;max-width:90vw}
       .thumb{flex:0 0 72px;width:72px;height:72px;object-fit:cover;border-radius:10px;margin-left:auto}
       .mthumb{flex:0 0 48px;width:48px;height:48px;object-fit:cover;border-radius:8px}
       .ico{flex:0 0 34px;height:34px;border-radius:50%;background:var(--_chip);color:var(--_chip-text);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
@@ -537,7 +558,7 @@ class EssensplanerCard extends HTMLElement {
       const sel = trips.some((t) => t.key === d.choice);
       return `<div class="tile ${sel ? "sel" : ""}">
         <div class="head"><div class="ico">${sel ? "✓" : d.nr}</div>
-          <div class="txt"><div class="name">${esc(d.title)}</div>${info(d)}</div>${this._config.images === false ? "" : thumbHtml(d.image, "thumb")}</div>
+          <div class="txt"><div class="name">${esc(d.title)}</div>${info(d)}</div>${this._config.images === false ? "" : thumbHtml(d.image, "thumb", d.title)}</div>
         ${tripBtns(d)}${ready(d)}${sel ? "" : `<div class="darow"><button class="small" data-act="drop" data-id="${esc(d.id)}">✕ ${t("drop")}</button></div>`}</div>`;
     };
     const weekTile = (d) => {
@@ -553,7 +574,7 @@ class EssensplanerCard extends HTMLElement {
         <div class="head"><div class="ckw"><button class="ck ${done ? "on" : ""}" data-act="cooked" data-id="${esc(d.id)}" aria-label="${t("cooked")}">${done ? "✓" : ""}</button><span class="ckl">${t("cooked")}</span></div>
           <div class="txt"><div class="name">${esc(d.title)}</div>
             <div class="l2"><b>${done ? t("cooked") : t("not_cooked")}</b> · ${esc(tripName(d.choice))}</div>${info(d)}
-            ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div>${this._config.images === false ? "" : thumbHtml(d.image, "thumb")}</div>
+            ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div>${this._config.images === false ? "" : thumbHtml(d.image, "thumb", d.title)}</div>
         <div class="foot"><div class="stars">${stars}</div>
           <span class="hint">${d.rating ? `${d.rating}/${STAR_MAX} · ${t("rating")[Math.ceil(d.rating / 2)]}` : t("how")}</span>
           ${this._rateAsk && this._rateAsk.id === d.id ? rateAskHtml(this._rateAsk, d.rating, "star_yes") : ""}
@@ -1076,7 +1097,7 @@ class EssensplanerMemoryCard extends HTMLElement {
       if (r.host) info.push(r.host);
       if (r.stub) info.push(t("m_stub"));
       const edit = this._editing === r.id;
-      return `<div class="mrow">${this._config.images === false ? "" : thumbHtml(r.image, "mthumb")}<div class="txt"><div class="name">${this._title(r)}</div>
+      return `<div class="mrow">${this._config.images === false ? "" : thumbHtml(r.image, "mthumb", r.title)}<div class="txt"><div class="name">${this._title(r)}</div>
           <div class="l2">${esc(info.join(" · "))}</div>
           <div class="mtools">${this._stars(r, "rate")}
             <button class="small" data-act="unrate" data-id="${esc(r.id)}">${t("m_unrate")}</button>
