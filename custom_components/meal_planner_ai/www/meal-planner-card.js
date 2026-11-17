@@ -266,9 +266,10 @@ function rateAskHtml(ask, current, yesAct) {
 // durchsichtig, bis es geladen ist; Fehler oder Mini-Platzhalter (< 40 px) entfernen es. Ergebnis je
 // Adresse merken, damit beim nächsten Zeichnen gute Bilder sofort da sind und schlechte gar nicht erst.
 const IMG_OK = new Set();
-const IMG_BAD = new Set();
+const IMG_BAD = new Map();  // Adresse -> Zeitpunkt des Fehlers; nach 10 Minuten neuer Versuch
+const imgBad = (url) => IMG_BAD.has(url) && Date.now() - IMG_BAD.get(url) < 600000;
 function thumbHtml(url, cls, title) {
-  if (!url || IMG_BAD.has(url) || !/^https:\/\//.test(url)) return "";
+  if (!url || imgBad(url) || !/^https:\/\//.test(url)) return "";
   return `<img class="${cls}" src="${esc(url)}" alt="" data-title="${esc(title || "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${IMG_OK.has(url) ? "" : " data-wait"}>`;
 }
 // Tipp aufs Bild: groß über der Karte zeigen, Tipp irgendwohin oder Esc schließt
@@ -295,9 +296,11 @@ function bindThumbs(root) {
       if (img.naturalWidth < 40 || img.naturalHeight < 40) return bad();
       IMG_OK.add(url); img.removeAttribute("data-wait");
     };
-    const bad = () => { IMG_BAD.add(url); img.remove(); };
+    const bad = () => { IMG_BAD.set(url, Date.now()); img.remove(); };
+    // Nur ein schon geladenes Bild sofort übernehmen. „complete“ ohne Größe heißt NICHT kaputt: Firefox
+    // meldet so auch Bilder, die wegen loading="lazy" noch gar nicht geladen wurden. Kaputt ist nur, was
+    // ein error-Ereignis bekommt (das kommt immer erst nach dem Anhängen der Listener).
     if (img.complete && img.naturalWidth) good();
-    else if (img.complete) bad();
     else { img.addEventListener("load", good, { once: true }); img.addEventListener("error", bad, { once: true }); }
   });
 }
