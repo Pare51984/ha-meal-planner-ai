@@ -23,7 +23,7 @@ Falls die Integration dort noch nicht auftaucht: HACS → drei Punkte → *Benut
 Einstellungen → Geräte & Dienste → Integration hinzufügen → **Meal Planner AI**.
 Dort Einkaufsliste und Küchengeräte wählen. Ist noch die frühere Version „Essensplaner“ eingerichtet, bietet die Einrichtung an, deren Einstellungen zu übernehmen; Rezepte, Bewertungen, Wünsche und die eigene Liste werden automatisch übernommen. Danach die alte Integration löschen. Weitere Einstellungen (Rezeptquellen,
 Ernährung, Rezepte pro Woche, Geräte pro Woche) über **Konfigurieren** oder direkt in der Karte
-im Reiter **Einstellungen** (nur für Administratoren sichtbar; mit `settings: false` in der Karte ausblendbar).
+im Reiter **Einstellungen** (nur für Administratoren sichtbar; mit `settings: false` in der Karte ausblendbar). Rezeptbilder in den Kacheln lassen sich mit `images: false` in der Karte abschalten.
 
 ## Aktionen
 | Aktion | Zweck |

@@ -167,6 +167,20 @@ class RecipeStore:
         self._save()
         return stored
 
+    def image(self, recipe_id: str | None) -> str | None:
+        """Vorschaubild der Rezeptseite für die Karte: nur https (die Karte läuft über https), sonst keins."""
+        img = (self.recipes.get(recipe_id) or {}).get("image") if recipe_id else None
+        if isinstance(img, list):  # manche Seiten liefern mehrere Bilder
+            img = next((i for i in img if isinstance(i, str)), None)
+        if not isinstance(img, str) or len(img) > 600:
+            return None
+        img = img.strip()
+        if img.startswith("//"):
+            img = "https:" + img
+        elif img.startswith("http://"):
+            img = "https://" + img[7:]
+        return img if img.startswith("https://") else None
+
     def delete(self, recipe_id: str) -> bool:
         if self.recipes.pop(recipe_id, None) is None:
             return False

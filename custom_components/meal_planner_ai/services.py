@@ -581,6 +581,7 @@ async def _memory_overview(call: ServiceCall) -> ServiceResponse:
             "rating": hist.get("rating"), "note": hist.get("note"), "status": hist.get("status"),
             "cooked_on": cooked, "last": cooked[-1] if cooked else None, "times": len(cooked),
             "stub": rec.get("stub", False), "imported_at": rec.get("imported_at"),
+            "image": entry.runtime_data.store.image(rec["id"]),
         })
     recipes.sort(key=lambda r: (r["title"] or "").lower())
     from .const import CONF_PROFILE

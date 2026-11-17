@@ -314,3 +314,24 @@ async def test_ai_renamed_staple_is_dropped(hass):
     with patch("custom_components.meal_planner_ai.board.async_ask", return_value=answer):
         items, skipped = await planner.async_recipe_items(recipe, 2)
     assert [i["name"] for i in items] == ["Kürbis"] and "Pfeffer" in skipped
+
+
+async def test_recipe_image_only_https(hass):
+    """Vorschaubild für die Karte: nur https, http wird zu https, Unsinn wird verworfen."""
+    from custom_components.meal_planner_ai.storage import RecipeStore
+
+    store = RecipeStore(hass)
+    await store.async_load()
+    cases = {
+        "a": ("https://img.chefkoch-cdn.de/x.jpg", "https://img.chefkoch-cdn.de/x.jpg"),
+        "b": ("http://example.de/y.jpg", "https://example.de/y.jpg"),
+        "c": ("//cdn.example.de/z.jpg", "https://cdn.example.de/z.jpg"),
+        "d": (["https://a.de/1.jpg", "https://a.de/2.jpg"], "https://a.de/1.jpg"),
+        "e": ("javascript:alert(1)", None),
+        "f": (None, None),
+    }
+    for rid, (raw, _) in cases.items():
+        store.recipes[rid] = {"id": rid, "image": raw}
+    for rid, (_, want) in cases.items():
+        assert store.image(rid) == want, rid
+    assert store.image(None) is None and store.image("fehlt") is None

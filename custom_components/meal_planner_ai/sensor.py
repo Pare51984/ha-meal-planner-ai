@@ -73,10 +73,12 @@ class BoardSensor(SensorEntity):
                  "busy": self._entry.runtime_data.planner.busy}
         if not board:
             return {**extra, "dishes": []}
+        store = self._entry.runtime_data.store
         return {
             **extra,
             **{k: board.get(k) for k in BOARD_FIELDS},
-            "dishes": [{k: d.get(k) for k in DISH_FIELDS} for d in board["dishes"]],
+            "dishes": [{**{k: d.get(k) for k in DISH_FIELDS}, "image": store.image(d.get("recipe_id"))}
+                       for d in board["dishes"]],
         }
 
     async def async_added_to_hass(self) -> None:

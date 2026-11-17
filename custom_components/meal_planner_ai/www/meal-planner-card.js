@@ -262,6 +262,28 @@ function rateAskHtml(ask, current, yesAct) {
     <button class="small on" data-act="${yesAct}" data-id="${esc(ask.id)}" data-n="${ask.n}">${t("yes")}</button>
     <button class="small" data-act="rate_no" data-id="${esc(ask.id)}">${t("cancel")}</button></div>`;
 }
+// Rezeptbilder: direkt von der Rezeptseite. Kaputte Bilder darf es nicht geben: ein Bild bleibt
+// durchsichtig, bis es geladen ist; Fehler oder Mini-Platzhalter (< 40 px) entfernen es. Ergebnis je
+// Adresse merken, damit beim nächsten Zeichnen gute Bilder sofort da sind und schlechte gar nicht erst.
+const IMG_OK = new Set();
+const IMG_BAD = new Set();
+function thumbHtml(url, cls) {
+  if (!url || IMG_BAD.has(url) || !/^https:\/\//.test(url)) return "";
+  return `<img class="${cls}" src="${esc(url)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"${IMG_OK.has(url) ? "" : " data-wait"}>`;
+}
+function bindThumbs(root) {
+  root.querySelectorAll("img[data-wait]").forEach((img) => {
+    const url = img.getAttribute("src");
+    const good = () => {
+      if (img.naturalWidth < 40 || img.naturalHeight < 40) return bad();
+      IMG_OK.add(url); img.removeAttribute("data-wait");
+    };
+    const bad = () => { IMG_BAD.add(url); img.remove(); };
+    if (img.complete && img.naturalWidth) good();
+    else if (img.complete) bad();
+    else { img.addEventListener("load", good, { once: true }); img.addEventListener("error", bad, { once: true }); }
+  });
+}
 const DOCS_URL = "https://github.com/Pare51984/ha-meal-planner-ai/blob/main/docs/";
 const MEM_TABS = ["profile"];
 const cardCss = (config) => `
@@ -309,6 +331,9 @@ const cardCss = (config) => `
       .tile.undo{opacity:.75}
       .tile.undo .name{text-decoration:line-through}
       .head{display:flex;gap:10px;align-items:flex-start}
+      img[data-wait]{opacity:0}  /* unsichtbar bis geladen; versteckt (display:none) würde lazy gar nicht laden */
+      .thumb{flex:0 0 72px;width:72px;height:72px;object-fit:cover;border-radius:10px;margin-left:auto}
+      .mthumb{flex:0 0 48px;width:48px;height:48px;object-fit:cover;border-radius:8px}
       .ico{flex:0 0 34px;height:34px;border-radius:50%;background:var(--_chip);color:var(--_chip-text);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
       .tile.sel .ico{background:var(--_accent);color:var(--_accent-text)}
       .ck{flex:0 0 34px;height:34px;border-radius:50%;border:2px solid var(--_check);background:transparent;color:var(--_accent-text);font:inherit;font-size:16px;font-weight:700;cursor:pointer;padding:0}
@@ -512,7 +537,7 @@ class EssensplanerCard extends HTMLElement {
       const sel = trips.some((t) => t.key === d.choice);
       return `<div class="tile ${sel ? "sel" : ""}">
         <div class="head"><div class="ico">${sel ? "✓" : d.nr}</div>
-          <div class="txt"><div class="name">${esc(d.title)}</div>${info(d)}</div></div>
+          <div class="txt"><div class="name">${esc(d.title)}</div>${info(d)}</div>${this._config.images === false ? "" : thumbHtml(d.image, "thumb")}</div>
         ${tripBtns(d)}${ready(d)}${sel ? "" : `<div class="darow"><button class="small" data-act="drop" data-id="${esc(d.id)}">✕ ${t("drop")}</button></div>`}</div>`;
     };
     const weekTile = (d) => {
@@ -528,7 +553,7 @@ class EssensplanerCard extends HTMLElement {
         <div class="head"><div class="ckw"><button class="ck ${done ? "on" : ""}" data-act="cooked" data-id="${esc(d.id)}" aria-label="${t("cooked")}">${done ? "✓" : ""}</button><span class="ckl">${t("cooked")}</span></div>
           <div class="txt"><div class="name">${esc(d.title)}</div>
             <div class="l2"><b>${done ? t("cooked") : t("not_cooked")}</b> · ${esc(tripName(d.choice))}</div>${info(d)}
-            ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div></div>
+            ${d.note ? `<div class="rate">„${esc(d.note)}“</div>` : ""}</div>${this._config.images === false ? "" : thumbHtml(d.image, "thumb")}</div>
         <div class="foot"><div class="stars">${stars}</div>
           <span class="hint">${d.rating ? `${d.rating}/${STAR_MAX} · ${t("rating")[Math.ceil(d.rating / 2)]}` : t("how")}</span>
           ${this._rateAsk && this._rateAsk.id === d.id ? rateAskHtml(this._rateAsk, d.rating, "star_yes") : ""}
@@ -703,6 +728,7 @@ class EssensplanerCard extends HTMLElement {
   }
   _paint(body, settings) {
     this.shadowRoot.innerHTML = `<style>${cardCss(this._config)}</style>${body}`;
+    bindThumbs(this.shadowRoot);
     this.shadowRoot.querySelectorAll("[data-tab]").forEach((el) => el.addEventListener("click", () => {
       const tab = el.dataset.tab;
       if (tab === this._tab || (!this._tab && tab === "plan")) return;
@@ -1050,7 +1076,7 @@ class EssensplanerMemoryCard extends HTMLElement {
       if (r.host) info.push(r.host);
       if (r.stub) info.push(t("m_stub"));
       const edit = this._editing === r.id;
-      return `<div class="mrow"><div class="txt"><div class="name">${this._title(r)}</div>
+      return `<div class="mrow">${this._config.images === false ? "" : thumbHtml(r.image, "mthumb")}<div class="txt"><div class="name">${this._title(r)}</div>
           <div class="l2">${esc(info.join(" · "))}</div>
           <div class="mtools">${this._stars(r, "rate")}
             <button class="small" data-act="unrate" data-id="${esc(r.id)}">${t("m_unrate")}</button>
@@ -1094,6 +1120,7 @@ class EssensplanerMemoryCard extends HTMLElement {
     else body += this._profileHtml(d);
     const focus = this.shadowRoot.activeElement && this.shadowRoot.activeElement.id;
     this.shadowRoot.innerHTML = `<style>${cardCss(this._config)}</style>${body}`;
+    bindThumbs(this.shadowRoot);
     this._bind(d);
     if (focus === "mq") { const q = this.shadowRoot.getElementById("mq"); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
   }
