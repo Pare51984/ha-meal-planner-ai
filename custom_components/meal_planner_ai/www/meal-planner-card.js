@@ -43,6 +43,7 @@ const I18N = {
     m_rules_ph: "z. B. Wir essen gern scharf, keine Pilze, Fisch höchstens einmal pro Woche",
     m_rules_ex_btn: "Beispiel anzeigen",
     m_rules_ex: "Haushalt: zwei Erwachsene, Abendessen für zwei. Reste gibt es am nächsten Tag zum Mittagessen, deshalb gern gut aufwärmbare Gerichte. Küche bunt gemischt, besonders mediterran, asiatisch und klassisch; Zutaten aus dem normalen Supermarkt, höchstens ein aufwendigeres Gericht pro Woche. Saison beachten: im Herbst und Winter gern deftig und geschmort, im Sommer leicht und ohne langen Ofen. Keine Suppen, kein Rosenkohl. Lieblingsgericht: Käsespätzle, gern ab und zu. Fleischlose Gerichte sollen satt machen. Eine Person achtet auf wenig gesättigte Fette: wenig Sahne, Butter und Wurst, lieber Hülsenfrüchte, Vollkorn, Gemüse und Fisch; der Genuss soll bleiben. An Tagen mit Kind: nicht scharf, nicht zu exotisch. Zutaten der Woche gern teilen (z. B. ein Kürbis für zwei Gerichte) und Vorräte, die weg müssen, berücksichtigen.",
+    m_rules_ex_tip: "Tipp: Hinweise, die nur an bestimmten Tagen gelten (z. B. „an Tagen mit Kind“ oder Gäste), am besten zusätzlich als Kalenderregel anlegen: Einstellungen → Kalender, Kalender und Stichwort wählen und den Hinweis eintragen. Dann weiß die KI, an welchen Tagen der Woche das gilt, und kann passende Gerichte gezielt für diese Tage einplanen.",
     m_liked: "Gemocht", m_neutral: "Neutral", m_disliked: "Nicht gemocht", m_recent: "In den letzten 4 Wochen gekocht",
     m_recent_hint: "Wird nicht erneut vorgeschlagen. ✕ entfernt den Kochtag.", m_none: "Noch nichts.",
     m_search: "Suchen …", m_sort_name: "Name", m_sort_rating: "Bewertung", m_sort_last: "Zuletzt gekocht", m_sort_times: "Wie oft gekocht",
@@ -84,6 +85,7 @@ const I18N = {
     m_rules_ph: "e.g. We like it spicy, no mushrooms, fish at most once a week",
     m_rules_ex_btn: "Show example",
     m_rules_ex: "Household: two adults, dinner for two. Leftovers are next day's lunch, so dishes that reheat well are welcome. Mixed cuisine, especially Mediterranean, Asian and classic; ingredients from a normal supermarket, at most one more elaborate dish per week. Follow the season: hearty and braised in autumn and winter, light in summer without long oven times. No soups, no Brussels sprouts. Favourite dish: mac and cheese, now and then. Meat-free dishes should be filling. One person watches saturated fat: little cream, butter and sausage, rather pulses, whole grain, vegetables and fish; it should still taste good. On days with a child: not spicy, not too exotic. Share ingredients across the week (e.g. one pumpkin for two dishes) and use up what needs to go.",
+    m_rules_ex_tip: "Tip: notes that only apply on certain days (e.g. \"on days with a child\" or guests) work best as an extra calendar rule: Settings → Calendars, pick the calendar and keyword and enter the note. Then the AI knows on which days of the week it applies and can plan matching dishes specifically for those days.",
     m_liked: "Liked", m_neutral: "Neutral", m_disliked: "Disliked", m_recent: "Cooked in the last 4 weeks",
     m_recent_hint: "Won't be proposed again. ✕ removes the cooked day.", m_none: "Nothing yet.",
     m_search: "Search …", m_sort_name: "Name", m_sort_rating: "Rating", m_sort_last: "Last cooked", m_sort_times: "Times cooked",
@@ -105,6 +107,7 @@ const I18N = {
     m_rules_ph: "p. ej. Nos gusta el picante, sin setas, pescado como mucho una vez por semana",
     m_rules_ex_btn: "Ver ejemplo",
     m_rules_ex: "Hogar: dos adultos, cena para dos. Las sobras son la comida del día siguiente, así que mejor platos que se recalienten bien. Cocina variada, sobre todo mediterránea, asiática y clásica; ingredientes de un supermercado normal, como mucho un plato más elaborado por semana. Según la temporada: en otoño e invierno contundente y guisado, en verano ligero y sin horno largo. Sin sopas, sin coles de Bruselas. Plato favorito: macarrones con queso, de vez en cuando. Los platos sin carne deben saciar. Una persona cuida las grasas saturadas: poca nata, mantequilla y embutido, mejor legumbres, integrales, verduras y pescado; que siga siendo sabroso. Los días con niño: nada picante, nada demasiado exótico. Compartir ingredientes en la semana (p. ej. una calabaza para dos platos) y aprovechar lo que haya que gastar.",
+    m_rules_ex_tip: "Consejo: las indicaciones que solo valen ciertos días (p. ej. «los días con niño» o invitados) funcionan mejor como regla de calendario adicional: Ajustes → Calendarios, elige el calendario y la palabra clave e introduce la indicación. Así la IA sabe qué días de la semana se aplica y puede planificar platos adecuados específicamente para esos días.",
     m_liked: "Gustó", m_neutral: "Neutral", m_disliked: "No gustó", m_recent: "Cocinado en las últimas 4 semanas",
     m_recent_hint: "No se volverá a proponer. ✕ quita el día cocinado.", m_none: "Nada todavía.",
     m_search: "Buscar …", m_sort_name: "Nombre", m_sort_rating: "Valoración", m_sort_last: "Cocinado por última vez", m_sort_times: "Veces cocinado",
@@ -146,6 +149,7 @@ const I18N = {
     m_rules_ph: "p. ex. Gostamos de picante, sem cogumelos, peixe no máximo uma vez por semana",
     m_rules_ex_btn: "Ver exemplo",
     m_rules_ex: "Casa: dois adultos, jantar para dois. As sobras são o almoço do dia seguinte, por isso pratos que se aqueçam bem. Cozinha variada, sobretudo mediterrânica, asiática e clássica; ingredientes de um supermercado normal, no máximo um prato mais elaborado por semana. Respeitar a época: no outono e inverno pratos fortes e estufados, no verão leves e sem forno demorado. Sem sopas, sem couves-de-bruxelas. Prato preferido: massa com queijo, de vez em quando. Pratos sem carne devem saciar. Uma pessoa tem atenção às gorduras saturadas: pouca natas, manteiga e enchidos, antes leguminosas, integrais, legumes e peixe; sem perder o sabor. Nos dias com criança: nada picante, nada demasiado exótico. Partilhar ingredientes na semana (p. ex. uma abóbora para dois pratos) e gastar o que tem de ser gasto.",
+    m_rules_ex_tip: "Dica: indicações que só valem em certos dias (p. ex. «nos dias com criança» ou visitas) funcionam melhor como regra de calendário adicional: Definições → Calendários, escolhe o calendário e a palavra-chave e introduz a indicação. Assim a IA sabe em que dias da semana se aplica e pode planear pratos adequados especificamente para esses dias.",
     m_liked: "Gostámos", m_neutral: "Neutro", m_disliked: "Não gostámos", m_recent: "Cozinhado nas últimas 4 semanas",
     m_recent_hint: "Não volta a ser proposto. ✕ remove o dia cozinhado.", m_none: "Ainda nada.",
     m_search: "Pesquisar …", m_sort_name: "Nome", m_sort_rating: "Avaliação", m_sort_last: "Última vez cozinhado", m_sort_times: "Vezes cozinhado",
@@ -187,6 +191,7 @@ const I18N = {
     m_rules_ph: "p. ex. On aime épicé, pas de champignons, poisson au plus une fois par semaine",
     m_rules_ex_btn: "Voir un exemple",
     m_rules_ex: "Foyer : deux adultes, dîner pour deux. Les restes font le déjeuner du lendemain, donc de préférence des plats qui se réchauffent bien. Cuisine variée, surtout méditerranéenne, asiatique et classique ; ingrédients du supermarché, au plus un plat plus élaboré par semaine. Suivre la saison : copieux et mijoté en automne et en hiver, léger en été sans long passage au four. Pas de soupes, pas de choux de Bruxelles. Plat préféré : gratin de pâtes au fromage, de temps en temps. Les plats sans viande doivent rassasier. Une personne surveille les graisses saturées : peu de crème, de beurre et de charcuterie, plutôt légumineuses, céréales complètes, légumes et poisson ; le plaisir doit rester. Les jours avec un enfant : pas épicé, pas trop exotique. Partager les ingrédients dans la semaine (p. ex. un potiron pour deux plats) et utiliser ce qui doit être consommé.",
+    m_rules_ex_tip: "Astuce : les consignes qui ne valent que certains jours (p. ex. « les jours avec un enfant » ou des invités) fonctionnent mieux en plus comme règle de calendrier : Paramètres → Calendriers, choisir le calendrier et le mot-clé et saisir la consigne. L'IA sait alors quels jours de la semaine c'est valable et peut prévoir des plats adaptés spécialement pour ces jours.",
     m_liked: "Aimé", m_neutral: "Neutre", m_disliked: "Pas aimé", m_recent: "Cuisiné ces 4 dernières semaines",
     m_recent_hint: "Ne sera pas reproposé. ✕ retire le jour cuisiné.", m_none: "Rien pour l'instant.",
     m_search: "Rechercher …", m_sort_name: "Nom", m_sort_rating: "Note", m_sort_last: "Dernière fois cuisiné", m_sort_times: "Fois cuisiné",
@@ -452,6 +457,7 @@ const cardCss = (config) => `
       .rex{margin-top:8px}
       .rex summary{cursor:pointer;font-size:13px;color:var(--_muted, inherit)}
       .rex .desc{margin-top:6px;white-space:normal}
+      .rex .rextip{margin-top:8px;font-style:italic}
       .ptext.ro{min-height:0;white-space:pre-wrap;margin-bottom:4px}
       .desc.scale{margin:0 2px 10px}
       .count{font-weight:400;color:var(--_muted)}
@@ -1147,7 +1153,7 @@ class EssensplanerMemoryCard extends HTMLElement {
       ${groups.map(([title, list]) => block(title, list, row)).join("")}
       ${block(t("m_recent"), d.recent || [], recentRow, t("m_recent_hint"))}
       <div class="form"><h3>${t("m_rules")}</h3><div class="desc">${esc(t("m_rules_hint"))}</div>${rules}
-        <details class="rex"${this._exOpen ? " open" : ""}><summary>${esc(t("m_rules_ex_btn"))}</summary><div class="desc">${esc(t("m_rules_ex"))}</div></details></div>`;
+        <details class="rex"${this._exOpen ? " open" : ""}><summary>${esc(t("m_rules_ex_btn"))}</summary><div class="desc">${esc(t("m_rules_ex"))}</div><div class="desc rextip">💡 ${esc(t("m_rules_ex_tip"))}</div></details></div>`;
   }
 
   _render() {
